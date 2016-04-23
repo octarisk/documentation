@@ -1,0 +1,13 @@
+# exclude the following temporary files
+*.aux
+*.cp
+*.cps
+*.fn
+*.fns
+*.ky
+*.log
+*.pg
+*.toc
+*.tp
+*.vr
+# exclude the following folders
