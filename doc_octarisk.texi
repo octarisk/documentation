@@ -1,0 +1,710 @@
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename octarisk.html
+@settitle @sc{octarisk} Documentation
+@c %**end of header
+
+@c --------------------------------------------------------------------------------------------------------------------
+@c                          HEADER
+@c --------------------------------------------------------------------------------------------------------------------
+
+@set VERSION 0.2.0
+
+@c Command C:\Program Files (x86)\texinfo\bin>makeinfo --plaintext doc_octarisk.texi
+
+@copying
+This is the documentation for the market risk measurement project @sc{octarisk}.
+
+Copyright @copyright{} 2016 Stefan Schloegl
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 2 or
+any later version published by the Free Software Foundation.
+@end quotation
+@end copying
+
+@titlepage
+@title @sc{octarisk} Documentation
+@subtitle version @value{VERSION}
+@vskip 240pt
+@center @image{octarisk_logo_large,6cm} @*
+@author Stefan Schloegl (@email{schinzilord@@octarisk.com})
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@c Output the table of the contents at the beginning.
+@contents
+
+@c @ifnottex
+@node Top
+@top @sc{octarisk} Documentation
+
+This manual is for the market risk measurement project @sc{octarisk} (version @value{VERSION}).
+@c @end ifnottex
+
+
+@c --------------------------------------------------------------------------------------------------------------------
+@c                          TOP MENU
+@c --------------------------------------------------------------------------------------------------------------------
+@menu
+* Introduction::                General motivation and introduction.
+* User guide::                  Chapter with details about scenario generation, financial instrument valuation and portfolio aggregation.
+* Developer guide::             Chapter with the implementation and definition of input and output files
+* Input files::                  Definition of input files
+* Output files::                 Definition of output files
+* Octave Functions and Scripts:: Definition of all Octave functions and scripts needed for the calculation process.
+* Index::                       Complete index.
+@end menu
+
+@c --------------------------------------------------------------------------------------------------------------------
+@c                          INTRODUCTION
+@c --------------------------------------------------------------------------------------------------------------------
+@node Introduction, User guide, Top, Top
+@chapter Introduction
+@section Why quantifying market risk?
+This ongoing project is made for all investors who want to dig deeper into their portfolio than just looking at the yearly profit or loss.
+Although most financial reports of more sophisticated brokers contain risk measures like standard deviations, the volatility alone
+cannot cover the risk inherent in non-linear financial products like options.
+Moreover, potential investors care about their portfolio values under certain market conditions, e.g. they want to compare their perceived personal stress levels during
+the financial crisis but with the financial instruments in their portfolio losses during stress scenarios.@*
+
+If questions like 
+@itemize 
+@item What happens to my portfolio value, if the ECB increases the interest rate by 100bp?
+@item What happens to my portfolio value, if an emerging country is defaulting and the US Dollar increases in value?
+@item How would my portfolio perform, if we have a new crash comparable to Black Friday 1987?
+@end itemize
+are of potential interest for you, then the @sc{octarisk} market risk project might be satisfying your needs for a professional risk modelling framework.
+
+Since most investors do not give excessive credits to debtors or bear operational or liquidity risks, the @sc{octarisk} project focuses on market risk only - 
+all remaining types of risk which are relevant for your investment portfolio: equity risk, interest rate risk, volatility risk, commodity risk, ...@*
+
+For the assessment of these market risk types, a sophisticated full valuation approach with Monte-Carlo based value-at-risk and expected shortfall calculation is performed.
+The underlying principles are state-of-the-art in financial institutions and are used in internal models to fulfill the requirements set by regulators (for Basel III 
+and Solvency 2).
+The important concepts are adopted, the unnecessary overhead was skipped - resulting in a fast, lightweight yet flexible approach for quantifying market risk.
+
+@section Features
+@cindex Features
+The @sc{octarisk} quantifying market risk projects features
+@itemize 
+@item a full valuation approach for financial instruments
+@item Monte-Carlo method for scenario generation of underlying risk factors
+@item simple input interface via static and dynamic files 
+@item a processable report incl. graphical representation of portfolio profits and losses as well as an overview over the riskiest instruments and positions (see @xref{Output files} for examples)
+@item an easily customizable framework based on full implementation on Octave with compact source code
+@end itemize
+
+@section Prerequisites
+@cindex Prerequisites
+The only requirement is @uref{https://www.gnu.org/software/octave/, GNU Octave} (tested for versions > 4.0) with installed financial and statistical package and hardware with minimum of 5Gb of memory.
+Calculation time decreases significantly while using optimized linear algebra packages of @uref{http://www.openblas.net/openblas, OpenBLAS} and @uref{http://www.netlib.org/lapack/, LAPACK} (or comparable).
+For automatic processing of the input data (e.g. to get actual market data from Quandl or Yahoo finance), to make the parameter estimation
+as well as process the report files, some programming language like Perl, Python and a running LaTeX environment are recommended, but not required.
+
+Nevertheless, a basic understanding of a high level programming language like Octave is required to adjust the source code and to customize the calculation.
+Furthermore, a thorough understanding of financial markets, instruments and valuation will be needed in order to select appropriate models and to interpret results.
+The implemented models and the underlying concepts are explained in detail for example in following literature:@* 
+@*
+@cite{Risk Management and Financial Institutions, John C. Hull, 2015} @*
+@cite{Paul Wilmott on Quantitative Finance, 2nd Edition, Paul Wilmott, 2006} @*
+@cite{Options, Futures and other Derivatives, 7th Edition, John C. Hull, 2008} @*
+
+The next chapter contains the background and details needed for running the market risk valuation and aggregation software and understanding the risk measures.
+
+@c --------------------------------------------------------------------------------------------------------------------
+@c                          QUANTIFYING MARKET RISK
+@c --------------------------------------------------------------------------------------------------------------------
+@node User guide, Introducing market risk, Introduction, Top
+@menu
+* Introducing market risk::     Basics of market risk
+* Market risk measures::        Fundamentals of market risk measures
+* Scenario generation::         Introduction to stochastic models and Monte-Carlo Simulation
+* Instrument valuation::        Valuation of financial instruments
+* Aggregation::                 Aggregation of instrument data to fund level
+* Reporting::                   Reporting market risk
+@end menu
+
+@chapter User guide
+@cindex Market Risk, Quantifying
+This chapter gives a general introduction to market risk and how the market risk is captured by @sc{octarisk}.
+Thereby the following convention is made: market movement means the movement around the mean value or, in other words, the possible deviation from the expected value as time passes. Stronger movement around the expected value means more risk and results in a higher standard deviation, the most important statistic parameter for capturing market risk.
+
+@node Introducing market risk, Market risk measures, User guide, User guide
+@section Introducing market risk
+@cindex Market Risk, Introduction
+Typically, market risk can be divided into several sub types. Most of the splitting is obvious, but some of the more exotic risk types remain very broad.
+The ideal breakdown depends heavily on the specific portfolio whose market risk shall be quantified.
+A basic approach fitting most portfolios of private investors, not too broad, not too granular, is chosen in @sc{octarisk}. The following types of risk are defined:
+@itemize @bullet
+@item @var{FX}: Forex risk captures the market movements of exchange rate values. These movements relative to the reporting currency (in our case EUR) affect financial assets in foreign currencies only.
+@item @var{EQ}: Equity risk is related to the movement of equity markets. It will be typically broken down into sub-categories like countries, regions or other types of aggregation (e.g. developed market, emerging market, frontier markets).
+@item @var{COM}: Commodity risk. This is a rather broad type of risk, often correlated to other risk types (e.g. equity). Commodity risk tries to capture the
+movement of spot and future / forward commodity prices, as well as commodity linked equities.
+@item @var{IR}: Interest rate risk is related to the movement of interest rate values. This is the most important type of risk for cash flow bearing instruments. 
+@item @var{RE}: Real estate risk, where typically it will be distinguished between movements of market values of REITs (Real Estate Investment Trusts) and housing prices. This risk type can also be broken down into sub-categories like different countries, regions or other categories (e.g. developed markets, emerging markets).
+@item @var{VOLA}: Implied volatility risk, e.g. the anticipated future movement of implied volatility of equity instruments or swaps.
+@item @var{ALT}: Alternative market risk, used as a container for every other type of risk not already captured  (e.g. Bitcoins, infrastructure)
+@end itemize
+The @sc{octarisk} projects focuses on these seven risk types. For each risk type, appropriate risk factors can be chosen. One risk factor is a typical
+representative of a particular risk type. Most often, several risk factors are needed to describe the granular behavior of a market risk type, e.g. it is necessary to
+describe the specific characteristics of countries, regions or currencies. For example, two risk factors can be used to describe the international equity market movements:
+Developed markets and emerging market. If desired, developed market can be further split into North America, Europe and Asia to describe risk diversification effects between 
+these broad regions. 
+After the selection of risk factors, stochastic models are chosen, calibrated and subsequently used for scenario generation.
+
+@node Market risk measures, Scenario generation, Introducing market risk, User guide
+@section Market risk measures
+@cindex Market risk measures
+@subsection Value-at-Risk
+@cindex VAR, Value-at-Risk
+Value-at-risk (VAR) is defined as the monetary loss which the portfolio won't exceed for a specific probability on a certain time horizon. As an example, a 250 trading day (one calender year) VAR of 1000 EUR at the 99% confidence interval means there is a probability of 99% that the portfolio loss within one year (250 trading days) is equal to or less than 1000 EUR. It is important to note that no forecast is made for the possible loss which can occur in 1% of the remaining cases. 
+Furthermore, within a proper calibrated risk setup one @strong{must} expect a loss greater than the VAR amount in 1% of all cases, that means a loss of more than 1000 EUR will occur in two to three trading days per year. Otherwise, if there are no trading days observed where the loss is greater than predicted by VAR, the risk is overstated, leaving room for better usage of risk capital.
+
+@subsection Expected shortfall (ES)
+@cindex ES, Expected shortfall
+Expected shortfall is an additional risk measure which is defined as the arithmetic average (mean) loss in the remaining tail of the sorted profit and loss distribution of all simulated MC scenarios, which are not covered by the 99% VAR.
+The ES should always be seen in context of the VAR and is a more coherent risk measure, which can make stronger predictions about diversification benefits of portfolios.
+
+@node Scenario generation, Instrument valuation, Market risk measures, User guide
+@section Scenario generation
+@cindex Scenario generation
+A scenario is a specific set of shocks to risk factors. Typically, the directions of the shocks are correlated, and the value of the shock
+is dependent on the stochastic properties of the risk factors (e.g. volatility or mean reversion parameters).
+Although these properties can be also chosen customary, for evaluating risk measures like value-at-risk these parameters are typically extracted from past, real market movements.
+
+@subsection Stochastic models
+@cindex Stochastic models, Theory of
+In order to describe movements of risk factors in time, a connection has to be made between statistical behavior of real time series and stochastic processes for modeling synthetic time series.
+@sc{octarisk} concentrates on three stochastic processes: Wiener, Ornstein-Uhlenbeck and root-diffusion processes.
+
+@subsubsection Random walk and the Wiener process
+@cindex Wiener process, Random walk
+For the Wiener process, two different possible definitions exist. In the first case, both the drift and the normally-distributed random number @math{W_t} (the so called Wiener process) are proportional to the variable at the former time step, resulting in the process @math{S_t} which satisfies the following stochastic differential equation:@*
+@* @math{dS_t = mu * S_{t-1} *dt + sigma*S_t*dW_t  } @*
+The following analytic solution to this stochastic differential equation is derived:@*
+@* @math{ S_t = S_0 * exp( (mu - sigma^2/2)*t + sigma * W_t) }@*
+This solution ensures positive values at all time steps. @*
+
+In the second case, a continuous time random walk with independent, normally-distributed random numbers independent of the variable at the former time step is given by the following stochastic differential equation: @*
+@math{ dS_t = mu * dt + sigma * W_t }@*
+This process shows self-similarity and scaling behavior.
+
+@subsubsection Ornstein-Uhlenbeck process
+@cindex Ornstein-Uhlenbeck process
+The Wiener process can be extended to incorporate a serial dependency (like a memory) - tomorrows values are dependent on the level of todays values.
+The Ornstein-Uhlenbeck (OU) process has a mean-reversion term, which is directly proportional to the difference of the actual value from the mean reversion level:@*
+@math{dX_t = mr_{rate} * ( mr_{level} - X_{t-1} ) * dt + sigma * dW_t} @*
+where the mean reversion rate @math{mr_{rate}} can be seen as a proportional parameter of a restoring force. 
+The increments @math{dX_t} tend to point to the mean-reversion level @math{mr_{level}}.
+The result of the formula is an addditive term to the risk factor depending on the past level and a stochastic term (modeled by the Wiener process).
+
+@subsubsection Square-root diffusion process
+@cindex Square-root diffusion process
+In order to exclude negative values in the OU mean-reversion process, an additional repelling force is needed, which ensures that the level of the stochastic variables stays away from zero. The square-root diffusion process (SRD) has an additional term, which is multiplied with the standard deviation and the random variable. This term is identified as the square root of the variable at the former time step:@*
+@math{dX_t = mr_{rate} * ( mr_{level} - X_{t-1} ) * dt + sigma * sqrt(X_{t-1}) * dW_t} @*
+Negative values for the variables are excluded if the following equation is fulfilled:@*
+@math{2*mr_{rate} * mr_{level} >= sigma} @*
+
+@subsection Financial models
+@cindex Financial models, Theory of
+The stochastic models which have been presented in the last section, are used as basis for financial models. In order to map stochastic processes to financial models, properties of financial models are identified and subsequently stochastic models chosen in order to generate simulated time series of risk factors with appropriate and desired behavior.
+
+@subsubsection Geometric Brownian motion
+@cindex Geometric Brownian motion
+The standard financial model for equity, real-estate and commodity risk factors is a geometric Brownian motion (GBM), which utilizes the extended Wiener process, where the drift and random variable are proportional to the risk factor value.
+Due to this proportionality the time series can not reach zero and the modeled risk factors values always stay positive. This is reflected in the real world behavior of equity or commodity prices, where the intrinsic value of these assets cannot fall below zero. @*
+
+@subsubsection Brownian motion
+@cindex Brownian motion
+In a Brownian motion (BM) model, the time-series increments are a function of drift, time and standard deviation, but not dependent on the actual level of the financial variable. For certain types of risk factors (e.g. interest rates), one assumes a Brownian motion so that the modeled price movements
+are given as additive shocks which are completely independent on the actual risk factor value. Therefore, negative values of the modeled risk factors are allowed.
+
+@subsubsection Vasicek model
+@cindex Vasicek model
+In the long run, the market movements of exchange rates and interest rates seem to be mean-reverting. This behavior can be modeled by a Ornstein-Uhlenbeck process resulting in a so called one factor short rate model proposed by Vasicek. The Ornstein-Uhlenbeck process allows for negative values, which reflects the real world behavior of short rates since the financial crisis, where interest rates of AAA-rated government bonds had negative yields for at east some time.
+
+@subsubsection Cox-Ingersoll-Ross and Heston model
+@cindex Cox-Ingersoll-Ross and Heston model
+If one doesn't want to allow negative values for interest rates or other mean-reverting risk factors, a square-root diffusion process can be chosen as stochastic model. This results in the short-rate model of Cox-Ingersoll-Ross or the Heaston model for modelling at-the-money volatility used in option pricing. 
+
+
+@subsection Parameter estimation
+@cindex Parameter estimation
+Once an appropriate model is chosen for the risk factor, one has to define input parameters for the stochastic differential equations.
+One approach is to use historical data to estimate statistic parameters like volatility, correlations or mean-reversion parameters.
+Another approach is to apply expert judgment in selecting input parameters for the models.
+@sc{octarisk} uses the specified parameters to generate Monte-Carlo scenarios - the selection of the parameter estimation approach is up to the reader.
+
+Typically, parameters are extracted from historical time series on weekly or monthly data on the past three to five years. Unfortunately, availability of
+historical time series for all risk factors is one of the main constraints in parameter estimation for private investors. Most often, one has to overcome problems of missing data and the need for interpolation or extrapolation. In future versions scripts for parameter estimation will be provided. @*
+In an ideal world, at first appropriate risk types and risk factors are selected, then the validation of a stochastic model is performed and the appropriateness
+of the model and the assumptions (like length of historical time series) is verified in back-tests. Nevertheless, no stochastic model can 
+completely describe the financial markets, giving rise to model error (both in parameter estimation and model selection).
+
+@subsection Monte-Carlo Simulation
+@cindex Parameter Monte-Carlo Simulation
+A Monte-Carlo approach is chosen to generate the risk factor shocks in all scenarios. Therefore a risk factor correlation matrix (e.g. estimated from historical time series) and additional parameters describing statistical distributions can be used to generate random numbers, which are utilized as input parameters to stochastic models.
+
+In order to account for non-normal distributions and higher order correlation effects in the Monte-Carlo simulation, a copula approach is chosen to generate dependent, correlated random numbers.
+In a first step, the input correlation matrix is used to generate normally distributed, correlated random numbers with zero drift and unit variance. In a next step, either a Gaussian copula or a student-t copula is utilized to transform the normally distributed random variables to uniformly distributed random variables, while either the linear correlation dependence (for Gaussian copulas) or additionally the non-linear dependence structures (for student-t copulas) is preserved.
+In a last step, these random numbers are incorporated into a function which chooses for each risk factor the appropriate distribution in a certain way, that standard deviation, skewness and kurtosis are matched with the input parameters. Therefore the Pearson distribution system is used as a basis for generation of random variables.
+Subsequently, in each of the Monte-Carlo scenarios a specific set of correlated risk factor shocks, dependent on the selected financial models, is generated, while the marginal distributions have desired standard deviation, skewness and kurtosis.
+
+A further potential problem is the model error from the Monte-Carlo method. Only a limited number of Monte-Carlo scenarios can be generated and valuated (in the range of 10000 to 100000), thus leaving space for not represented scenarios which could alter the risk measures. 
+
+@subsection Stress testing
+@cindex Parameter Stress testing
+A complementary method to the stochastic scenario generation is to directly define shocks to risk factors.
+This scenario analysis is normally done in order to calculate the portfolio behavior in well known historic scenarios (like Financial Crisis 2008, devaluation of Asian currencies in the mid 90s, terrorist attack on 9/11,
+Black Friday in October 1987) or in scenarios, where one only is interested in the behavior of the portfolio value in isolated shocks (like all equities decline by 30pct in value, a +100bp parallel shift in interest rates).
+Possible sources of scenarios are provided by regulators and can be easily adapted for personalized stress scenarios.
+
+@node Instrument valuation, Aggregation, Scenario generation, User guide
+@section Instrument valuation
+@cindex Instrument valuation
+After the scenarios are generated, one has to calculate the behavior of financial instruments to movements in the underlying risk factors.
+Therefore two different approaches are chosen: the sensitivity approach applies relative valuation adjustments to the instrument base values proportional to the defined sensitivity. The valuation adjustments are derived from movements in value of the underlying risk factors. Secondly, in a full valuation approach, the scenario dependent input parameters are fed into a pricing function which (re)calculates the new absolute value of the instrument in each particular scenario.
+@subsection Sensitivity approach
+@cindex Sensitivity approach
+The sensitivity approach is performed for all instruments which have a linear dependency on the movement of underlying risk factor values, or where 
+not enough data or no appropriate pricing function exists for a full valuation approach.
+
+@subsubsection Linear dependency on risk factor shocks
+For the risk assessment of equities, commodities or real estate instruments it is appropriate to take only the linear dependency on risk factor movements into account.
+Each risk factor has sensitivities to underlying risk factors. 
+An instrument inherits the amount of shock proportional to the defined sensitivity value from the underlying risk factors.
+
+A typical example is a developed market exchanged traded fund (ETF) with exposure to North America, Europe and Asia. The ETF will follow the price movements
+of these three risk factors, so the sensitivities are simply the relative exposure to the three equity markets (e.g. 0.5, 0.3 and 0.2).
+These sensitivities are then used to calculate the weighted shock that is applied to the actual instrument value.
+The same principle holds for single stock, where sensitivities to appropriate risk factors and to an idiosyncratic risk term 
+(an uncorrelated random number) can be selected. A useful method for calibration is the multi-dimensional linear regression. The resulting betas from
+this regression can be taken for the sensitivities to regressed risk factors. The remaining alpha and estimation error resembles the sensitivity to the idiosyncratic risk.
+The exposure to the uncorrelated random number can be derived from one minus the adjusted R_square of the regression. Since the R_square gives the amount of variability that is explained by the regression model,
+one minus R_square is equal to the amount of uncorrelated random fluctuations which are not covered by the input parameters.
+
+@subsubsection Approximation with sensitivity approach
+For instruments with insufficient information one can also choose the sensitivity approach.
+One example are funds consisting mainly of bonds. Without look-through, one has no information about the exact cash flows of the underlying bonds. Instead, often the duration (and convexity) of the fund is known.
+These two types of sensitivity (duration and convexity) can then be used to calculate the change in value to interest rate shocks. Therefore, the absolute interest rate shock at the node, which equals the Macaulay duration, is calculated as absolute difference compared to the base rate. This change in interest rate level (dIR) is directly transformed to a relative value shock (dV) by the formula @*
+@math{dV = duration * dIR + convexity * dIR^2}@*
+incorporating both sensitivities.
+
+@subsection Full valuation approach
+@cindex  Full valuation approach
+The core competency of a quantitative risk measurement project is full valuation, where the absolute value of financial instruments is calculated from
+raw input parameters by a special pricing function. Some input parameters to the pricing function are scenario dependent, other are inherent to the instrument.
+The most important input parameters have to be modeled by stochastic processes and can subsequently be fed into the pricing function,
+where the new, scenario dependent absolute value of the instrument is calculated.
+At the moment, the following full valuation pricing functions are implemented in @sc{octarisk}:
+@subsubsection Option pricing
+@cindex  Pricing, Options
+European plain-vanilla options are priced by the Black-Scholes model (@xref{option_bs}).
+The Black-Scholes equation provides a best estimate of the option price. The underlying financial instrument and implied volatility are modeled
+as risk factors in order to calculate the new option price in each scenario. The risk free rate will be also made scenario dependent in order to capture
+the interest rate sensitivity of the option price. Further information is provided by numerous textbooks.
+
+For American options a more sophisticated model has to be used for pricing. Unfortunately, binomial models (like the Cox-Rubinstein-Ross model) or finite-difference models are not feasible for a full valuation Monte-Carlo based approach, since the computation time for a large amount of time steps and MC scenarios is too high due to missing parallelization opportunities.
+Instead, a Willow-Tree model is implemented to price American options. Within that model, instead of using the full binomial tree with increasing number of nodes per time step, a constant number of nodes at each pricing time step is utilized to approximate the movements of the underlying price. With optimized transition probabilities, the whole model relies
+on a smaller amount of total nodes which significantly decreases computation time and lowers memory consumption (@xref{option_willowtree} implementation for further details).
+
+A calibration is performed to align the model price based on provided input parameters with the observed market price. This calibration calculates an implied spread which
+is added to the modeled volatility as a constant offset.
+
+The implied volatility itself is dependent on the option strike level and time to maturity (term). In order to grasp that behavior, the so called volatility smile 
+is modeled by a moneyness vs. term volatility surface, where changes in the spot price lead to moneyness changes. 
+Therefore, the actual implied volatility behavior (at-the-money implied volatility vs. moneyness vs. term) of the market is preserved for the pricing. 
+
+@subsubsection Swaption pricing
+@cindex  Pricing, Swaptions
+European plain-vanilla swaptions are priced via the closed form solution of the Black-76 model.
+@c (@xref{swaption_black76} for details).
+Again, a calibration is performed to align the model price based on provided input parameters with the observed market price. The calibrated implied volatility spread
+is subsequently added to the modeled volatility as a constant offset.
+The volatility smile for the specific term is also given by volatility surfaces.
+
+@subsubsection Cash flow instrument pricing
+@cindex  Pricing, Cash flow instruments
+Cash flow instruments are specified by the following sets of variables: cash flow dates and corresponding cash flow values. Moreover, each cash flow instrument has an actual market price and an underlying interest rate curve, which has to be provided as a separate risk factor.
+Before the full valuation can be carried out, the spread over yield is calculated to align the observed market price with the value given by the pricing function.
+The spread over yield is then assumed to be a constant offset to the scenario dependent interest rate spot curve.
+For each scenario, all cash flows are discounted with the appropriate interest rate. The present value is then given by the sum of
+all discounted cash flows.
+In the future, credit spreads will also be modeled as separate risk factors, thus incorporating another risk factor which captures the risk of cash flow instruments.
+
+@node Aggregation, Reporting, Instrument valuation, User guide
+@section Aggregation
+@cindex Aggregation
+After the valuation of all instruments in each scenario, one has to aggregate all parameters of instruments contained in a fund.
+Therefore all fund position values are derived by multiplying the position size with the instrument value in each scenario.
+The resulting sorted fund profit and loss distribution is then used to calculate the value-at-risk at fund level.@*
+If less than 50001 MC scenarios are used in @sc{octarisk}, the VAR is smoothened by a Harrell-Davis estimator (@xref{harrell_davis_weight} for details). A weighted average of the scenarios around the confidence interval scenarios is calculated. The HD VAR shall reduce the Monte-Carlo error.
+
+@c Up to further implementation:@*
+@c @itemize @bullet
+@c @item VAR aggregation per risk type
+@c @item calculation and aggregation of other risk measures (delta, gamma) etc.
+@c @end itemize
+
+@node Reporting, Developer guide, Aggregation, User guide
+@section Reporting
+@cindex Reporting
+After the aggregation of instrument data to fund level, a risk report is generated.
+The report contains VAR on position level, the riskiest instruments and positions per fund, as well as the diversified (with observed correlation) 
+and undiversified (correlation set to 1) VAR and ES on fund level.
+Moreover, stress test results per fund, profit and loss distributions and histograms on both the one day and 250 day time horizon are generated (@xref{Output files} for examples)
+
+
+@c --------------------------------------------------------------------------------------------------------------------
+@c                          IMPLEMENTATION
+@c --------------------------------------------------------------------------------------------------------------------
+@node Developer guide, Implementation concept, Reporting, Top
+@menu
+* Implementation concept::       Describing the implementation concept.
+* Input files::                  Definition of input files
+* Output files::                 Definition of output files
+@end menu
+@chapter Developer guide
+@cindex Developer guide, Developer guide
+
+This chapter describes the actual implementation of the project.
+All calculation steps and the input and output files will be described in detail as well as examples are provided.
+
+@node Implementation concept, Input files, Developer guide, Developer guide
+@section Implementation concept
+Fast, lightweight, accurate are the three main buzz words for the implementation concept.
+The following enumeration gives an overview of the script:
+@enumerate
+@item DEFINITION OF VARIABLES
+    @enumerate
+        @item general variables
+        @item VAR specific variables
+    @end enumerate
+
+@item INPUT
+    @enumerate
+        @item Processing Instruments data
+        @item Processing Riskfactor data
+        @item Processing Positions data
+        @item Processing Stresstest data
+    @end enumerate
+
+@item CALCULATION
+    @enumerate
+        @item Model Riskfactor Scenario Generation
+            @itemize @bullet
+                @item Load input correlation matrix
+                @item Get distribution parameters from riskfactors
+                @item call MC scenario generations
+            @end itemize
+        @item Monte Carlo Riskfactor Simulation for all timesteps
+        @item Take risk factor stress scenarios from stressdefinition
+        @item Process yield curves
+        @item Full Valuation of all Instruments in all MC and stress scenarios
+
+        @item Portfolio Aggregation
+            @itemize @bullet
+                @item loop over all portfolios / positions
+                @item VaR Calculation
+                    @itemize @bullet
+                    @item sort arrays
+                    @item Get Value of confidence scenario
+                    @item make vector with Harrel-Davis Weights
+                @end itemize
+                @item Calculate Expected Shortfall 
+            @end itemize
+        @item Print Report including position VaRs
+        @item Plotting 
+    @end enumerate
+@item HELPER FUNCTIONS
+@end enumerate
+
+@subsection Class diagram
+@sc{octarisk} was set up in an object oriented programming style for all objects like instruments, risk factors and curves.
+Inside the methods of the aforementioned classes, pricing or interpolation functions are called. 
+The following class diagram gives an overview of all classes:
+@center @image{octariskclass,22cm}@*
+See the class documentation in the next chapter for further information.
+
+@node Input files, Output files, Implementation concept, Developer guide
+@section Input files
+In the following, all required input files are introduced in detail.
+An example portfolio is given with position of equity ETFs, global bond ETFs, short positions in equity options and exposures to commodity risk, real estate risk and Bitcoins.
+@subsection Risk factors
+@cindex Input, Risk factors file
+The risk factors input file contains all risk factors which are modeled by stochastic processes.
+The shocks of these risk factors are then used as in put to the calculation of the new instrument value which have these risk factors as underlying risk drivers.@*
+The columns of the risk factors file consist of the following entries:
+@itemize @bullet
+@item @var{name}: Name of the riskfactors, this follows the convention RF_TYPE_XYZ (string). 
+@item @var{id}: Unique ID of the risk factors. To keep it simple, just take name (string).
+@item @var{type}: Risk factor types follow typical asset class conventions (string). These types are explained in @ref{Introducing market risk}.
+@item @var{description}: A short description of the risk factor. String maximum length of 255 characters.
+@item @var{model}: Model ID of the underlying stochastic process (string). See section Models for further explanation.
+@item @var{parameters}: Comma separated parameters used for modeling the stochastic process (floats).
+@end itemize
+
+Generalized column format for risk factors input file with colums field separator ';':
+@fonttextsize 10
+@multitable @columnfractions .16 .16 .16 .16 .16 .16
+@headitem name @tab ID @tab type @tab description @tab model @tab parameters
+@item RF_XX_YY @tab RF_XX_YY @tab RF_XX @tab useful description @tab GBM, BM, OU, SRD @tab x, y, ..., z
+@end multitable
+@fonttextsize 11
+The input format is restricted to these six columns.
+However, to define various number of columns for the different stochastic models, each of the colums can itself be used as a vector of arbitrary length with field separator ','. The items of the vectors contain model specific information:
+
+@fonttextsize 10
+@multitable @columnfractions .12 .12 .12 .12 .12 .16 .12 .12 
+@headitem model @tab para1 @tab para2  @tab para3  @tab para4  @tab  para5 @tab  para6 @tab para7
+@item GBM, BM @tab mean @tab std dev @tab skewness @tab kurtosis @tab IR node   @tab IR value   @tab 
+@item OU @tab mean @tab std dev @tab skewness @tab kurtosis @tab  start value  @tab  mr-level  @tab mr-rate 
+@item SRD @tab mean @tab std dev @tab skewness @tab kurtosis @tab  start value  @tab  mr-level  @tab mr-rate    
+@end multitable
+@fonttextsize 11
+@*
+For stochastic models GMB and GM the parameters 5 and 6 are used only for definition of interest rate risk factors. 
+The following is an example definition for some risk factors: @*
+@fonttextsize 10
+@example
+@group
+name;id;type;description;model;parameters;
+RF_EQ_DE;RF_EQ_DE;RF_EQ;Equity Germany;GBM;0.0,0.18,-0.5,5.0;
+RF_EQ_EUR;RF_EQ_EUR;RF_EQ;Equity Euro;GBM;0.0,0.18,-0.5,5.0;
+RF_EQ_EU;RF_EQ_EU;RF_EQ;Equity Europe;GBM;0.0,0.144,-0.5,5.0;
+RF_EQ_NA;RF_EQ_NA;RF_EQ;Equity NorthAmerica;GBM;0.0,0.16,-0.5,4.0;
+RF_EQ_AP;RF_EQ_AP;RF_EQ;Equity AsiaPacific;GBM;0.0,0.16,-0.5,4.0;
+RF_EQ_EM;RF_EQ_EM;RF_EQ;Equity EmergingMarkets;GBM;0.0,0.20,-0.5,4.0;
+RF_COM_DIV;RF_COM_DIV;RF_COM;Commodity Diversified;GBM;0.0,0.13,-0.5,4.0;
+RF_RE_DM;RF_RE_DM;RF_RE;RealEstate World DM;GBM;0.0,0.15,-0.5,5.5;
+RF_COM_GOLD;RF_COM_GOLD;RF_COM;Physical Gold;GBM;0.0,0.12,-0.3,6.5;
+RF_COM_SILVER;RF_COM_SILVER;RF_COM;Physical Silver;GBM;0.0,0.20,-0.3,6.5;
+RF_ALT_BC;RF_ALT_BC;RF_ALT;Bitcin EUR;GBM;0.0,0.5,-0.3,4.5;
+RF_FX_EURUSD;RF_FX_EURUSD;RF_FX; EUR USD;SRD;0.0,0.08,0.0,3.0,1.09,1.2,0.001;
+RF_VOLA_DE;RF_VOLA_DE;RF_VOLA;Vola Germany;SRD;0.0,0.1,0.0,3.0,0.21,0.19,0.027;
+RF_IR_EUR_1Y;RF_IR_EUR_1Y;RF_IR;IR EUR 1y;BM;0.0,0.0011,0.0,3.0,365,0.001;
+RF_IR_EUR_5Y;RF_IR_EUR_5Y;RF_IR;IR EUR 10y;BM;0.0,0.0032,0.0,3.0,3650,0.002;
+RF_IR_EUR_20Y;RF_IR_EUR_20Y;RF_IR;IR EUR 20y;BM;0.0,0.0060,0.0,3.0,7300,0.02;
+RF_IR_USD_1Y;RF_IR_USD_1Y;RF_IR;IR USD 1y;BM;0.0,0.0023,0.0,3.0,365,0.0066;
+RF_IR_USD_5Y;RF_IR_USD_5Y;RF_IR;IR USD 5y;BM;0.0,0.006,0.0,3.0,1825,0.017;
+RF_IR_USD_10Y;RF_IR_USD_10Y;RF_IR;IR USD 10y;BM;0.0,0.006,0.0,3.0,3650,0.024;
+RF_VOLA_GOLD;RF_VOLA_GOLD;RF_VOLA;Vola Gold;SRD;0.0,0.1,0.0,3.0,0.15,0.17,0.04;
+@end group
+@end example
+@fonttextsize 11
+
+@subsection Positions
+@cindex Input, Positions file
+The positions input file contains all positions, which are essentially a bunch of instruments in a portfolio. Positions must point to instruments
+which are defined in the instruments input file. Portfolios containing these instruments are just increasing integers.@*
+The columns of the positions contain the following characteristics :
+@itemize @bullet
+@item @var{port}: ID of the portfolio (integer). No further information of the portfolio is needed. 
+@item @var{id}: Unique ID of the instrument in the portfolio. Must reference a valid instrument which is defined in the instruments input file.
+@item @var{quantity}: The number of shares of the particular instrument in the portfolio (float).
+@end itemize
+
+Example definitions for some positions (positive quantity: long position, negative quantity: short position): @*
+@fonttextsize 10
+@example
+@group
+port;id;quantity;
+1;A0RFFT;65;
+1;A1JB4Q;179;
+1;A1J7CK;135;
+1;A0RM43;141;
+1;ETF127;543;
+1;DBX1A7;24;
+1;513700;44;
+1;DBX1EU;33.35;
+1;ETF060;107;
+1;ETF114;159;
+1;LYX0BX;129.8;
+1;LYX0AG;20.18;
+1;ETF012;71;
+1;A0DPMW;63.52;
+1;BASF11;39;
+1;A0LGQL;723;
+1;ETF090;53;
+1;GOLDPHYS;10.31;
+1;CFANLEIHE1;10;
+1;BTCOIN;1.98;
+1;ODAXC201501217;-1;
+@end group
+@end example
+@fonttextsize 11
+
+@subsection Covariance matrix
+@cindex Input, Covariance file
+The covariance file is an Octave readable full matrix containing the covariances of all risk factors.
+Therefore the dimension of the covariance matrix is n x n, where n must be the number of defined risk factors (otherwise an exception will be raised).
+The covariance matrix is then split into a correlation matrix and a standard deviation matrix. After that, the correlation matrix
+undergoes a Cholesky decomposition to generate correlated random variables. The standard deviation vector is no longer used for modelling the stochastic processes, since the four moments of the distributions are directly given in the risk factor input file.
+The correlation matrix must be positive definite, otherwise an error will be raised.
+
+@subsection Instruments
+@cindex Input, Instruments file
+The instruments input file contains the definition of all instruments which are used as portfolio positions and are referencing underlying risk factors.@*
+The columns of the positions file consist of following entries:
+@itemize @bullet
+@item @var{name}: Name of the instrument which will be used for the reports (string). 
+@item @var{id}: Unique ID of the instrument. Just take WKN or ISIN (string). Used as a reference in position input file.
+@item @var{value}: Actual market value of the instrument. Relative shocks of risk factors will be applied to this market value.
+In case of absolut shocks (for e.g. Options of cash flow instruments), a calibration of the spread over yield or volatility spread will be performed (float).
+@item @var{type}: Instrument type should follow the same convention as applied to risk factor types. Shock values from stress tests will be applied to all instruments of one type (string). 
+@item @var{description}: A short description of the instrument. Maximum length of 255 characters (string).
+@item @var{currency}: Currency of the instrument. If no appropriate currency risk factor is defined, they are mapped to USD (string).
+@item @var{riskfactors}: Comma separated IDs of underlying risk factors. Vector must be equal in length to sensitivities (string).
+@item @var{sensitivity}: Comma separated values of sensitivities to the formerly defined risk factors. Vector must be equal in length to risk factors (float).
+@item @var{special_num}: Special field for definition of numbers, e.g. used for volatility or idiosyncratic risk of stocks (float).
+@item @var{special_str}: Special field for definition of strings, no actual usage (string).
+@item @var{cf_dates}: Comma separated strings of cash flow dates, used to describe cash flow instruments (e.g. 16-Jul-2016,17-Jul-2017) (string).
+@item @var{cf_values}: Comma separated cash flow amounts in the instrument currency, one amount per cash flow date. Vector must be of equal length to cash flow dates (float).
+@end itemize
+The following table gives an overview of the instrument type dependent comma separated fields:
+@fonttextsize 10
+@multitable @columnfractions .15 .15 .7
+@headitem type @tab item @tab values
+@item Option @tab riskfactors @tab RF impl. vol., RF underlying, strike, RF IR rate
+@item Option @tab sensitivity @tab beta to RF impl. vol., underlying spot value, strike value, IR spread
+@item Option @tab special_num @tab multiplier value
+@item Option @tab special_str @tab expiration date (format DD-MMM-YYYY)
+@item CF instr. @tab riskfactors @tab RF IR rate
+@item CF instr. @tab sensitivity @tab IR spread added to RF IR curve in absolute terms
+@item CF instr. @tab special_num @tab null
+@item CF instr. @tab special_str @tab null
+@item CF instr. @tab cf_dates @tab comma separated strings of cash flow dates
+@item CF instr. @tab cf_values @tab comma separated floats of cash flow amounts 
+@item Swaption @tab riskfactors @tab RF impl. vol., RF underlying, strike, RF IR rate, swap tenor, swap no. payments per year
+@item Swaption @tab sensitivity @tab beta to RF impl. vol., underlying spot value, strike value, IR spread, tenor value, payments amount
+@item Swaption @tab special_num @tab multiplier value
+@item Swaption @tab special_str @tab expiration date (format DD-MMM-YYYY)
+@end multitable
+@fonttextsize 11
+
+Example definitions for some instruments: @*
+@fonttextsize 10
+@example
+@group
+name;id;value;type;description;currency;riskfactors;sensitivity;special_num;special_str;cf_dates;cf_values; 
+...
+@end group
+@end example
+@fonttextsize 11
+
+Instrument description for Debt instruments: Riskfactor is underlying discount curve (spread to be implemented) and sensitivity is duration.@*
+Instrument description for Equity / Real Estate / Commodity instruments: Riskfactors are several underlying riskfactors, sensitivities are like betas in multi-dimensional linear regression approach.@*
+Speciality for Stocks: Riskfactors [Real Riskfactors;IDIO]. IDIO means normal distributed random variable with standard deviation of underlying riskfactor and with sensitivity equals [1 - R^2] of a linear regression to cover idiosyncratic risk component of stocks.@*
+
+
+@subsection Stress tests   
+@cindex Input, Stress test file
+The stress test input file contains the definition of all stress test. Each stress test describes the behavior of one or more risk factor in a particular scenario.
+The risk factor shock values are directly applied to all risk factor which follow the same name convention.@*      
+The columns of the stress test file consists of following entries:
+@itemize @bullet
+@item @var{number}: Unique number (integer) of the particular stresstest. 
+@item @var{id}: Unique ID (string) of the stresstest.
+@item @var{name}: Name (string) of the stresstest, used in reporting.
+@item @var{risktype}: Comma separated IDs of risk types OR risk factors. If only a risktype (e.g. RF_FX) is given, all risk factors with that risk type are shocks
+in the stresstest scenario. If a whole risk factor ID is given (e.g. RF_FX_EURUSD or RF_IR_EUR_5Y), only the single risk factors are shocked (string).
+@item @var{shiftvalue}: The value of the applied shocks. Relative shocks are given in decimals (e.g. -0.5 for a -50% down shock). Absolute shocks to interest rate nodes
+are given in basis points (e.g. 100 means a 100bp upshock) (float).
+@item @var{shifttype}: Integer 0 or 1 defining the shock type. 1 means relative shock (multiplied by risk factor base value), 0 means absolute shock (added to risk factor base value).
+@end itemize
+
+An example for two possible stress test definitions are given. The financial crisis stress test shocks all equity positions, lowers the USD spot rate curve by 200 bp and increases the 
+implied equity volatility by 150%: @*
+@fonttextsize 10
+@example
+@group
+1;FinancialCrisis2008;Finl Cri 2008;RF_IR,RF_EQ,RF_VOLA; -200,-0.4,1.5;0,1,1;
+2;IR_USDTwistPos;IR +- Twist;RF_IR_USD_1Y,RF_IR_USD_10Y;-100,100;0,0;
+@end group
+@end example
+@fonttextsize 11
+
+@subsection Volatility surface   
+@cindex Input, volatility surface file
+For all options and swaptions, the implied volatility is necessary to calculate the derivative theoretical value. In order to feed the implied volatility into octarisk, a moneyness / term surface has to be specified in a separate file. For all underlying risk factors the impl. volatility data file has to be named like "vol_index_RF_XX_YY.dat". The risk factor ID will be used to automatically identify the appropriate file.
+The structure of the file follows the volatility surface conventions: the first row and column contain the days to maturities and the moneynesses, e.g.
+@fonttextsize 10
+@example
+@group
+0	30	93
+1.2	0.326	0.274
+1.0	0.319	0.283
+0.8	0.289	0.274
+@end group
+@end example
+@fonttextsize 11
+This example describes options with two different days to maturity (30 days and 93 days) and three different moneynesses (1.2, 1.0, 0.8).
+During the full valuation approach the moneyness is a function of the underlying risk factor spot price / rate and the constant strike price / rate. TA linear two-dimensional interpolation and constant extrapolation will be performed to calculate the new scenario dependent implied volatililty. Since the at-the-money volatility is itself a risk factor (modeled as a factor), the interpolated volatility will be multiplied by this scenario dependent factor. This process combines the conservation of volatility surface shape with the single factor stochastic modeling of the at-the-money volatility.
+Furthermore, it is possible to generate a file with just one constant volatility.
+
+@node Output files, Octave Functions and Scripts, Input files, Developer guide
+@section Output files
+Overview of report summary and graphics.
+@subsection VAR Report
+For each fund, a VAR report is generated. The report shall give an overview of total risk measure, allow a break down to position level and
+estimate the diversification effect.
+An example for the report looks like:@*
+@example
+@group
+=== Value-At-Risk Report for Portfolio 1 ===
+VaR calculated 99pct Confidence Intervall: 
+Number of Monte Carlo Scenarios: 500000 
+Confidence Scenarionummer: 5000 
+Valuation Date: 09-Oct-2015 
+VaR on Positional Level: 
+|VaR 1D for Position   |iShares JPMorgan $ EM|A0RFFT| = | 618.16 EUR|
+|VaR 250D for Position |iShares JPMorgan $ EM|A0RFFT| = | 1755.21 EUR|
+...
+=== Total Portfolio VaR === 
+|Portfolio VaR   1D@@99Pct| 	 |    -1.32%|
+|Portfolio VaR   1D@@99Pct| 	 |  1779.97 EUR|
+|Portfolio VaR 250D@@99Pct| 	 |   -19.34%|
+|Portfolio VaR 250D@@99Pct| 	 | 25983.52 EUR|
+
+|Expected Shortfall 1D@@99Pct| 	 |    -1.51%|
+|Expected Shortfall 1D@@99Pct| 	 |  2027.10 EUR|
+|Expected Shortfall 250D@@99Pct| 	 |   -21.58%|
+|Expected Shortfall 250D@@99Pct| 	 | 28996.72 EUR|
+@end group
+@end example
+The unique field separator '|' allows efficient use of the data in LaTeX based report files.
+@subsection Overview images
+Additionally to the printed report, overview images of the profit and loss distribution, both sorted and histogram
+as well as the riskiest instruments and positions are plotted.@*
+@image{var_results,12cm} @*
+Portfolio Value-at-Risk at the 99.9% confidence level on 10 day time horizon. There are shown four different results: On the top left corner a histogram of the profit and loss distribution is presented for the whole portfolio. On the x-axis, the relative portfolio value is given.  
+On the top right corner the P'n'L distribution is shown as sorted absolute profits or losses for each of the MC scenarios. The red base line marks the base scenario.
+The blue line indicates the VAR scenario number, where 99.9% of all profits and losses are shown on the right side. Losses greater than the VAR occur in 0.1% of all cases. The two lower charts show the VAR contribution of the six riskiest positions (left chart) or instruments (right chart). The positional view is determined by weighing the instruments with their position size in the portfolio. 
+
+Moreover, stress test results are plotted in a bar chart, indicating the relative profit or loss of the fund in each stress test scenario:@*
+@image{stresstest_results,12cm}@*
+
+
+
+@c --------------------------------------------------------------------------------------------------------------------
+@c                          OCTAVE FUNCTIONS AND SCRIPTS
+@c --------------------------------------------------------------------------------------------------------------------
+@node Octave Functions and Scripts, Index, Output files, Top
+@chapter Octave Functions and Scripts
+
+@cindex Functions, Octave Functions and Scripts, Index
+
+In the following sections you find the Octave function texinfo.
+
+@include functions.texi
+
+@node Index
+@unnumbered Index
+
+@printindex cp
+
+@bye
