@@ -632,7 +632,7 @@ implied equity volatility by 150%: @*
 @subsection Volatility surface   
 @cindex Input, volatility surface file
 For all options and swaptions, the implied volatility is necessary to calculate the derivative theoretical value. In order to feed the implied volatility into octarisk, a moneyness / term surface has to be specified in a separate file. For all underlying risk factors the impl. volatility data file has to be named like "vol_index_RF_XX_YY.dat". The risk factor ID will be used to automatically identify the appropriate file.
-The structure of the file follows the volatility surface conventions: the first row and column contain the term and the moneynesses, e.g.
+The structure of the file follows the volatility surface conventions: the first row and column contain the days to maturities and the moneynesses, e.g.
 @fonttextsize 10
 @example
 @group

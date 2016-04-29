@@ -968,7 +968,7 @@ The constructor of the instrument class constructs an object with the following 
 @item timestep_mc: MC timestep per column (cell string)
 @end itemize
 
-@var{value} = Instrument.getValue (@var{base},@var{stress},@var{mc_timestep})
+@var{value} = Instrument.getValue ({base,stress,mc_timestep})
 Superclass Method getValue 
 @*
 Return the scenario (shock) value for an instrument object. Specify the desired return values with a property parameter.
