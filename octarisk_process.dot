@@ -1,0 +1,92 @@
+digraph G {
+    label ="OCTARISK process"
+    riskfactors_input   -> riskfactors_object[label="",weight="0.2"];
+    stresstests_input   -> stresstests_object[label="",weight="0.2"];
+    positions_input   -> positions_object[label="",weight="0.2"];
+    positions_object   -> aggregation[label="",weight="0.2"];
+    mktdata_input -> mktdata_object[label="",weight="0.2"];
+    riskfactors_input   -> MC_scen_spec[label="",weight="0.2"];
+
+    stresstests_object   -> stresstest_scen_spec[label="",weight="0.2"];
+    MC_scen_spec         -> riskfactors_object[label="",weight="1"];
+    stresstest_scen_spec -> riskfactors_object[label="",weight="1"];
+
+    correlations_input        -> correlations_object [label="",weight="0.2"];
+    correlations_object   -> MC_scen_spec[label="",weight="0.2"];
+    instruments_input   -> instruments_object[label="",weight="0.2"];
+
+    riskfactors_object   -> sensi_approach[label="scenario delta",weight="0.2"];
+    riskfactors_object   -> mktdata_object[label="",weight="1"];
+    mktdata_object   -> full_valuation[label="scenario value",weight="1"];
+    #mktdata_object   -> aggregation[label="",weight="0.2"];
+    
+    vola_input -> mktdata_object[label="",weight="0.2"];
+    instruments_object -> aggregation[label="",weight="1"];
+
+#    curve_gen           -> instrument_valuation[label="",weight="0.2"];
+    
+    
+    #time_horizon_1D     -> portfolio_aggregation[label="",weight="0.2"];
+    #time_horizon_250D   -> portfolio_aggregation[label="",weight="0.2"];
+    #stresstests_scenarios -> portfolio_aggregation[label="",weight="0.2"];
+#    instrument_valuation -> portfolio_aggregation[label="",weight="0.2"];
+#    portfolio_aggregation -> portfolio_aggregation[label="for all portfolios",weight="0.2"];
+
+    aggregation -> graphical_report[label="",weight="0.2"];
+    aggregation -> text_report[label="",weight="0.2"];
+    
+# box definitions
+
+   subgraph cluster17
+   {
+	   label="Instrument Pricing"
+	   node [style="filled",color="black", fillcolor="white"];
+	   style=filled;
+	   color=lightgrey;
+	   instruments_object;
+	   full_valuation;
+       sensi_approach;
+       full_valuation -> instruments_object [label="",weight="0.2"];
+       sensi_approach -> instruments_object[label="",weight="0.2"];
+	   full_valuation [label="Full valuation",style="filled",color="black", fillcolor="papayawhip"] ;	
+       sensi_approach [label="Sensitivity Approach",style="filled",color="black", fillcolor="papayawhip"] ;  
+       pricing_engines -> full_valuation [label="",weight="0.2"];
+       pricing_engines [label="Pricing Engines", shape="ellipse", style="filled", color="black", fillcolor="white"] 		
+   }
+
+    MC_scen_spec [label="Monte-Carlo \nScenario Specification", shape="rectangle", style="filled", color="black", fillcolor="seagreen1"]
+    
+    stresstest_scen_spec [label="Stress Test \nScenario Specification", shape="rectangle", style="filled", color="black", fillcolor="seagreen2"]
+
+    #curve_gen [label="Curve generation", shape="rectangle", style="filled", color="black", fillcolor="seagreen3"]
+    #instrument_valuation [label="Instrument Valuation", shape="rectangle", style="filled", color="black", fillcolor="mistyrose"]
+    aggregation [label="Aggregation", shape="rectangle", style="filled", color="black", fillcolor="bisque"]
+    graphical_report [label="Graphical Overview", shape="note", style="filled", color="black", fillcolor="cornsilk"]
+    text_report [label="Text Report", shape="note", style="filled", color="black", fillcolor="cornsilk"]
+
+    mktdata_object [label="Market Objects \n(Index,Curves,Surfaces)", shape="rectangle", style="filled", color="black", fillcolor="mediumorchid1"]
+    riskfactors_object [label="Riskfactor \nObjects", shape="rectangle", style="filled", color="black", fillcolor="orange"]
+    instruments_object [label="Instrument  \nObjects", shape="rectangle", style="filled", color="black", fillcolor="goldenrod"]
+    positions_object [label="Position \nStruct", shape="rectangle", style="filled", color="black", fillcolor="white"]
+    stresstests_object [label="Stresstest \nStruct", shape="rectangle", style="filled", color="black", fillcolor="white"]
+    correlations_object [label="Correlations \nMatrix", shape="rectangle", style="filled", color="black", fillcolor="white"]
+
+    vola_input [label="vol_index/ir", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    mktdata_input [label="mktdata.csv", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    riskfactors_input [label="riskfactors.csv", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    instruments_input [label="instruments.csv", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    positions_input [label="positions.csv", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    stresstests_input [label="stresstest.csv", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    correlations_input [label="correlations.dat", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+
+    #financial_models [label="Financial Models", shape="ellipse", style="filled", color="black", fillcolor="white"]
+    
+    #stochastic_processes [label="Stochastic Processes", shape="ellipse", style="filled", color="black", fillcolor="white"]
+
+    #stochastic_processes -> financial_models [label="",weight="0.2"];
+    #riskfactors -> financial_models [label="",weight="0.2"];
+    #financial_models -> MC_scen_gen [label="",weight="0.2"];
+
+    
+}
+
