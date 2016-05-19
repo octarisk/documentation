@@ -601,7 +601,7 @@ The stress test input file contains the definition of all stress test. Each stre
 The risk factor shock values are directly applied to all risk factor IDs which are selected through the regular expression.@*      
 The columns of the stress test file consists of following entries:
 @itemize @bullet
-qitem @var{HeaderSTRESSTESTS}: indicates stress tests
+@item @var{HeaderSTRESSTESTS}: indicates stress tests
 @item @var{idCHAR}: Unique ID of the stresstest.
 @item @var{nameCHAR}: Name of the stresstest, used in reporting.
 @item @var{risktypeCHAR}: Pipe | separated IDs of risk types OR risk factors. Each risktype is treated as a regular expression applied to all risk factor IDs. Therefore it is e.g. possible to shock all high yield spread curves, regardless of their currency: @i{RF_SPREAD_.*_HY} or all EUR curves, regardless of rating: @i{IR_EUR} in the particular scenario. If a whole risk factor ID is given (e.g. RF_FX_EURUSD or RF_IR_EUR_5Y), only the single risk factors are shocked.
@@ -640,7 +640,7 @@ New stress tests can be easily appended to the specification file.
 @subsection Volatility surface   
 @cindex Input, volatility surface file
 For all options and swaptions, the implied volatility is necessary to calculate the derivative theoretical value. In order to feed the implied volatility into the system, a term / moneyness surface has to be specified for index instruments and a underlying tenor / term / moneyness for IR instruments in a separate file. 
-For all underlying index risk factors the impl. volatility data file has to be named like @i{vol@_index_RF_XX_YY.dat} and @i{vol_ir_RF_XX_YY.dat} for all interest rate risk factor. The risk factor ID will be used to automatically identify the appropriate file.
+For all underlying index risk factors the impl. volatility data file has to be named like @i{vol_index_RF_XX_YY.dat} and @i{vol_ir_RF_XX_YY.dat} for all interest rate risk factor. The risk factor ID will be used to automatically identify the appropriate file.
 The structure of the file is a linearized version of the volatility surface (for term / moneyness instruments):
 
 @fonttextsize 10
@@ -687,7 +687,7 @@ Furthermore, it is also possible to generate a file with just one constant volat
 Market data objects store all relevant objects for full valuation instrument pricing. These objects can be interest and spread curves, market indizes and exchange rates. The base values of these objects are then shocked by scenario dependent values, which were calculated for the attached risk factors.
 The market data objects are specified in a separate file following the same conventions as for instruments:
 @itemize @bullet
-qitem @var{HeaderCURVE}: market object specific Header classification for curves (e.g. HeaderCURVE or HeaderINDEX)
+@item @var{HeaderCURVE}: market object specific Header classification for curves (e.g. HeaderCURVE or HeaderINDEX)
 @item @var{idCHAR}:  Unique ID of the market curve. Note, that the ID of the market curve must have an attached risk factor starting with @i{RF_} followed by the market curve ID. Otherwise, an automatic mapping is not possible.
 @item @var{nameCHAR}: Name of the market curve.
 @item @var{typeCHAR}: Type of the curve (e.g. Spread Curve or Discount Curve)
@@ -698,7 +698,7 @@ qitem @var{HeaderCURVE}: market object specific Header classification for curves
 @end itemize
 
 @itemize @bullet
-qitem @var{HeaderINDEX}: market object specific Header classification for indizes and exchange rates. Basically, all market objects with exactly one scenario dependent value can be stored here.
+@item @var{HeaderINDEX}: market object specific Header classification for indizes and exchange rates. Basically, all market objects with exactly one scenario dependent value can be stored here.
 @item @var{idCHAR}:  Unique ID of the market index. Note, that the ID of the market index must have an attached risk factor starting with @i{RF_} followed by the market index ID. Otherwise, an automatic mapping is not possible.
 @item @var{nameCHAR}: Name of the market index.
 @item @var{typeCHAR}: Type of the index (e.g. Equity Index, Commodity Index, Exchange Rate)
