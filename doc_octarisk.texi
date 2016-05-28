@@ -8,7 +8,7 @@
 @c                          HEADER
 @c --------------------------------------------------------------------------------------------------------------------
 
-@set VERSION 0.2.0
+@set VERSION 0.3.0
 
 @c Command C:\Program Files (x86)\texinfo\bin>makeinfo --plaintext doc_octarisk.texi
 
@@ -73,9 +73,9 @@ the financial crisis but with the financial instruments in their portfolio losse
 
 If questions like 
 @itemize 
-@item What happens to my portfolio value, if the ECB increases the interest rate by 100bp?
-@item What happens to my portfolio value, if an emerging country is defaulting and the US Dollar increases in value?
-@item How would my portfolio perform, if we have a new crash comparable to Black Friday 1987?
+@item What happens to the portfolio value, if the ECB increases the interest rate by 100bp?
+@item What is the least amount of money, a given portfolio will loose in one out of 100 events during the next year?
+@item How would a given portfolio perform, if a crash comparable to Black Friday 1987 takes place?
 @end itemize
 are of potential interest for you, then the @sc{octarisk} market risk project might be satisfying your needs for a professional risk modelling framework.
 
@@ -684,22 +684,40 @@ Furthermore, it is also possible to generate a file with just one constant volat
 
 @subsection Marketdata objects file
 @cindex Input, Marketdata objects file
-Market data objects store all relevant objects for full valuation instrument pricing. These objects can be interest and spread curves, market indizes and exchange rates. The base values of these objects are then shocked by scenario dependent values, which were calculated for the attached risk factors.
+Market data objects store all relevant objects for full valuation instrument pricing. These objects can be interest and spread curves, aggregated curves (sum of curves), market indizes and exchange rates. The base values of these objects are then shocked by scenario dependent values, which were calculated for the attached risk factors.
 The market data objects are specified in a separate file following the same conventions as for instruments:
 @itemize @bullet
-@item @var{HeaderCURVE}: market object specific Header classification for curves (e.g. HeaderCURVE or HeaderINDEX)
-@item @var{idCHAR}:  Unique ID of the market curve. Note, that the ID of the market curve must have an attached risk factor starting with @i{RF_} followed by the market curve ID. Otherwise, an automatic mapping is not possible.
+@item @var{HeaderCURVE}: market object specific Header classification for curves
+@item @var{idCHAR}:  Unique ID of the market curve. Note: if it is required that the curve will be shocked during stress tests or in MC scenarios, the ID of the market curve must have an attached risk factor starting with @i{RF_} followed by the market curve ID. Otherwise, an automatic mapping is not possible.
 @item @var{nameCHAR}: Name of the market curve.
 @item @var{typeCHAR}: Type of the curve (e.g. Spread Curve or Discount Curve)
 @item @var{descriptionCHAR}: Description of the object.
 @item @var{method_interpolationCHAR}: Interpolation method for the market curve (e.g. linear or monotone-convex). This interpolation method can be different to the interpolation method from the attached risk factor. For all nodes of the market curve the relative of absolute scenario dependent shock values (Derived from the attached risk factor curve) is interpolated and then applied to the market curve node.
 @item @var{nodesCHAR}: Pipe separated nodes of the market curve in days from the valuation date.
 @item @var{rates_baseCHAR}: Pipe separated rates of the market curve. One rate needed for each specified node.
+@item @var{compounding_typeCHAR}: Compounding type of curve (defaults to continuous)
+@item @var{compounding_freqCHAR}: Compounding frequency of curve (defaults to annual, only relevant if compounding type equals discrete. Otherwise, value will be neglected)
+@item @var{day_count_conventionCHAR}: Day count convention of curve (defaults to act/365)
 @end itemize
 
 @itemize @bullet
+@item @var{HeaderAGGREGATEDCURVE}: market object specific Header classification for aggregated curves
+@item @var{idCHAR}:  Unique ID of the aggregated curve. No stress or MC shocks are applied directly on the aggregated curve. The underlying curves have to be shocked directly.
+@item @var{nameCHAR}: Name of the aggregated market curve.
+@item @var{typeCHAR}: Type of the curve (Aggregated Curve)
+@item @var{descriptionCHAR}: Description of the object.
+@item @var{method_interpolationCHAR}: Interpolation method for the market curve (e.g. linear or monotone-convex). This interpolation method can be different to the interpolation method from the attached risk factor. For all nodes of the market curve the relative of absolute scenario dependent shock values (Derived from the attached risk factor curve) is interpolated and then applied to the market curve node.
+@item @var{nodesCHAR}: Pipe separated nodes of the market curve in days from the valuation date.
+@item @var{incrementsCHAR}: Pipe separated ID of underlying curve increments. Specify all curve increments which are then used in curve stacking. An incremental spread model can be specified with this procedure.
+@item @var{compounding_typeCHAR}: Compounding type of curve (defaults to continuous). 
+@item @var{compounding_freqCHAR}: Compounding frequency of curve (defaults to annual, only relevant if compounding type equals discrete. Otherwise, value will be neglected)
+@item @var{day_count_conventionCHAR}: Day count convention of curve (defaults to act/365)
+@end itemize
+Please note: If the curve increments of the aggregated curve has differenct settings for compounding type, frequency and day count convention, an automatic conversion will be performed.
+
+@itemize @bullet
 @item @var{HeaderINDEX}: market object specific Header classification for indizes and exchange rates. Basically, all market objects with exactly one scenario dependent value can be stored here.
-@item @var{idCHAR}:  Unique ID of the market index. Note, that the ID of the market index must have an attached risk factor starting with @i{RF_} followed by the market index ID. Otherwise, an automatic mapping is not possible.
+@item @var{idCHAR}:  Unique ID of the market index. Note: if it is required that the market index will be shocked during stress tests or in MC scenarios, the ID of the market curve must have an attached risk factor starting with @i{RF_} followed by the market curve ID. Otherwise, an automatic mapping is not possible.
 @item @var{nameCHAR}: Name of the market index.
 @item @var{typeCHAR}: Type of the index (e.g. Equity Index, Commodity Index, Exchange Rate)
 @item @var{currencyCHARdescriptionCHAR}: Currency of the object.
@@ -710,10 +728,13 @@ The market data objects are specified in a separate file following the same conv
 @fonttextsize 10
 @example
 @group
-HeaderCURVE,idCHAR,nameCHAR,typeCHAR,descriptionCHAR,method_interpolationCHAR,nodesCHAR,rates_baseCHAR
-Curve,IR_EUR,IR_EUR,Discount Curve,EUR-SWAP Curve,monotone-convex,365|1095|1825|3650|7300|10950|21900,-0.00519251|-0.00508595|-0.00367762|0.00185694|0.00776253|0.00999986|0.00123
-Curve,IR_USD,IR_USD,Discount Curve,USD-SWAP Curve,monotone-convex,365|1095|1825|3650|7300|10950|21900,0.00119251|0.00208595|0.00367762|0.00385694|0.01276253|0.01399986|0.00163
-Curve,SPREAD_EUR_HY,SPREAD_EUR_HY,Spread Curve,SPREAD_EUR_High Yield Curve,linear,1825,0.02
+HeaderCURVE,idCHAR,nameCHAR,typeCHAR,descriptionCHAR,method_interpolationCHAR,nodesCHAR,rates_baseCHAR,compounding_typeCHAR,compounding_freqCHAR,day_count_conventionCHAR
+Curve,IR_EUR,IR_EUR,Discount Curve,EUR-SWAP Curve,monotone-convex,365|1095|1825|3650|7300|10950|21900,-0.00519251|-0.00508595|-0.00367762|0.00185694|0.00776253|0.00999986|0.00123,,,
+Curve,IR_USD,IR_USD,Discount Curve,USD-SWAP Curve,monotone-convex,365|1095|1825|3650|7300|10950|21900,0.00119251|0.00208595|0.00367762|0.00385694|0.01276253|0.01399986|0.00163,,,
+Curve,SPREAD_EUR_HY,SPREAD_EUR_HY,Spread Curve,SPREAD_EUR_High Yield Curve,linear,1825,0.02,discrete,daily,30/360E
+HeaderAGGREGATEDCURVE,idCHAR,nameCHAR,typeCHAR,descriptionCHAR,method_interpolationCHAR,nodesCHAR,incrementsCHAR,compounding_typeCHAR,compounding_freqCHAR,day_count_conventionCHAR
+Curve,AGGR_SPREAD_USD_BBB,AGGR_SPREAD_USD_BBB,Aggregated Curve,Aggregated Spread Curve USD BBB,linear,1825,SPREAD_USD_AAA|SPREAD_USD_AA|SPREAD_USD_A|SPREAD_USD_BBB,,,
+Curve,AGGR_EUR_FIN_BBB,AGGR_EUR_FIN_BBB,Aggregated Curve,Aggregated Spread Curve EUR USD,monotone-convex,30|91|365|730|1095,IR_EUR|SPREAD_EUR_HY,simple,annual,act/365
 HeaderINDEX,idCHAR,nameCHAR,typeCHAR,currencyCHAR,descriptionCHAR,value_baseNMBR
 Index,EQ_DE,DAX30,Equity Index,EUR,DAX Equity Index German Blue Chips,9820
 Index,COM_GOLD,Gold,Commodity Index,USD,Gold 1 Ounce USD,1073
@@ -726,10 +747,30 @@ For convenience reasons and because of the increased memory consumption, indizes
 
 @subsection Correlation matrix
 @cindex Input, Correlation file
-The correlation file is a full matrix containing the correlations between all risk factors. The first line can be a header giving the IDs of the risk factors, but this information is not used during parsing.
-Therefore the dimension of the correlation matrix is n x n, where n must be the number of defined risk factors (otherwise an exception will be raised). The order of the risk factors in the correlation matrix must be reflected in the order of the risk factor input file.
-The correlation matrix undergoes a Cholesky decomposition to generate correlated random variables with a copula approach. The four moments of the marginal risk factors distributions are directly given in the risk factor input file.
-If the correlation matrix is not positive semi-definite, all negative eigenvalues are set to slightly positive numbers, thus leading to positive semi-definiteness. Be aware, that the correlations may change. Further statistics are automatically calculated if this transformation procedure is necessary.
+The correlation file contains the correlations between risk factor in a linearized format. Only the lower (or upper) triangular matrix including the diagonal values has to be set. The first line is a header describing the three columns, but there is no possibility to .
+The order of the risk factors in the correlation file can be arbitrary. Only the subset of all risk factors, which are contained in the correlation file, are used during MC scenario generation. The risk factors specified in the correlation file must be a subset of risk factors specified in the risk factors file. During parsing of the file validation checks are performed in order to make sure, that all correlation pairs have been set. Otherwise an exception will be raised. After parsing, the correlation file is stored in Octaves built-in matrix format.
+The correlation matrix undergoes then a Cholesky decomposition to generate correlated random variables with a copula approach. Based on these correlated randum numbers, the four distribution moments (mean, standard deviation, skewness, kurtosis), which are given in the risk factor input file, are used to generate the marginal distributions for each risk factor based on the Pearson type I-VII distribution system.
+If the correlation matrix is not positive semi-definite, all negative eigenvalues are set to slightly positive numbers in an iterative approach, thus leading to positive semi-definiteness. Be aware, that the correlation settings may change. Further statistics on the correlation settings and on the statistical parameters of the marginal risk factor distributions may be automatically calculated if the appropriate flag is set in the settings. In this case, a correlation heat map shows the deviations of the final correlation settings compared to the input correlation settings.
+The correlation file contaings the following columns:
+@itemize @bullet
+@item @var{RF1CHAR}: ID of first risk factor
+@item @var{RF2CHAR}: Unique ID of second risk factor
+@item @var{CorrelationNMBR}: correlation between these two risk factors
+@end itemize
+
+An example is given:
+@fonttextsize 10
+@example
+@group
+RF1CHAR,RF2CHAR,CorrelationNMBR
+RF_EQ_DE,RF_EQ_DE,1
+RF_EQ_EUR,RF_EQ_DE,0.96479531
+RF_EQ_EU,RF_EQ_DE,0.890684579999999
+RF_EQ_NA,RF_EQ_DE,0.81541365
+...
+@end group
+@end example
+@fonttextsize 11
 
 @node Output files, Octave Functions and Scripts, Input files, Developer guide
 @section Output files
