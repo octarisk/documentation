@@ -11,4 +11,5 @@
 *.tp
 *.vr
 *.html
+*.texi~
 # exclude the following folders
