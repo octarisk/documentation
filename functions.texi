@@ -1,5 +1,7 @@
 @menu
+* 	adapt_matlab::
 * 	calibrate_evt_gpd::
+* 	calibrate_option_bjsten::
 * 	calibrate_option_bs::
 * 	calibrate_option_willowtree::
 * 	calibrate_soy_sqp::
@@ -11,7 +13,7 @@
 * 	doc_instrument::
 * 	doc_riskfactor::
 * 	estimate_parameter::
-* 	generate_curves_mktdata::
+* 	fmincon::
 * 	get_documentation::
 * 	get_forward_rate::
 * 	get_gpd_var::
@@ -19,6 +21,7 @@
 * 	get_sub_object::
 * 	harrell_davis_weight::
 * 	ind2sub_tril::
+* 	integrationtests::
 * 	interpolate_curve::
 * 	load_correlation_matrix::
 * 	load_instruments::
@@ -31,20 +34,139 @@
 * 	load_volacubes::
 * 	load_yieldcurves::
 * 	octarisk::
+* 	option_barrier::
+* 	option_bjsten::
 * 	option_bs::
-* 	option_bs_barrier::
 * 	option_willowtree::
+* 	pricing_forward::
 * 	pricing_forward_oop::
 * 	pricing_npv::
+* 	replacement_script::
 * 	rollout_cashflows_oop::
 * 	save_objects::
 * 	scenario_generation_MC::
 * 	swaption_bachelier::
 * 	swaption_black76::
+* 	test_io::
 * 	timefactor::
+* 	unittests::
 * 	unvech::
 * 	update_mktdata_objects::
 @end menu 
+@node 	adapt_matlab
+@section 	adapt_matlab
+@cindex 	 Function 	adapt_matlab
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+ Delete unneccessary wrapper scripts
+
 @node 	calibrate_evt_gpd
 @section 	calibrate_evt_gpd
 @cindex 	 Function 	calibrate_evt_gpd
@@ -136,21 +258,164 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} { [@var{chi} @var{sigma} @var{u}] =} calibrate_evt_gpd(@var{v})
+
 Calibrate sorted losses of historic or MC portfolio values 
-to a generalized pareto distribution and returns chi, sigma and u as parameters for further VAR and ES calculation.
+to a generalized pareto distribution and returns chi, sigma and u as 
+parameters for further VAR and ES calculation.
 @*
-Implementation according to @i{Risk Management and Financial Institutions} by John C. Hull, 4th edition, Wiley 2015, 
- section 13.6, page 292ff.
+Implementation according to @i{Risk Management and Financial Institutions} 
+by John C. Hull, 4th edition, Wiley 2015, section 13.6, page 292ff.
 @*
 Explanation of Parameters:
 @itemize @bullet
-@item @var{v}:       INPUT: sorted profit and loss distribution of all required tail events (1xN vector)
-@item @var{chi}:     OUTPUT: Generalized Pareto distribution: shape parameter (scalar)
+@item @var{v}:       INPUT: 	sorted profit and loss distribution of all 
+								required tail events (1xN vector)
+@item @var{chi}:     OUTPUT: Generalized Pareto distribution: shape 
+								parameter (scalar)
 @item @var{sigma}:   OUTPUT: scale parameter (scalar)
 @item @var{u}:       OUTPUT: location parameter(scalar)
 @end itemize
+@end deftypefn
+
+@node 	calibrate_option_bjsten
+@section 	calibrate_option_bjsten
+@cindex 	 Function 	calibrate_option_bjsten
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_option_bjsten(@var{putcallflag}, @var{S}, @var{X}, @var{T}, @var{rf}, @var{sigma}, @var{multiplicator}, @var{market_value})
+Calibrate the implied volatility spread for American options according to 
+Bjerksund and Stensland valuation formula.
 @end deftypefn
 
 @node 	calibrate_option_bs
@@ -244,9 +509,31 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} { [@var{vola_spread}] =} calibrate_option_bs(@var{putcallflag}, @var{S}, @var{X}, @var{T}, @var{rf}, @var{sigma}, @var{multiplicator}, @var{market_value})
-Calibrate the implied volatility spread for Eeuropean options according to Black-Scholes valuation formula.
+Calibrate the implied volatility spread for European options according to 
+Black-Scholes valuation formula.
 @end deftypefn
 
 @node 	calibrate_option_willowtree
@@ -340,9 +627,32 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
-@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_option_willowtree(@var{putcallflag}, @var{americanflag}, @var{S}, @var{X}, @var{T}, @var{rf}, @var{sigma}, @var{divyield}, @var{stepsize}, @var{nodes}, @var{multiplicator}, @var{market_value}, @var{path_static})
-Calibrate the implied volatility spread for American options according to Willowtree valuation formula.
+@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_option_willowtree(@var{putcallflag},@var{americanflag}, @var{S}, @var{X}, @var{T}, @var{rf}, @var{sigma}, @var{divyield}, @var{stepsize}, @var{nodes}, @var{multiplicator}, @var{market_value}, @var{path_static})
+Calibrate implied volatility spread for American options according 
+to Willowtree valuation formula.
+@seealso{option_willowtree}
 @end deftypefn
 
 @node 	calibrate_soy_sqp
@@ -436,9 +746,32 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
-@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_soy_sqp(@var{valuation_date}, @var{tmp_cashflow_dates}, @var{tmp_cashflow_values}, @var{tmp_act_value}, @var{tmp_nodes}, @var{tmp_rates}, @var{spread_nodes}, @var{spread_rates}, @var{basis}, @var{comp_type}, @var{comp_freq})
-Calibrate the spread over yield according to given cashflows discounted on an appropriate yield curve.
+@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_soy_sqp(@var{valuation_date}, @var{tmp_cashflow_dates}, @var{tmp_cashflow_values}, @var{tmp_act_value}, @var{tmp_nodes}, @var{tmp_rates}, @var{spread_nodes}, @var{spread_rates}, @var{basis}, @var{comp_type}, @var{comp_freq}, @var{,interp_discount}, @var{interp_spread})
+
+Calibrate the spread over yield according to given cashflows discounted on an 
+appropriate yield curve.
 @end deftypefn
 
 @node 	calibrate_swaption
@@ -532,10 +865,33 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{vola_spread}] =} calibrate_swaption(@var{PayerReceiverFlag}, @var{F}, @var{X}, @var{T}, @var{r}, @var{sigma}, @var{m}, @var{tau}, @var{multiplicator}, @var{market_value}, @var{model})
-Calibrate the implied volatility spread for European swaptions according to Black76 or Bachelier (default) valuation model.
-In extreme out-of-the-money scenarios there could be no solution in changing the volatility. But we dont care in this case at all,
+Calibrate the implied volatility spread for European swaptions according to 
+Black76 or Bachelier (default) valuation model.
+In extreme out-of-the-money scenarios there could be no solution in changing 
+the volatility. But we dont care in this case at all,
 since the influence of the volatility is neglectable in these extreme cases.
 @end deftypefn
 
@@ -630,8 +986,30 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
-@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_yield_to_maturity(@var{valuation_date}, @var{tmp_cashflow_dates}, @var{tmp_cashflow_values}, @var{act_value})
+@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_yield_to_maturity(@var{valuation_date}, @var{tmp_cashflow_dates}, @var{tmp_cashflow_values}, @var{act_value}) 
+
 Calibrate the yield to maturity according to given cashflows.
 @end deftypefn
 
@@ -726,35 +1104,73 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{rate_target} @var{conversion_type}] =} convert_curve_rates (@var{valuation_date}, @var{node}, @var{rate_origin}, @var{comp_type_origin}, @var{comp_freq_origin}, @var{dcc_basis_origin}, @var{comp_type_target}, @var{comp_freq_target}, @var{dcc_basis_target})
-Convert a given interest rate from one compounding type, frequency and day count convention (dcc) into another type, frequency and dcc. @*
+Convert a given interest rate from one compounding type, frequency and day
+count convention (dcc) into another type, frequency and dcc. @*
 
- The following conversion formulas are applied:  (the timefactor is depending on 
- day count convention and days between valuation_date and valuation_date + node)). Convert
+ The following conversion formulas are applied:  (the timefactor is 
+ depending on day count convention and days between valuation_date and 
+valuation_date + node)). Convert
  @example
- from CONT ->   SMP:    (exp(rate_origin .* timefactor_origin) -1) ./ timefactor_target
- from SMP ->    CONT:   ln(1 + rate_origin .* timefactor_origin) ./ timefactor_target
- from DISC ->   CONT:   ln(1 + rate_origin./ comp_freq_origin) .* (timefactor_origin .* comp_freq_origin) ./ timefactor_target
- from CONT ->   DISC:   (exp(rate_origin .* timefactor_origin ./ (comp_freq_target .* timefactor_target)) - 1 ) .* comp_freq_target
- from SMP ->    DISC:   ( (1 + rate_origin .* timefactor_origin).^(1./( comp_freq_target .* timefactor_target)) -1 ) .* comp_freq_target
- from DISC ->   SMP:    ( (1 + rate_origin ./ comp_freq_origin ).^(comp_freq_origin .* timefactor_origin) -1 ) ./ timefactor_target
+ from CONT ->   SMP:    (exp(rate_origin .* timefactor_origin) -1) ...
+./ timefactor_target
+ from SMP ->    CONT:   ln(1 + rate_origin .* timefactor_origin) ...
+./ timefactor_target
+ from DISC ->   CONT:   ln(1 + rate_origin./ comp_freq_origin) ...
+.* (timefactor_origin .* comp_freq_origin) ./ timefactor_target
+ from CONT ->   DISC:   (exp(rate_origin .* timefactor_origin ...
+./ (comp_freq_target .* timefactor_target)) - 1 ) .* comp_freq_target
+ from SMP ->    DISC:   ( (1 + rate_origin .* timefactor_origin) ...
+.^(1./( comp_freq_target .* timefactor_target)) -1 ) .* comp_freq_target
+ from DISC ->   SMP:    ( (1 + rate_origin ./ comp_freq_origin ) ...
+.^(comp_freq_origin .* timefactor_origin) -1 ) ./ timefactor_target
  from CONT ->   CONT:   rate_origin .* timefactor_origin ./ timefactor_target 
  from SMP ->    SMP:    rate_origin .* timefactor_origin ./ timefactor_target 
- from DISC ->   DISC:   ( (1 + rate_origin ./ comp_freq_origin).^((comp_freq_origin .* timefactor_origin) ./ ( comp_freq_target .* timefactor_target)) -1 ) .* comp_freq_target
+ from DISC ->   DISC:   ( (1 + rate_origin ./ comp_freq_origin) ...
+.^((comp_freq_origin .* timefactor_origin) ./ ( comp_freq_target ...
+.* timefactor_target)) -1 ) .* comp_freq_target
  @end example
- Please note: compounding_freq is only relevant for compounding type DISCRETE. Otherwise it will be neglected. During object invocation, a default
+ Please note: compounding_freq is only relevant for compounding type DISCRETE. 
+ Otherwise it will be neglected. During object invocation, a default
  value for compounding_freq is set, even it is not required. Example call: @*
  @example
  0.006084365 = convert_curve_rates(datenum('31-Dec-2015'),643,0.0060519888,'cont','daily',3,'simple','daily',3)
  @end example
 Input and output variables:
 @itemize @bullet
-@item @var{valuation_date}: 	base date used in timefactor calculation (datestr or datenum)
-@item @var{node}: 			number of days until second date used in timefactor calculation (scalar)
-@item @var{rate_origin}:     interest rate between first and second date (scalar)
-@item @var{comp_type_origin}: compounding type of target rate: [simple, simp, disc, discrete, cont, continuous] (string)
-@item @var{comp_freq_origin}: compounding frequency of target rate: 1,2,4,12,52,365 or [daily,weekly,monthly,quarter,semi-annual,annual] (scalar or string)
+@item @var{valuation_date}: 	base date used in timefactor calculation 
+(datestr or datenum)
+@item @var{node}: 			number of days until second date used in 
+timefactor calculation (scalar)
+@item @var{rate_origin}:     interest rate between first and second date 
+(scalar)
+@item @var{comp_type_origin}: compounding type of target rate: 
+[simple, simp, disc, discrete, cont, continuous] (string)
+@item @var{comp_freq_origin}: compounding frequency of target rate: 
+1,2,4,12,52,365 or [daily,weekly,monthly,quarter,semi-annual,annual] 
+(scalar or string)
 @item @var{dcc_basis_origin}: day-count basis of target rate(scalar)
 		@itemize @bullet
 			@item @var{0} = actual/actual 
@@ -768,10 +1184,13 @@ Input and output variables:
 			@item @var{8} = act/act ISMA
 			@item @var{9} = act/360 ISMA
 			@item @var{10} = act/365 ISMA
-			@item @var{11} = 30/360E (ISMA)
+			@item @var{11} = 30/360E
      @end itemize
-@item @var{comp_type_target}: compounding type of target rate: [simple, simp, disc, discrete, cont, continuous] (string)
-@item @var{comp_freq_target}: compounding frequency of target rate: 1,2,4,12,52,365 or [daily,weekly,monthly,quarter,semi-annual,annual] (scalar or string)
+@item @var{comp_type_target}: compounding type of target rate: 
+[simple, simp, disc, discrete, cont, continuous] (string)
+@item @var{comp_freq_target}: compounding frequency of target rate: 
+1,2,4,12,52,365 or [daily,weekly,monthly,quarter,semi-annual,annual] 
+(scalar or string)
 @item @var{dcc_basis_target}: day-count basis of target rate(scalar)
 @item @var{rate_target}: 	OUTPUT: converted interest rate
 @item @var{conversion_type}: OUTPUT: conversion type from x to y
@@ -870,11 +1289,33 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{A_scaled} @var{pos_sem_def_bool}] =} correct_correlation_matrix(@var{M})
-Return a positive semi-definite matrix @var{A_scaled} to a given input matrix @var{M}.
-This function tests for indefiniteness of the input matrix and eventuallry adjusts 
-negative Eivenvalues to 0 or slightly positive values via some iteration steps.
+Return a positive semi-definite matrix @var{A_scaled} to a given input 
+matrix @var{M}. This function tests for indefiniteness of the input matrix 
+and eventuallry adjusts negative Eivenvalues to 0 or slightly positive values 
+via some iteration steps.
 @*
 Reference: 'Implementing Value at Risk', Best, Philip W., 1998.
 @end deftypefn
@@ -970,17 +1411,40 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {@var{df} =} discount_factor (@var{d1}, @var{d2}, @var{rate}, @var{comp_type}, @var{basis}, @var{comp_freq})
 
-Compute the discount factor for a specific time period, compounding type, day count basis and compounding frequency.@*
+Compute the discount factor for a specific time period, compounding type, 
+day count basis and compounding frequency.@*
 
 Input and output variables:
 @itemize @bullet
 @item @var{d1}: 			number of days until first date (scalar)
 @item @var{d2}: 			number of days until second date (scalar)
 @item @var{rate}: 		interest rate between first and second date (scalar)
-@item @var{comp_type}: 	compounding type: [simple, simp, disc, discrete, cont, continuous] (string)
+@item @var{comp_type}: 	compounding type: [simple, simp, disc, discrete, 
+cont, continuous] (string)
 @item @var{basis}: 		day-count basis (scalar)
 		@itemize @bullet
 			@item @var{0} = actual/actual 
@@ -996,7 +1460,8 @@ Input and output variables:
 			@item @var{10} = act/365 ISMA
 			@item @var{11} = 30/360E (ISMA)
      @end itemize
-@item @var{comp_freq}: 	1,2,4,12,52,365 or [daily,weekly,monthly,quarter,semi-annual,annual] (scalar or string)
+@item @var{comp_freq}: 	1,2,4,12,52,365 or [daily,weekly,monthly,
+quarter,semi-annual,annual] (scalar or string)
 @item @var{df}: 			OUTPUT: discount factor (scalar)
 @end itemize
 @seealso{timefactor}
@@ -1093,6 +1558,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} { @var{object} =} Instrument (@var{name}, @var{id}, @var{description}, @var{type}, @var{currency}, @var{base_value}, @var{asset_class}, @var{valuation_date})
 Instrument Superclass Inputs:
@@ -1100,14 +1586,17 @@ Instrument Superclass Inputs:
 @item @var{name} (string): Name of object
 @item @var{id} (string): Id of object
 @item @var{description} (string): Description of object
-@item @var{type} (string): instrument type in list [cash, bond, debt, forward, option, sensitivity, synthetic]
+@item @var{type} (string): instrument type in list [cash, bond, debt, forward, 
+option, sensitivity, synthetic]
 @item @var{currency} (string): ISO code of currency
 @item @var{base_value} (float): Actual base (spot) value of object
 @item @var{asset_class} (sring): Instrument asset class
-@item @var{valuation_date} (datenum): serial day number from Jan 1, 0000 defined as day 1. 
+@item @var{valuation_date} (datenum): serial day number from Jan 1, 0000 
+defined as day 1. 
 @end itemize
 @*
-The constructor of the instrument class constructs an object with the following properties and inherits them to all sub classes: @*
+The constructor of the instrument class constructs an object with the 
+following properties and inherits them to all sub classes: @*
 @itemize @bullet
 @item name: Name of object
 @item id: Id of object
@@ -1118,15 +1607,18 @@ The constructor of the instrument class constructs an object with the following 
 @item type: Type of Instrument class (Bond,Forward,...) 
 @item valuation_date: date format DD-MMM-YYYY 
 @item value_stress: Vector with values under stress scenarios
-@item value_mc: Matrix with values under MC scenarios (values per timestep per column)
+@item value_mc: Matrix with values under MC scenarios (values per timestep 
+per column)
 @item timestep_mc: MC timestep per column (cell string)
 @end itemize
 
 @var{value} = Instrument.getValue (@var{base}, @var{stress}, @var{mc_timestep})
 Superclass Method getValue 
 @*
-Return the scenario (shock) value for an instrument object. Specify the desired return values with a property parameter.
-If the second argument abs is set, the absolut scenario value is calculated from scenario shocks and the risk factor start value.
+Return the scenario (shock) value for an instrument object. Specify the 
+desired return values with a property parameter.
+If the second argument abs is set, the absolut scenario value is calculated 
+from scenario shocks and the risk factor start value.
 @*
 Timestep properties:
 @itemize @bullet
@@ -1138,7 +1630,8 @@ Timestep properties:
 @var{boolean} = Instrument.isProp (@var{property}) 
 Instrument Method isProp
 @*
-Query all properties from the Instrument Superclass and sub classes and returns 1 in case of a valid property.
+Query all properties from the Instrument Superclass and sub classes and 
+returns 1 in case of a valid property.
 @*
 @*
 @seealso{Instrument}
@@ -1235,9 +1728,31 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn  {Function File} { @var{object} =} Riskfactor ()
 @deftypefnx  {Function File} { @var{object} =} Riskfactor (@var{name}, @var{id}, @var{type}, @var{description}, @var{model}, @var{parameters})
+
 Construct risk factor object. Riskfactor Class Inputs:
 @itemize @bullet
 @item @var{name} (string): Name of object
@@ -1245,11 +1760,13 @@ Construct risk factor object. Riskfactor Class Inputs:
 @item @var{type} (string): risk factor type
 @item @var{description} (string): Description of object
 @item @var{model} (string): statistical model in list [GBM,BM,SRD,OU]
-@item @var{parameters} (vector): vector with values [mean,std,skew,kurt,start_value,mr_level,mr_rate,node,rate]
+@item @var{parameters} (vector): vector with values [mean,std,skew,kurt, ...
+start_value,mr_level,mr_rate,node,rate]
 @end itemize
 If no input arguments are provided, a dummy IR risk factor object is generated.
 @*
-The constructor of the risk factor class constructs an object with the following properties: @*
+The constructor of the risk factor class constructs an object with the 
+following properties: @*
 Class properties:
 @itemize @bullet
 @item name: Name of object
@@ -1262,26 +1779,32 @@ Class properties:
 @item skew: third  moment of risk factor distribution
 @item kurt: fourth moment of risk factor distribution
 @item start_value: Actual spot value of object 
-@item mr_level: In case of mean reverting model this is the mean reversion level
+@item mr_level: In case of mean reverting model this is the mean reversion 
+level
 @item mr_rate: In case of mean reverting model this is the mean reversion rate 
 @item node: In case of a interest rate or spread risk factor this is the term node
-@item rate:  In case of a interest rate or spread risk factor this is the term rate at the node
+@item rate:  In case of a interest rate or spread risk factor this is the term 
+rate at the node
 @item scenario_stress: Vector with values of stress scenarios
-@item scenario_mc: Matrix with risk factor scenario values (values per timestep per column)
+@item scenario_mc: Matrix with risk factor scenario values (values per 
+timestep per column)
 @item timestep_mc: MC timestep per column (cell string)
 @end itemize
 
-@var{property_value} = Riskfactor.getValue ((@var{base,stress,mc_timestep}), 'abs')
+@var{property_value} = Riskfactor.getValue((@var{base,stress,mc_timestep}),'abs')
 Riskfactor Method getValue 
 @*
-Return the value for a risk factor object. Specify the desired return values with a property parameter.
-If the second argument abs is set, the absolut scenario value is calculated from scenario shocks and the risk factor start value.
+Return the value for a risk factor object. Specify the desired return values 
+with a property parameter.
+If the second argument abs is set, the absolut scenario value is calculated 
+from scenario shocks and the risk factor start value.
 @*
 Timestep properties:
 @itemize @bullet
 @item base: return base value
 @item stress: return stress values
-@item any regular MC timestep (e.g. '1d'): return scenario (shock) values at MC timestep
+@item any regular MC timestep (e.g. '1d'): return scenario (shock) values at 
+MC timestep
 @end itemize
 @*
 @var{property_value} = Riskfactor.get (property)
@@ -1385,18 +1908,44 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {} estimate_parameter()
-Calculate statistics for historic time series. This script is not used in octarisk process, but
-it should simplify the parameter estimation for input parameters required for risk factor definitions. @*
-The time series file (columns: risk factors, rows: historic values) will be generated by an python script (to be done). @*
-The following statistic parameter are calculated: mean, volatility, skewness, kurtosis for simple, geometric and lognormal
-distributed value. Moreover mean reversion rates and levels are calculated assuming ergodic and regression methods. @*
+Calculate statistics for historic time series. This script is not used in 
+octarisk process, but
+it should simplify the parameter estimation for input parameters required for 
+risk factor definitions. @*
+The time series file (columns: risk factors, rows: historic values) will be 
+generated by an python script (to be done). @*
+The following statistic parameter are calculated: mean, volatility, skewness, 
+kurtosis for simple, geometric and lognormal
+distributed value. Moreover mean reversion rates and levels are calculated 
+assuming ergodic and regression methods. @*
 @end deftypefn
 
-@node 	generate_curves_mktdata
-@section 	generate_curves_mktdata
-@cindex 	 Function 	generate_curves_mktdata
+@node 	fmincon
+@section 	fmincon
+@cindex 	 Function 	fmincon
 @c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
@@ -1485,7 +2034,75 @@ See also: \args\.
 \\
 @end macro
 
- get shock from underlying RF_curve 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} { [@var{x} @var{obj} @var{info} @var{iter} @var{nf} @var{lambda}] =} fmincon(@var{objf}, @var{x0}, @var{A}, @var{b}, @var{Aeq}, @var{beq}, @var{lb}, @var{ub})
+Wrap basic functionality of Matlab's solver fmincon to Octave's sqp. @*
+Non-linear constraint functions provided by fmincon's function handle 
+@code{nonlincon} are NOT processed. @*
+Return codes are also mapped according to fmincon expected return codes. 
+Note: This function mimics the behaviour of fmincon only.@*
+
+Matlab:
+@example
+@group
+A*x <= b
+Aeq*x = beq
+lb <= x <= ub
+@end group
+@end example
+Octave: 
+@example
+@group
+g(x) = -Aeq*x + beq = 0
+h(x) = -A*x + b >= 0
+lb <= x <= ub
+@end group
+@end example
+See the following example:
+@example
+@group
+[x obj info iter] = fmincon (@@(x)100*(x(2)-x(1)^2)^2 + (1-x(1))^2,[0.5,0],[1,2],1,[2,1],1)
+x = [0.41494,0.17011]
+obj =  0.34272
+info =  1
+iter =  6
+@end group
+@end example
+Explanation of Input Parameters:
+@*
+@itemize @bullet
+@item @var{objf}: pointer to objective function
+@item @var{x0}: initial values
+@item @var{A}: inequality constraint matrix
+@item @var{b}: inequality constraint vector
+@item @var{Aeq}: equality constraint matrix
+@item @var{beq}: equality constraint vector
+@item @var{lb}: lower bound
+@item @var{ub}: upper bound
+@end itemize
+@seealso{sqp}
+@end deftypefn
 
 @node 	get_documentation
 @section 	get_documentation
@@ -1578,11 +2195,34 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
-@deftypefn {Function File} {} get_documentation(@var{type}, @var{path_documentation}))
-Print documentation for all specified Octave functions. 
-This script allows you to choose functions, for which the documentation is extracted from the function headers
-and printed to a file 'functions.texi', 'functionname.html' or to standard output if a specific format (texinfo,  html, txt) is set.
+@deftypefn {Function File} {} get_documentation(@var{type}, @var{path_octarisk}, @var{path_documentation}))
+Print documentation for all Octave functions in specified path. 
+The documentation is extracted from the function headers and printed to a 
+file 'functions.texi', 'functionname.html' or to standard output if a  
+specific format (texinfo,  html, txt) is set.
+
 The path to all files has to be set in the variable path_documentation.
 @end deftypefn
 
@@ -1677,20 +2317,52 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
-@deftypefn {Function File} {@var{forward_rate}=} get_forward_rate(@var{nodes}, @var{rates}, @var{days_to_t1}, @var{days_to_t2}, @var{comp_type}, @var{interp_method})
-Compute the forward rate calculated from interpolated rates from a zero coupon yield curve. CAUTION: the forward rate is floored to 0.000001.
+@deftypefn {Function File} {@var{forward_rate}=} get_forward_rate(@var{nodes}, @var{rates}, @var{days_to_t1}, @var{days_to_t2}, @var{comp_type}, @var{interp_method}, @var{comp_freq},, @var{basis}, @var{valuation_date}, @var{comp_type_curve}, @var{basis_curve}, @var{comp_freq_curve} )
+
+Compute the forward rate calculated from interpolated rates from a  
+yield curve. CAUTION: the forward rate is floored to 0.000001.
 Explanation of Input Parameters:
 @*
 @itemize @bullet
 @item @var{nodes}: is a 1xN vector with all timesteps of the given curve
-@item @var{rates}: is MxN matrix with curve rates defined in columns. Each row contains a specific scenario with different curve structure
+@item @var{rates}: is MxN matrix with curve rates defined in columns. Each 
+row contains a specific scenario with different curve structure
 @item @var{days_to_t1}: is a scalar, specifiying term1 in days
 @item @var{days_to_t2}: is a scalar, specifiying term2 in days after term1
-@item @var{comp_type}: (optional) specifies compounding rule (simple, discrete, continuous (defaults to 'cont')).
-@item @var{interp_method}: (optional) specifies interpolation method for retrieving interest rates (defaults to 'linear').
+@item @var{comp_type}: (optional) specifies compounding rule (simple, 
+discrete, continuous (defaults to 'cont')).
+@item @var{interp_method}: (optional) specifies interpolation method for 
+retrieving interest rates (defaults to 'linear').
+@item @var{comp_freq}: (optional) compounding frequency (default: annual)
+@item @var{basis}: (optional) day count convention of instrument (default: act/365)
+@item @var{valuation_date}: (optional) valuation date (default: today)
+@item @var{comp_type_curve}: (optional) compounding type of curve
+@item @var{basis_curve}: (optional) day count convention of curve
+@item @var{comp_freq_curve}: (optional) compounding frequency of curve
 @end itemize
-@seealso{interpolate_curve}
+@seealso{interpolate_curve, convert_curve_rates,timefactor}
 @end deftypefn
 
 @node 	get_gpd_var
@@ -1784,6 +2456,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{VAR} @var{ES}] =} get_gpd_var(@var{chi}, @var{sigma}, @var{u}, @var{q}, @var{n}, @var{nu})
 Return Value-at-risk (VAR) and expected shortfall (ES) according to a generalized Pareto distribution.
@@ -1899,16 +2592,39 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{r} @var{type} ] =} get_marginal_distr_pearson (@var{mu}, @var{sigma}, @var{skew}, @var{kurt}, @var{Z})
 
-Compute a marginal distribution for given set of uniform random variables with given mean, standard deviation
-skewness and kurtosis. The mapping is done via the Pearson distribution family.
+Compute a marginal distribution for given set of uniform random variables 
+with given mean, standard deviation skewness and kurtosis. The mapping is 
+done via the Pearson distribution family.
 @*
-The implementation is based on the R package 'PearsonDS: Pearson Distribution System' and the function 'pearsonFitM' by @*
+The implementation is based on the R package 'PearsonDS: Pearson Distribution 
+System' and the function 'pearsonFitM' by @*
 Martin Becker and Stefan Kloessner (2013) @* 
 R package version 0.97. @*
-URL http://CRAN.R-project.org/package=PearsonDS @*
+URL: http://CRAN.R-project.org/package=PearsonDS @*
 licensed under the GPL >= 2.0 @*
 Input and output variables:
 @itemize @bullet
@@ -1917,16 +2633,19 @@ Input and output variables:
 @item @var{skew}: 	skewness of marginal distribution (scalar)
 @item @var{kurt}: 	kurtosis of marginal distribution (scalar)
 @item @var{Z}: 		uniform distributed random variables (Nx1 vector)
-@item @var{r}: 		OUTPUT: Nx1 vector with random variables distributed according to Pearson type (vector)
+@item @var{r}: 		OUTPUT: Nx1 vector with random variables distributed 
+according to Pearson type (vector)
 @item @var{type}: 	OUTPUT: Pearson distribution type (I - VII) (scalar)
 @end itemize
-The marginal distribution type is chosen according to the input parameters out of the Pearson Type I-VII distribution family: @*
+The marginal distribution type is chosen according to the input parameters 
+out of the Pearson Type I-VII distribution family: @*
 @itemize @bullet
 @item @var{Type 0}   = normal distribution
 @item @var{Type I}   = generalization of beta distribution
 @item @var{Type II}  = symmetric beta distribution
 @item @var{Type III} = gamma or chi-squared distribution
-@item @var{Type IV}  = special distribution, not related to any other distribution
+@item @var{Type IV}  = special distribution, not related to any other 
+distribution
 @item @var{Type V}   = inverse gamma distribution
 @item @var{Type VI}  = beta-prime or F distribution
 @item @var{Type VII} = Student's t distribution 
@@ -2025,9 +2744,31 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{match_obj} @var{ret_code}] =} get_sub_object(@var{input_struct}, @var{input_id})
-Return the objectcontained in a structure  matching a given ID. Return code 1 (success) and 0 (fail).
+Return the object contained in a structure  matching a given ID. 
+Return code 1 (success) and 0 (fail).
 @end deftypefn
 
 @node 	harrell_davis_weight
@@ -2121,6 +2862,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {} harrell_davis_weight (@var{scenarios}, @var{observation}, @var{alpha})
 
@@ -2223,6 +2985,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[ @var{r}, @var{c} ] = } ind2sub_tril (@var{N}, @var{idx})
 Convert a linear index to subscripts of a trinagular matrix.
@@ -2254,6 +3037,125 @@ when @var{idx} is a row or column matrix of linear indeces then @var{r} and
 @var{c} have the same shape as @var{idx}.
 
 @seealso{vech, ind2sub, sub2ind_tril}
+@end deftypefn
+
+@node 	integrationtests
+@section 	integrationtests
+@cindex 	 Function 	integrationtests
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {} integrationtests(@var{path_folder})
+Call integrationtests of specified functions and return test statistics. @*
+Input parameter: path to folder with testdata. All integration test scripts
+have to be hard coded in this script.
 @end deftypefn
 
 @node 	interpolate_curve
@@ -2347,21 +3249,53 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {} interpolate_curve (@var{nodes}, @var{rates}, @var{timestep})
 @deftypefnx {Function File} {} interpolate_curve (@var{nodes}, @var{rates}, @var{timestep}, @var{ufr}, @var{alpha})
-Calculate an interpolated return on a curve for a given timestep
-Supported methods are: linear (default), moneymarket, exponential, loglinear, spline, smith-wilson or monotone-convex.
-A constant extrapolation is assumed, except for smith-wilson, where the ultimate forward rate will be reached proportional to reversion speed alpha.
-For all methods except splines a fast taylormade algorithm is used. For splines see Octave function interp1 for more details. 
+
+Calculate an interpolated rate on a curve for a given timestep.@*
+Supported methods are: linear (default), moneymarket, exponential, loglinear, 
+spline, smith-wilson, monotone-convex, constant (mapped to previous),
+previous and next.
+
+A constant extrapolation is assumed, except for smith-wilson, where the 
+ultimate forward rate will be reached proportional to reversion speed alpha.
+For all methods except splines a fast taylormade algorithm is used. For 
+splines see Octave function interp1 for more details. 
 Explanation of Input Parameters of the interpolation curve function:
 @*
 @itemize @bullet
 @item @var{nodes}: is a 1xN vector with all timesteps of the given curve
-@item @var{rates}: is MxN matrix with curve rates per timestep defined in columns. Each row contains a specific scenario with different curve structure
-@item @var{timestep}: is a scalar, specifiying the interpolated timestep on vector nodes
-@item @var{ufr}:   OPTIONAL: (only used for smith-wilson): ultimate forward rate (default: last liquid point)
-@item @var{alpha}: OPTIONAL: (only used for smith-wilson): reversion speed to ultimate forward rate (default: 0.1)
+@item @var{rates}: is MxN matrix with curve rates per timestep defined in
+						columns. Each row contains a specific scenario with 
+						different curve structure
+@item @var{timestep}: is a scalar, specifiying the interpolated timestep on 
+						vector nodes
+@item @var{ufr}:   OPTIONAL: (only used for smith-wilson): ultimate forward 
+								rate (default: last liquid point)
+@item @var{alpha}: OPTIONAL: (only used for smith-wilson): reversion speed 
+								to ultimate forward rate (default: 0.1)
 @end itemize
 @seealso{interp1, interp2, interp3, interpn}
 @end deftypefn
@@ -2457,6 +3391,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{mktdata_struct} @var{id_failed_cell}] =} load_mktdata_objects(@var{mktdata_struct}, @var{path_mktdata}, @var{file_mktdata}, @var{path_output}, @var{path_archive}, @var{tmp_timestamp}, @var{archive_flag})
 Load data from mktdata object specification file and generate objects with parsed data. Store all objects in provided mktdata struct and return the final struct and a cell containing the failed mktdata ids.
@@ -2553,6 +3508,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{instrument_struct} @var{id_failed_cell}] =} load_instruments(@var{instrument_struct}, @var{valuation_date}, @var{path_instruments}, @var{file_instruments}, @var{path_output}, @var{path_archive}, @var{tmp_timestamp}, @var{archive_flag})
 Load data from instrument specification file and generate objects with parsed data. Store all objects in provided instrument struct and return the final struct and a cell containing the failed instrument ids.
@@ -2650,6 +3626,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{mktdata_struct} @var{id_failed_cell}] =} load_mktdata_objects(@var{mktdata_struct}, @var{path_mktdata}, @var{file_mktdata}, @var{path_output}, @var{path_archive}, @var{tmp_timestamp}, @var{archive_flag})
 Load data from mktdata object specification file and generate objects with parsed data. Store all objects in provided mktdata struct and return the final struct and a cell containing the failed mktdata ids.
@@ -2746,6 +3743,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{portfolio_struct} @var{id_failed_cell}] =} load_positions(@var{portfolio_struct}, @var{valuation_date}, @var{path_positions}, @var{file_positions}, @var{path_output}, @var{path_archive}, @var{tmp_timestamp}, @var{archive_flag})
 Load data from position specification file and generate objects with parsed data. Store all objects in provided position struct and return the final struct and a cell containing the failed position ids.
@@ -2842,6 +3860,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{riskfactor_struct} @var{rf_failed_cell}] =} load_riskfactor_scenarios(@var{riskfactor_struct}, @var{M_struct}, @var{mc_timesteps}, @var{mc_timestep_days})
 Generate MC scenario shock values for risk factor curve objects. Store all MC scenario shock values in provided struct and return the final struct and a cell containing all failed risk factor ids.
@@ -2938,6 +3977,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{riskfactor_struct} @var{rf_failed_cell}] =} load_riskfactor_stresses(@var{riskfactor_struct}, @var{stresstest_struct})
 Generate stresses for risk factor curve objects. Store all stresses in provided struct and return the final struct and a cell containing all failed risk factor ids.
@@ -3034,6 +4094,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{riskfactor_struct} @var{id_failed_cell}] =} load_riskfactors(@var{riskfactor_struct}, @var{valuation_date}, @var{path_riskfactors}, @var{file_riskfactors}, @var{path_output}, @var{path_archive}, @var{tmp_timestamp}, @var{archive_flag})
 Load data from riskfactor specification file and generate objects with parsed data. Store all objects in provided riskfactor struct and return the final struct and a cell containing the failed riskfactor ids.
@@ -3130,9 +4211,32 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{portfolio_struct} @var{id_failed_cell}] =} load_stresstests(@var{portfolio_struct}, @var{valuation_date}, @var{path_stresstests}, @var{file_stresstests}, @var{path_output}, @var{path_archive}, @var{tmp_timestamp}, @var{archive_flag})
-Load data from stresstest specification file and generate a struct with parsed data. Store all stresstests in provided struct and return the final struct and a cell containing the failed position ids.
+Load data from stresstest specification file and generate a struct with 
+parsed data. Store all stresstests in provided struct and return the final 
+struct and a cell containing the failed position ids.
 @end deftypefn
 
 @node 	load_volacubes
@@ -3226,9 +4330,32 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{surface_struct} @var{vola_failed_cell}] =} load_volacubes(@var{surface_struct}, @var{path_mktdata}, @var{input_filename_vola_index}, @var{input_filename_vola_ir})
-Load data from mktdata volatility surfaces / cubes specification files and generate a struct with parsed data. Store all stresstests in provided struct and return the final struct and a cell containing the failed volatility ids.
+Load data from mktdata volatility surfaces / cubes specification files and 
+generate a struct with parsed data. Store all stresstests in provided struct 
+and return the final struct and a cell containing the failed volatility ids.
 @end deftypefn
 
 @node 	load_yieldcurves
@@ -3322,9 +4449,32 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{rf_ir_cur_cell} @var{curve_struct}] =} load_volacubes(@var{curve_struct}, @var{riskfactor_struct}, @var{mc_timesteps}, @var{path_output}, @var{saving})
-Generate curve objects from risk factor objects. Store all curves in provided struct and return the final struct and a cell containing all interest rate risk factor currency / ratings.
+Generate curve objects from risk factor objects. Store all curves in provided 
+struct and return the final struct and a cell containing all interest rate 
+risk factor currency / ratings.
 @end deftypefn
 
 @node 	octarisk
@@ -3418,6 +4568,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {} octarisk (@var{path_working_folder})
 
@@ -3491,6 +4662,289 @@ Supported copulas for MC scenario generation:
 Further functionality will be implemented in the future (e.g. inflation linked instruments)
 @seealso{option_willowtree, option_bs, harrell_davis_weight, swaption_black76, pricing_forward, rollout_cashflows, scenario_generation_MC}
 @end deftypefn
+
+@node 	option_barrier
+@section 	option_barrier
+@cindex 	 Function 	option_barrier
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {[@var{value}] =} option_barrier (@var{CallPutFlag}, @var{UpFlag}, @var{S}, @var{X}, @var{H}, @var{T}, @var{r}, @var{sigma}, @var{q}, @var{Rebate})
+
+Compute the prices of European call or put out or in barrier options.@*
+Reference: Espen Gaarder Haug, "Complete Guide to Option Pricing Formulas",  
+2nd Edition, page 152ff.@*
+Variables:
+@itemize @bullet
+@item @var{CallPutFlag}: Call: '1', Put: '0'
+@item @var{UpFlag}: Up: 'U', Down: 'D'
+@item @var{OutorIn}: 'out' or 'in' barrier option
+@item @var{S}: stock price at time 0
+@item @var{X}: strike price 
+@item @var{H}: barrier
+@item @var{T}: time to maturity in days 
+@item @var{r}: annual risk-free interest rate (continuously compounded)
+@item @var{sigma}: implied volatility of the stock price measured as annual 
+standard deviation
+@item @var{q}: dividend rate p.a., continously compounded
+@item @var{Rebate}: Rebate of barrier option
+@end itemize
+@seealso{option_willowtree, swaption_black76, option_bs}
+@end deftypefn
+
+@node 	option_bjsten
+@section 	option_bjsten
+@cindex 	 Function 	option_bjsten
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {[@var{value}] =} option_bjsten (@var{CallPutFlag}, @var{S}, @var{X}, @var{T}, @var{r}, @var{sigma}, @var{divrate})
+Calculate the option price of an American call or 
+put option stocks, futures, and currencies. The 
+approximation method by Bjerksund and Stensland is used. @*
+
+The Octave implementation is based on a R function 
+implemented by Diethelm Wuertz 
+Rmetrics - Pricing and Evaluating Basic Options, Date 2015-11-09
+Version 3022.85 @*
+
+ References:
+   Haug E.G., The Complete Guide to Option Pricing Formulas
+@*
+Example taken from Reference:
+@example
+@group
+price = option_bjsten(1,42,40,0.75*365,0.04,0.35,0.08)
+price = 5.2704
+@end group
+@end example
+Variables:
+@itemize @bullet
+@item @var{CallPutFlag}: Call: '1', Put: '0'
+@item @var{S}: stock price at time 0
+@item @var{X}: strike price 
+@item @var{T}: time to maturity in days 
+@item @var{r}: annual risk-free interest rate (continuously compounded)
+@item @var{sigma}: implied volatility of the stock price measured as annual 
+standard deviation
+@item @var{divrate}: dividend rate p.a., continously compounded
+@end itemize
+@seealso{option_willowtree, option_bs}
+@end deftypefn 
 
 @node 	option_bs
 @section 	option_bs
@@ -3583,10 +5037,32 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{value} @var{delta} @var{gamma} @var{vega} @var{theta} @var{rho} @var{omega}] =} option_bs (@var{CallPutFlag}, @var{S}, @var{X}, @var{T}, @var{r}, @var{sigma}, @var{divrate})
 
-Compute the prices of european call or put options according to Black-Scholes valuation formula:@*
+Compute the prices of european call or put options according to Black-Scholes 
+valuation formula:@*
 @example
 @group
 C(S,T) = N(d_1)*S - N(d_2)*X*exp(-rT)
@@ -3595,7 +5071,8 @@ d1 = (log(S/X) + (r + 0.5*sigma^2)*T)/(sigma*sqrt(T))
 d2 = d1 - sigma*sqrt(T)
 @end group
 @end example
-The Greeks are also computed (delta, gamma, vega, theta, rho, omega) by their closed form solution. @*
+The Greeks are also computed (delta, gamma, vega, theta, rho, omega) by 
+their closed form solution. @*
 Parallel computation for column vectors of S,X,r and sigma is possible. @*
 @*
 Variables:
@@ -3605,123 +5082,11 @@ Variables:
 @item @var{X}: strike price 
 @item @var{T}: time to maturity in days 
 @item @var{r}: annual risk-free interest rate (continuously compounded)
-@item @var{sigma}: implied volatility of the stock price measured as annual standard deviation
+@item @var{sigma}: implied volatility of the stock price measured as annual 
+standard deviation
 @item @var{divrate}: dividend rate p.a., continously compounded
 @end itemize
 @seealso{option_willowtree, swaption_black76}
-@end deftypefn
-
-@node 	option_bs_barrier
-@section 	option_bs_barrier
-@cindex 	 Function 	option_bs_barrier
-@c Copyright (C) 2012-2015 John W. Eaton
-@c
-@c This file is part of Octave.
-@c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
-@c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
-@c
-@c You should have received a copy of the GNU General Public License
-@c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
-
-@c The following macro marks words that aspell should ignore during
-@c spellchecking.  Within Texinfo it has no effect as it merely replaces
-@c the macro call with the argument itself.
-
-@macro nospell {arg}
-\arg\
-@end macro
-
-@c The following macro works around the Info/plain text expansion of @code{XXX}
-@c which is `XXX'.  This looks particularly bad when the macro body is
-@c single or double-quoted text, such as a property value `"position"'
-@ifinfo
-@macro qcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro qcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
-@c printed manual (that information should be in the supporting text for
-@c each group of functions and variables).
-@c
-@c Implementation Note:
-@c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
-
-@macro seealso {args}
-@iftex
-@vskip 2pt
-@end iftex
-@ifnottex
-
-@end ifnottex
-@ifnotinfo
-@noindent
-@strong{See also:} \args\.
-@end ifnotinfo
-@ifinfo
-@noindent
-See also: \args\.
-@end ifinfo
-@end macro
-
-@c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
-@c can be confusing if the code segment itself ends with a transpose operator.
-@ifinfo
-@macro tcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro tcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is a new addition to Texinfo.
-
-@macro xbackslashchar
-\\
-@end macro
-
-
-@deftypefn {Function File} {[@var{value}] =} option_bs_barrier (@var{CallPutFlag}, @var{UpFlag}, @var{S}, @var{X}, @var{H}, @var{T}, @var{r}, @var{sigma}, @var{q})
-
-Compute the prices of European call or put out or in barrier options according to Black-Scholes valuation formula.
-The code is written for out barrier options. The values for in barrier options are derived from the no arbitrage condition O = O_out + O_in.
-This only holds for no rebate options.@*
-Variables:
-@itemize @bullet
-@item @var{CallPutFlag}: Call: '1', Put: '0'
-@item @var{UpFlag}: Up: 'U', Down: 'D'
-@item @var{OutorIn}: 'out' or 'in' barrier option
-@item @var{S}: stock price at time 0
-@item @var{X}: strike price 
-@item @var{H}: barrier
-@item @var{T}: time to maturity in days 
-@item @var{r}: annual risk-free interest rate (continuously compounded)
-@item @var{sigma}: implied volatility of the stock price measured as annual standard deviation
-@item @var{q}: dividend rate p.a., continously compounded
-@end itemize
-@seealso{option_willowtree, swaption_black76, option_bs}
 @end deftypefn
 
 @node 	option_willowtree
@@ -3815,6 +5180,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {@var{value} =} option_willowtree (@var{CallPutFlag}, @var{AmericanFlag}, @var{S}, @var{X}, @var{T}, @var{r}, @var{sigma}, @var{dividend}, @var{dk})
 @deftypefnx {Function File} {@var{value} =} option_willowtree (@var{CallPutFlag}, @var{AmericanFlag}, @var{S}, @var{X}, @var{T}, @var{r}, @var{sigma}, @var{dividend}, @var{dk}, @var{nodes}, @var{path_static})
@@ -3827,14 +5213,6 @@ literature:
 @item 'Willow Tree', Andy C.T. Ho, Master thesis, May 2000
 @item 'Willow Power: Optimizing Derivative Pricing Trees', Michael Curran, ALGO RESEARCH QUARTERLY, Vol. 4, No. 4, December 2001
 @end itemize
-
-Efficient parallel computation for column vectors of S,X,r and sigma is possible (advantage: linear increase of calculation time in timesteps and nodes).@*
-Runtime of parallel computations incl. tree transition optimization (360 days maturity, 5 day stepsize, 20 willow tree nodes) are performed (at 46 GFlops machine, 4 Gb Ram) in:@*
-50      | 0.5s @*
-500      | 0.5s @*
-5000     | 1.1s @*
-50000    | 9.0s @*
-200000   | 32s @*
 
 Example of an American Call Option with continuous dividends:@*
 (365 days to maturity, vector with different spot prices and volatilities, strike = 8, r = 0.06, dividend = 0.05, timestep 5 days, 20 nodes):
@@ -3854,6 +5232,167 @@ Variables:
 @item @var{nodes}: number of nodes for willow tree setup. Number of nodes must be in list [10,15,20,30,40,50]. These vectors are optimized by Currans suggested Method to fulfill variance constraint (optimal accuracy vs. runtime choice: 20 nodes)
 @end itemize
 @seealso{option_binomial, option_bs, option_exotic_mc}
+@end deftypefn
+
+@node 	pricing_forward
+@section 	pricing_forward
+@cindex 	 Function 	pricing_forward
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {[@var{theo_value} ] =} pricing_forward (@var{forward}, @var{discount_curve}, @var{underlying})
+
+Compute the theoretical value of equity and bond forwards.@*
+In the 'oop' version no input data checks are performed. @*
+Pre-requirements:@*
+@itemize @bullet
+@item installed octave financial package
+@item custom functions timefactor, discount_factor, interpolate_curve
+@end itemize
+
+Input and output variables:
+@itemize @bullet
+@item @var{forward}: Structure with relevant information for specification of
+the object forward:@*
+     @itemize @bullet
+     @item forward.type                   Equity, Bond
+     @item forward.currency               [optional] Currency (string, ISO code)
+     @item forward.maturity_date          Maturity date of forward
+     @item forward.valuation_date         [optional] Valuation date
+(default today)
+     @item forward.strike_price           strike price (float).
+Can be a 1xN vector.
+     @item forward.underlying_price       market price of underlying (float),
+in forward currency units. Can be a 1xN vector.
+     @item forward.storage_cost           [optional] continuous storage
+cost p.a. (default 0)
+     @item forward.convenience_yield      [optional] continuous convenience
+yield p.a. (default 0)
+     @item forward.dividend_yield         [optional] continuous dividend
+yield p.a. (default 0)
+     @item forward.compounding_type       [optional] compounding type
+[simple, discrete, continuous] (default 'disc')
+     @item forward.compounding_frequency  [optional] compounding frequency
+[daily, weekly, monthly, semi-annual, annual] (default 'daily')
+     @item forward.day_count_convention   [optional] day count convenction
+(e.g. 'act/act' or '30/360E') (default 'act/act')
+     @end itemize
+@item @var{discount_nodes}: tmp_nodes is a 1xN vector with all timesteps of
+the given curve
+@item @var{discount_rates}: tmp_rates is a MxN matrix with discount curve
+rates defined in columns. Each row contains a specific scenario with
+different curve structure
+@item @var{theo_value}: returs a 1xN vector with all forward values
+@item @var{theo_price}: returs a 1xN vector with all forward prices
+@end itemize
+@seealso{timefactor, discount_factor, interpolate_curve}
 @end deftypefn
 
 @node 	pricing_forward_oop
@@ -3947,8 +5486,29 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
-@deftypefn {Function File} {[@var{theo_value} ] =} pricing_forward_oop (@var{forward}, @var{discount_nodes}, @var{discount_rates})
+@deftypefn {Function File} {[@var{theo_value} ] =} pricing_forward_oop (@var{forward}, @var{discount_nodes}, @var{discount_rates}, @var{curve_comp_type}, @var{curve_basis}, @var{curve_comp_freq})
 
 Compute the theoretical value of equity and bond forwards.@*
 In the 'oop' version no input data checks are performed. @* 
@@ -3960,24 +5520,38 @@ Pre-requirements:@*
 
 Input and output variables:
 @itemize @bullet
-@item @var{forward}: Structure with relevant information for specification of the object forward:@*
+@item @var{forward}: Structure with relevant information for specification of 
+the object forward:@*
      @itemize @bullet
      @item forward.type                   Equity, Bond
      @item forward.currency               [optional] Currency (string, ISO code)
      @item forward.maturity_date          Maturity date of forward
-     @item forward.valuation_date         [optional] Valuation date (default today)
-     @item forward.strike_price           strike price (float).  Can be a 1xN vector.
-     @item forward.underlying_price       market price of underlying (float), in forward currency units. Can be a 1xN vector.
-     @item forward.storage_cost           [optional] continuous storage cost p.a. (default 0)
-     @item forward.convenience_yield      [optional] continuous convenience yield p.a. (default 0)
-     @item forward.dividend_yield         [optional] continuous dividend yield p.a. (default 0)
-     @item forward.compounding_type       [optional] compounding type [simple, discrete, continuous] (default 'disc')
-     @item forward.compounding_frequency  [optional] compounding frequency [daily, weekly, monthly, semi-annual, annual] (default 'daily')
-     @item forward.day_count_convention   [optional] day count convenction (e.g. 'act/act' or '30/360E') (default 'act/act')
+     @item forward.valuation_date         [optional] Valuation date 
+(default today)
+     @item forward.strike_price           strike price (float).  
+Can be a 1xN vector.
+     @item forward.underlying_price       market price of underlying (float), 
+in forward currency units. Can be a 1xN vector.
+     @item forward.storage_cost           [optional] continuous storage 
+cost p.a. (default 0)
+     @item forward.convenience_yield      [optional] continuous convenience 
+yield p.a. (default 0)
+     @item forward.dividend_yield         [optional] continuous dividend 
+yield p.a. (default 0)
+     @item forward.compounding_type       [optional] compounding type 
+[simple, discrete, continuous] (default 'disc')
+     @item forward.compounding_frequency  [optional] compounding frequency 
+[daily, weekly, monthly, semi-annual, annual] (default 'daily')
+     @item forward.day_count_convention   [optional] day count convenction 
+(e.g. 'act/act' or '30/360E') (default 'act/act')
      @end itemize
-@item @var{discount_nodes}: tmp_nodes is a 1xN vector with all timesteps of the given curve
-@item @var{discount_rates}: tmp_rates is a MxN matrix with discount curve rates defined in columns. Each row contains a specific scenario with different curve structure
-@item @var{theo_value}: returs a 1xN vector with all forward values per scenario
+@item @var{discount_nodes}: tmp_nodes is a 1xN vector with all timesteps of 
+the given curve
+@item @var{discount_rates}: tmp_rates is a MxN matrix with discount curve 
+rates defined in columns. Each row contains a specific scenario with 
+different curve structure
+@item @var{theo_value}: returs a 1xN vector with all forward values 
+@item @var{theo_price}: returs a 1xN vector with all forward prices 
 @end itemize
 @seealso{timefactor, discount_factor, interpolate_curve}
 @end deftypefn
@@ -4073,37 +5647,184 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
-@deftypefn {Function File} {[@var{npv} @var{MacDur} ] =} pricing_npv(@var{valuation_date}, @var{cashflow_dates}, @var{cashflow_values}, @var{spread_constant} ...
-										, @var{discount_nodes}, @var{discount_rates}, @var{spread_nodes}, @var{spread_rates}, @var{basis}, @var{comp_type}, @var{comp_freq}, @var{interp_discount}, @var{interp_spread})
+@deftypefn {Function File} {[@var{npv} @var{MacDur} ] =} pricing_npv(@var{valuation_date}, @var{cashflow_dates}, @var{cashflow_values}, @var{spread_constant}, @var{discount_nodes}, @var{discount_rates}, @var{basis}, @var{comp_type}, @var{comp_freq}, @var{interp_discount})
 
-Computes the net present value and Maccaulay Duration of a given cash flow pattern according to a given discount curve, spread curve and day count convention etc.@*
+Compute the net present value and Maccaulay Duration of a given cash flow 
+pattern according to a given discount curve and day count convention etc.@*
 Pre-requirements:@*
 @itemize @bullet
 @item installed octave finance package
-@item custom functions timefactor, discount_factor, interpolate_curve
+@item custom functions timefactor, discount_factor, interpolate_curve, 
+and convert_curve_rates
 @end itemize
 
 Input and output variables:
 @itemize @bullet
-@item @var{valuation_date}: 	Structure with relevant information for specification of the forward:@*
-@item @var{cashflow_dates}: 	cashflow_dates is a 1xN vector with all timesteps of the cash flow pattern
-@item @var{cashflow_values}: cashflow_values is a MxN matrix with cash flow pattern.
-@item @var{spread_constant}: a constant spread added to the total yield extracted from discount curve and spread curve (can be used to spread over yield)
-@item @var{discount_nodes}: 	tmp_nodes is a 1xN vector with all timesteps of the given curve
-@item @var{discount_rates}: 	tmp_rates is a MxN matrix with discount curve rates defined in columns. Each row contains a specific scenario with different curve structure
-@item @var{spread_nodes}: 	OPTIONAL: spread_nodes is a 1xN vector with all timesteps of the given spread curve
-@item @var{spread_rates}: 	OPTIONAL: spread_rates is a MxN matrix with spread curve rates defined in columns. Each row contains a specific scenario with different curve structure
-@item @var{basis}:			OPTIONAL: day-count convention (either basis number between 1 and 11, or specified as string (act/365 etc.)
-@item @var{comp_type}:		OPTIONAL: compounding type (disc, cont, simple)
-@item @var{comp_freq}:		OPTIONAL: compounding frequency (1,2,3,4,6,12 payments per year)
-@item @var{interp_discount}: OPTIONAL: interpolation method of discount curve  (default: linear)
-@item @var{interp_spread}:   OPTIONAL: interpolatoin method of spread curve (default: linear)
-@item @var{npv}: 			returs a 1xN vector with all net present values per scenario
-@item @var{MacDur}: 			returs a 1xN vector with all Maccaulay durations
+@item @var{valuation_date}:  Structure with relevant information for 
+specification of the forward:@*
+@item @var{cashflow_dates}:  cashflow_dates is a 1xN vector with all 
+timesteps of the cash flow pattern
+@item @var{cashflow_values}: cashflow_values is a MxN matrix with cash flow 
+pattern.
+@item @var{spread_constant}: a constant spread added to the total yield 
+extracted from discount curve and spread curve (can be used to spread over yield)
+@item @var{discount_nodes}:  tmp_nodes is a 1xN vector with all timesteps of 
+the given curve
+@item @var{discount_rates}:  tmp_rates is a MxN matrix with discount curve 
+rates defined in columns. Each row contains a specific scenario with different 
+curve structure
+@item @var{basis}:   OPTIONAL: day-count convention of instrument (either 
+basis number between 1 and 11, or specified as string (act/365 etc.)
+@item @var{comp_type}:   OPTIONAL: compounding type of instrument 
+(disc, cont, simple)
+@item @var{comp_freq}:   OPTIONAL: compounding frequency of instrument 
+(1,2,3,4,6,12 payments per year)
+@item @var{comp_type_curve}: OPTIONAL: compounding type of curve 
+@item @var{basis_curve}: OPTIONAL: day-count convention of curve 
+@item @var{comp_freq_curve}: OPTIONAL: compounding frequency of curve 
+@item @var{interp_discount}: OPTIONAL: interpolation method of discount curve  
+(default: linear)
+@item @var{npv}: returs a 1xN vector with all net present values per scenario
+@item @var{MacDur}:  returs a 1xN vector with all Maccaulay durations
 @end itemize
-@seealso{timefactor, discount_factor, interpolate_curve}
+@seealso{timefactor, discount_factor, interpolate_curve, convert_curve_rates}
 @end deftypefn
+
+@node 	replacement_script
+@section 	replacement_script
+@cindex 	 Function 	replacement_script
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+ Building filelist
 
 @node 	rollout_cashflows_oop
 @section 	rollout_cashflows_oop
@@ -4196,50 +5917,104 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
-@deftypefn {Function File} {[@var{ret_dates} @var{ret_values}] =} rollout_cashflows_oop (@var{bond_struct})
-@deftypefnx  {Function File} {[@var{ret_dates} @var{ret_values}] =} rollout_cashflows_oop (@var{bond_struct}, @var{tmp_nodes}, @var{tmp_rates}, @var{valuation_date}, @var{method_interpolation})
+@deftypefn {Function File} {[@var{ret_dates} @var{ret_values} @var{accrued_interest}] =} rollout_cashflows_oop (@var{bond_struct})
+@deftypefnx  {Function File} {[@var{ret_dates} @var{ret_values} @var{accrued_interest}] =} rollout_cashflows_oop (@var{bond_struct}, @var{tmp_nodes}, @var{tmp_rates}, @var{valuation_date}, @var{method_interpolation})
 
-Compute the dates and values of cash flows given definitions for fixed rate bonds, floating rate notes and zero coupon bonds.@*
+Compute the dates and values of cash flows given definitions and 
+accrued interests for fixed rate bonds, floating rate notes, 
+amoritizing bonds and zero coupon bonds.@*
 In the 'oop' version no input data checks are performed. @* 
 Pre-requirements:@*
 @itemize @bullet
 @item installed octave finance package
-@item custom functions timefactor, discount_factor, get_forward_rate and interpolate_curve
+@item custom functions timefactor, discount_factor, get_forward_rate and 
+interpolate_curve
 @end itemize
 
 Input and output variables:
 @itemize @bullet
-@item @var{bond_struct}: Structure with relevant information for specification of the bond:@*
-     @itemize @bullet
-     @item bond_struct.type:                	Fixed Rate Bond (FRB), Floating Rate Note (FRN), Zero Coupon Bond (ZCB), Fixed Amortizing Bond (FAB)
-     @item bond_struct.issue_date:          	Issue Date of Fixed Rate bond [DD-Mmm-YYYY]
-     @item bond_struct.maturity_date:       	Maturity Date of Fixed Rate bond  [DD-Mmm-YYYY]
-     @item bond_struct.compounding_type:    	Compounding Type [simple,disc,cont]
-     @item bond_struct.compounding_freq:    	Compounding Frequency for coupon rates per year [1,2,4,12]
-     @item bond_struct.term:                	Term of coupon payments in months [12,6,3,1]
-     @item bond_struct.day_count_convention: 	Day Count Convention 
-     @item bond_struct.notional:            	Notional Amount
-     @item bond_struct.notional_at_start:    Boolean Parameter: Notional Amount paid at start
-     @item bond_struct.notional_at_end:      Boolean Parameter: Notional Amount paid at maturity
-     @item bond_struct.coupon_rate:         	Coupon Rate
-     @item bond_struct.coupon_generation_method: 	Coupon Generation Method (forward, backward, zero)
-     @item bond_struct.business_day_rule:   	Business day rule: days added to payment date
-     @item bond_struct.business_day_direction: 	Business day direction: 1 
-     @item bond_struct.enable_business_day_rule: 	Boolean flag for enabling business day rule
-     @item bond_struct.spread:              	Constant Spread applied to forward rates
-     @item bond_struct.long_first_period:   	Boolean parameter for long first coupon period, otherwise short (regular) period
-     @item bond_struct.long_last_period:    	Boolean parameter for long last coupon period, otherwise short (regular) period
-     @item bond_struct.last_reset_rate:	    Last reset rate used for determining fist cash flow of FRN
-     @item bond_struct.fixed_annuity         Boolean parameter: true = annuity loan (total annuity payment is fixed), false = amortizable loan (amortization rate is fixed, interest payments variable)
-     @item bond_struct.in_arrears            Boolean parameter: true = payments at end of period, false: payments at beginning of period (default)
-     @end itemize
-@item @var{tmp_nodes}: only relevant for type FRN: tmp_nodes is a 1xN vector with all timesteps of the given curve
-@item @var{tmp_rates}: only relevant for type FRN: tmp_rates is a MxN matrix with curve rates defined in columns. Each row contains a specific scenario with different curve structure
-@item @var{ret_dates}: returns a 1xN vector with time in days until all cash flows
-@item @var{ret_values}: returs a MxN matrix with all cash flow values at each time step. Each cf row corresponds to rates defined in tmp_rates
+@item @var{bond_struct}: Structure with relevant information for 
+specification of the bond:@*
+@itemize @bullet
+@item bond_struct.type: Fixed Rate Bond (FRB), Floating Rate Note (FRN), 
+Zero Coupon Bond (ZCB), Fixed Amortizing Bond (FAB)
+@item bond_struct.issue_date: Issue Date of Fixed Rate bond [DD-Mmm-YYYY]
+@item bond_struct.maturity_date: Maturity Date of Fixed Rate bond 
+[DD-Mmm-YYYY]
+@item bond_struct.compounding_type: Compounding Type [simple,disc,cont]
+@item bond_struct.compounding_freq: Compounding Frequency for coupon rates 
+per year [1,2,4,12]
+@item bond_struct.term: Term of coupon payments in months [12,6,3,1]
+@item bond_struct.day_count_convention: Day Count Convention 
+@item bond_struct.notional: Notional Amount
+@item bond_struct.notional_at_start: Boolean Parameter: Notional Amount 
+paid at start
+@item bond_struct.notional_at_end: Boolean Parameter: Notional Amount paid 
+at maturity
+@item bond_struct.coupon_rate: Coupon Rate
+@item bond_struct.coupon_generation_method: Coupon Generation Method 
+(forward, backward, zero)
+@item bond_struct.business_day_rule: Business day rule: days added to payment 
+date
+@item bond_struct.business_day_direction: Business day direction: 1 
+@item bond_struct.enable_business_day_rule: Boolean flag for enabling 
+business day rule
+@item bond_struct.spread: Constant Spread applied to forward rates
+@item bond_struct.long_first_period: Boolean parameter for long first coupon 
+period, otherwise short (regular) period
+@item bond_struct.long_last_period: Boolean parameter for long last coupon 
+period, otherwise short (regular) period
+@item bond_struct.last_reset_rate: Last reset rate used for determining fist 
+cash flow of FRN
+@item bond_struct.fixed_annuity Boolean parameter: true = annuity loan (total
+annuity payment is fixed), false = amortizable loan (amortization 
+rate is fixed, interest payments variable)
+@item bond_struct.in_arrears Boolean parameter: true = payments at end of 
+period, false: payments at beginning of period (default)
+@item bond_struct.prepayment_type Prepayment type (either full or default 
+prepayment). rates extracted according to source.
+@item bond_struct.prepayment_source Prepayment source: either 'curve' or 
+'rate'. For curve @var{tmp_nodes}, @var{tmp_rates} and 
+@var{method_interpolation} are taken
+@item bond_struct.prepayment_flag Boolean parameter: true = use prepayment 
+according to prepayment type  = true
+@item bond_struct.prepayment_rate Constant prepayment rate: use if 
+prepayment_source is set to 'rate'
+@end itemize
+@item @var{tmp_nodes}: only relevant for type FRN: tmp_nodes is a 1xN vector 
+with all timesteps of the given curve
+@item @var{tmp_rates}: only relevant for type FRN: tmp_rates is a MxN matrix 
+with curve rates defined in columns. Each row contains 
+a specific scenario with different curve structure
+@item @var{ret_dates}: returns a 1xN vector with time in days until all cash 
+flows
+@item @var{ret_values}: returs a MxN matrix with all cash flow values at each 
+time step. Each cf row corresponds to rates defined in tmp_rates
 @item @var{valuation_date}: Optional: valuation date
-@item @var{method_interpolation}: Optional: interpolation method used for retrieving forward rate
+@item @var{method_interpolation}: Optional: interpolation method used for 
+retrieving forward rate
 @end itemize
 @seealso{timefactor, discount_factor, get_forward_rate, interpolate_curve}
 @end deftypefn
@@ -4335,6 +6110,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{riskfactor_struct} @var{rf_failed_cell}] =} save_objects(@var{path_output}, @var{riskfactor_struct}, @var{instrument_struct}, @var{portfolio_struct}, @var{stresstest_struct})
 Save provided structs for riskfactors, instruments, positions and stresstests.
@@ -4431,6 +6227,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{R} @var{distr_type} ] =} cenario_generation_MC (@var{corr_matrix}, @var{P}, @var{mc}, @var{copulatype}, @var{nu}, @var{time_horizon})
 
@@ -4531,6 +6348,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{SwaptionBachelierValue}] =} swaption_bachelier (@var{PayerReceiverFlag}, @var{F}, @var{X}, @var{T}, @var{r}, @var{sigma}, @var{m}, @var{tau})
 
@@ -4649,10 +6487,32 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{SwaptionB76Value}] =} swaption_black76 (@var{PayerReceiverFlag}, @var{F}, @var{X}, @var{T}, @var{r}, @var{sigma}, @var{m}, @var{tau})
 
-Compute the price of european interest rate swaptions according to Black76 Pricing Functions.
+Compute the price of european interest rate swaptions according to Black76 
+pricing functions.
 Fast implementation, fully vectorized.@*
 @example
 @group
@@ -4665,16 +6525,139 @@ d2 = d1 - sigma*sqrt(T)
 @*
 Variables:
 @itemize @bullet
-@item @var{PayerReceiverFlag}: Call / Payer '1' (pay fixed) or Put / Receiver '0' (receive fixed, pay floating) swaption
-@item @var{F}: forward rate of underlying interest rate (forward in T years for tau years)
+@item @var{PayerReceiverFlag}: Call / Payer '1' (pay fixed) or Put / Receiver
+ '0' (receive fixed, pay floating) swaption
+@item @var{F}: forward rate of underlying interest rate (
+forward in T years for tau years)
 @item @var{X}: strike rate 
 @item @var{T}: time in days to maturity
 @item @var{r}: annual risk-free interest rate (continuously compounded)
-@item @var{sigma}: implied volatility of the interest rate measured as annual standard deviation
-@item @var{m}: Number of Payments per year (m = 2 -> semi-annual) (continuous compounding is assumed)
+@item @var{sigma}: implied volatility of the interest rate measured as annual 
+standard deviation
+@item @var{m}: Number of Payments per year (m = 2 -> semi-annual) (continuous 
+compounding is assumed)
 @item @var{tau}: Tenor of underlying swap in Years 
 @end itemize
 @seealso{swaption_bachelier}
+@end deftypefn
+
+@node 	test_io
+@section 	test_io
+@cindex 	 Function 	test_io
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {[@var{success_tests} @var{total_tests}] =} test_io(@var{path_testing_folder})
+Perform integration tests for all functions which rely on input and output 
+data. The functions have to be hard coded in this script and rely on validated
+output data.
 @end deftypefn
 
 @node 	timefactor
@@ -4768,11 +6751,33 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
-@deftypefn {Function File} {[@var{tf} @var{dip} @var{dib}] =} timefactor (@var{d1}, @var{d2}, @var{basis})
+@deftypefn {Function File} {[@var{tf} @var{dip} @var{dib}] =} timefactor(@var{d1}, @var{d2}, @var{basis})
 
 Compute the time factor for a specific time period and day count basis.@*
-Depending on day count basis, the time factor is evaluated as (days in period)/(days in year)
+Depending on day count basis, the time factor is evaluated as 
+(days in period) / (days in year)
 
 Input and output variables:
 @itemize @bullet
@@ -4791,13 +6796,130 @@ Input and output variables:
 			@item @var{8} = act/act ISMA
 			@item @var{9} = act/360 ISMA
 			@item @var{10} = act/365 ISMA
-			@item @var{11} = 30/360E (ISMA)
+			@item @var{11} = 30/360E
      @end itemize
 @item @var{df}: 		OUTPUT: discount factor (scalar)
 @item @var{dip}: 	OUTPUT: days in period (nominator of time factor) (scalar)
 @item @var{dib}: 	OUTPUT: days in base (denominator of time factor) (scalar)
 @end itemize
-@seealso{discount_factor, daysact, yeardays}
+@seealso{discount_factor, yeardays}
+@end deftypefn
+
+@node 	unittests
+@section 	unittests
+@cindex 	 Function 	unittests
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {} unittests()
+Call unittests of specified functions and return test statistics.
 @end deftypefn
 
 @node 	unvech
@@ -4891,6 +7013,27 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {@var{m} =} unvech (@var{v}, @var{scale})
 Performs the reverse of @code{vech} on the vector @var{v}.
@@ -4996,9 +7139,30 @@ See also: \args\.
 \\
 @end macro
 
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
 
 @deftypefn {Function File} {[@var{index_struct} @var{curve_struct} @var{id_failed_cell}] =} update_mktdata_objects(@var{mktdata_struct}, @var{index_struct}, @var{riskfactor_struct}, @var{curve_struct})
-Update all market data objects with scenario dependent risk factor and curve shocks. 
+Update all market data objects with scenario dependent risk factor and curve shocks.
 Return index struct and curve struct with scenario dependent absolute values. @*
 Calculate reciprocal FX conversion factors for all exchange rate market objects (e.g. FX_USDEUR = 1 ./ FX_USDEUR).
 During aggregation and instrument currency conversion the appropriate FX exchange rate is always chosen by FX_BasecurrencyForeigncurrency)
