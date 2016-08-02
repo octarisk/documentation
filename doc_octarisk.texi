@@ -331,7 +331,7 @@ Again, the smile is preserved during MC and stress scenarios. There is only one 
 @subsubsection Forward pricing
 @cindex  Pricing, Forwards
 Equity and Bond forwards can be valuated. Therefore market indizes can be set up, which serve as underlyings for the forwards. The value of the forward is calculated as the payoff at maturity (underlying value minus strike) discounted back to the valuation date
-(@xref{pricing_forward_oop} for details).
+(@xref{pricing_forward} for details).
 
 @subsubsection Cash flow instrument pricing
 @cindex  Pricing, Cash flow instruments
