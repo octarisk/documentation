@@ -6726,12 +6726,14 @@ See also: \args\.
   \fi
 @end tex
 
-@deftypefn {Function File} {[@var{ret_dates} @var{ret_values} @var{accrued_interest}] =} rollout_structured_cashflows (@var{valuation_date},  @var{value_type}, @var{instrument}, @var{ref_curve}, @var{vola_surface}, @var{vola_riskfactor})
+@deftypefn {Function File} {[@var{ret_dates} @var{ret_values} @var{accrued_interest}] =} rollout_structured_cashflows (@var{valuation_date},  @var{value_type}, @var{instrument}, @var{ref_curve}, @var{surface}, @var{vriskfactor})
 
-Compute the dates and values of cash flows and 
+Compute the dates and values of cash flows (interest and principal and 
 accrued interests and last coupon date for fixed rate bonds, 
-floating rate notes, amoritizing bonds, zero coupon bonds and 
+floating rate notes, amortizing bonds, zero coupon bonds and 
 structured products like caps and floors.@*
+For FAB, ref_curve is used as prepayment curve, surface for PSA factors,
+riskfactor for IR Curve shock extraction
 
 @seealso{timefactor, discount_factor, get_forward_rate, interpolate_curve}
 @end deftypefn
