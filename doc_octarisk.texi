@@ -8,7 +8,7 @@
 @c                          HEADER
 @c --------------------------------------------------------------------------------------------------------------------
 
-@set VERSION 0.3.1
+@set VERSION 0.3.3
 
 @c Command C:\Program Files (x86)\texinfo\bin>makeinfo --plaintext doc_octarisk.texi
 
@@ -319,6 +319,10 @@ The implied volatility itself is dependent on the option strike level and time t
 is modeled by a moneyness vs. term volatility surface, where changes in the spot price lead to moneyness changes. 
 Therefore, the actual implied volatility behavior (at-the-money implied volatility vs. moneyness vs. term) of the market is preserved for the pricing. 
 
+Amongst simple underlying instruments or indizes, baskets of several indizes or instrument can be used. A diversified basket volatility is calculated which serves as im plied volatility for the option derivative. Baskets itself are modeled as synthetic instruments.
+
+Besides plain vanilla options, closed-form solutions are used for pricing of European Barrier and European Asian options. Continously geometric average asian options are priced by Kemna and Vorst model of 1990, while arithmetic average asian options are priced by Levy (1992) model.
+
 @subsubsection Swaption pricing
 @cindex  Pricing, Swaptions
 European plain-vanilla swaptions are priced via the closed form solution of the Black-76 model or the Bachelier model.
@@ -326,11 +330,11 @@ European plain-vanilla swaptions are priced via the closed form solution of the 
 Again, a calibration is performed to align the model price based on provided input parameters with the observed market price. The calibrated implied volatility spread
 is subsequently added to the modeled volatility as a constant offset.
 The volatility smile for the specific term is also given by volatility cubes. The interest rate implied volatility can be set up by three axes: underlying tenor, swaption term and moneyness. For each of these combinations an implied volatility can be set.
-Again, the smile is preserved during MC and stress scenarios. There is only one risk factor (at-the-money implied volatility) modelled, which provides a scenario dependent constant offset for the volatility cube.
+For Swaption underlyings either discount curves or fixed and floating leg swaps can be used.
 
-@subsubsection Forward pricing
-@cindex  Pricing, Forwards
-Equity and Bond forwards can be valuated. Therefore market indizes can be set up, which serve as underlyings for the forwards. The value of the forward is calculated as the payoff at maturity (underlying value minus strike) discounted back to the valuation date
+@subsubsection Forward and Future pricing
+@cindex  Pricing, Forwards and Futures
+Equity and Bond forwards and futures can be valuated. Therefore market indizes can be set up, which serve as underlyings for the forwards. The value of the forward or future is calculated as the payoff at maturity (underlying value minus strike) discounted back to the valuation date. For futures, net basis and accrued interest can be taken into account.
 (@xref{pricing_forward} for details).
 
 @subsubsection Cash flow instrument pricing
@@ -344,11 +348,21 @@ Credit spreads are modeled as separate risk factors, thus capturing credit sprea
 
 @subsubsection Bond instrument pricing
 @cindex  Pricing, Bond instruments
-The Bond instrument class covers the full spectrum of plain vanilla bond instruments: fixed rate bonds, floating rate notes, fixed and floating swap legs, fixed rate amortizing bonds. During pricing, at first the cash flows are rolled out. The forward rates for calculation of floating payments are scenario dependent. After the rollout is done, a spread over yield is calibrated in order to match the market price with the theoretical value. For calculation of the net present value of the bonds, a discount curve and a spread curve can be set. If the curves have attached risk factors, the pricing will be fully scenario dependent.
+The Bond instrument class covers the full spectrum of plain vanilla bond instruments: fixed rate bonds, floating rate notes, fixed and floating swap legs, fixed rate amortizing bonds, mortage backed securities with prepayments, floating swap legs based on CMS rates. During pricing, at first the cash flows are rolled out. The forward rates for calculation of floating payments are scenario dependent. After the rollout is done, a spread over yield is calibrated in order to match the market price with the theoretical value. For calculation of the net present value of the bonds, a discount curve can be set. If the curves have attached risk factors, the pricing will be fully scenario dependent. CMS floating swaps can also have special cash flowst based on averages or capitalized CMS rates. Moreover, convexity adjustment (according to Hull or Hagan) can be taken into account.
+
+Moreover, bonds with embedded call or put options can be modelled. Therefore a trinomial Hull-White tree is used to price these embedded European or American options. See (@xref{option_bond_hw} for further details.
+
+@subsubsection Cap and floor instrument pricing
+@cindex  Pricing, Cap and Floor instruments
+The CapFloor class covers caps and floor instruments on discount curves. The cash flow rollout of these caps and floors also covers CMS rates and convexity adjustment. Both Black and Normal models are implemented, thus allowing for negative interest rates.
 
 @subsection Synthetic instruments
 @cindex Synthetic instruments
 In order to model a fixed share combination of instruments, the synthetic class was introduced. The value of the synthetic instrument is calculated as the linear combination of all underlying instrument. Synthetic instruments can be used to e.g. model portfolios with full look-through or to combine fixed and floating legs to swaps. Moreover, more complex instrument including option behaviour can be modeled, if e.g. a bond and a option is combined to an instrument with embedded call / put optionality.
+
+@subsection Stochastic instruments
+@cindex Stochastic instruments
+In order to pre-calculate cash flow values and instrument prices in other risk systems, the stochastic instrument class was introduced. Based on modelled risk factor values (e.g. correlated uniformly or normal distributed random variables), random numbers are used to determine quantile numbers and then draw cash flows or values from special curves or surfaces. These objects are used as storage containers for quantile dependent values.
 
 @node Aggregation, Reporting, Instrument valuation, User guide
 @section Aggregation
@@ -405,7 +419,7 @@ After all instruments have been priced, the aggregation starts for all portfolio
 @subsection Class diagram
 @cindex  Class diagram
 @sc{octarisk} was set up in an object oriented programming style for all objects like instruments, risk factors, curves, indizes and surfaces.
-Inside the methods of the aforementioned classes, pricing or interpolation functions are called. 
+Inside the methods of the aforementioned classes, pricing or interpolation functions are called. Please note the class diagram needs to be updated and shows status of release version 0.3.0.
 The following class diagram gives an overview of all classes:
 
 @center @image{octariskclass,22cm}
@@ -498,7 +512,9 @@ The columns of the risk factors file consist of the following entries:
 @item @var{value_baseNMBR}: Start value for the mean reversion (e.g. Ornstein-Uhlenbeck or square root diffusion) processes
 @item @var{mr_levelNMBR}: Mean reversion level
 @item @var{mr_rateNMBR}: Mean reversion rate 
-@item @var{nodeNMBR}: Comma separated parameters used for modeling the stochastic process.
+@item @var{nodeNMBR}: Risk factor node of first dimension (e.g. term node of IR Curve or option term node of index vol surface)
+@item @var{node2NMBR}: Risk factor node of second dimension (e.g. moneyness of index vol surface or Underlying term of IR vol cube)
+@item @var{node3NMBR}: Risk factor node of second dimension (e.g. moneyness of IR vol cube)
 @end itemize
 
 An example of the input file is given:
@@ -506,7 +522,7 @@ An example of the input file is given:
 @example
 @group
 HeaderRISKFACTOR,nameCHAR,idCHAR,typeCHAR,descriptionCHAR,modelCHAR,meanNMBR, ...
-   ... stdNMBR,skewNMBR,kurtNMBR,value_baseNMBR,mr_levelNMBR,mr_rateNMBR,nodeNMBR
+   ... stdNMBR,skewNMBR,kurtNMBR,value_baseNMBR,mr_levelNMBR,mr_rateNMBR,nodeNMBR,node2NMBR,node3NMBR
 Item,RF_EQ_DE,RF_EQ_DE,RF_EQ,Equity Germany,GBM,0,0.18,-0.5,5,9820,,,
 Item,RF_EQ_EUR,RF_EQ_EUR,RF_EQ,Equity Euro,GBM,0,0.18,-0.5,5,,,,
 Item,RF_FX_EURUSD,RF_FX_EURUSD,RF_FX,FX EUR USD,SRD,0,0.08,0,3,1.09,1.2,0.001,
@@ -570,7 +586,7 @@ Item,FUND_BBB,CASH_EUR,1000
 @subsection Instruments
 @cindex Input, Instruments file
 The instruments input file contains the specifications of all instruments which are priced during instrument valuation. The instrument universe is split into different product types. Each of the product type has his own file header, reflecting the huge differences in instrument specification.@*
-The basic header attributes, which all instruments have in common, are given. For detailed information see the class diagram.
+The basic header attributes, which all instruments have in common, are given. For detailed information of additional columns see the class diagram.
 @itemize @bullet
 @item @var{HeaderXXYYZ}: Product type specific header attributes, e.g. CASH, FRB, FRN, SENSI, SYNTH, OPT, FWD, SWAPT, ...
 @item @var{nameCHAR}: Name of the instrument which will be used for the reports. 
@@ -684,22 +700,23 @@ Furthermore, it is also possible to generate a file with just one constant volat
 
 @subsection Marketdata objects file
 @cindex Input, Marketdata objects file
-Market data objects store all relevant objects for full valuation instrument pricing. These objects can be interest and spread curves, aggregated curves (sum of curves), market indizes and exchange rates. The base values of these objects are then shocked by scenario dependent values, which were calculated for the attached risk factors.
-The market data objects are specified in a separate file following the same conventions as for instruments:
+Market data objects store all relevant objects for full valuation instrument pricing. These objects can be interest and spread curves, aggregated curves (sum of curves), market indizes, exchange rates, volatility surfaces and cubes as well as call and put schedules. The base values of these objects can then be shocked by scenario dependent values, which were calculated for the attached risk factors.
+The market data objects are specified in a separate file following the same conventions as the instruments input file:
 @itemize @bullet
 @item @var{HeaderCURVE}: market object specific Header classification for curves
-@item @var{idCHAR}:  Unique ID of the market curve. Note: if it is required that the curve will be shocked during stress tests or in MC scenarios, the ID of the market curve must have an attached risk factor starting with @i{RF_} followed by the market curve ID. Otherwise, an automatic mapping is not possible.
-@item @var{nameCHAR}: Name of the market curve.
+@item @var{idCHAR}:  Unique ID of the market curve. Note: if it is required that the curve will be shocked during stress tests or in MC scenarios, the ID of the market curve must have an attached risk factor starting with @i{RF_} followed by the market curve ID. Otherwise, an automatic mapping is not possible
+@item @var{nameCHAR}: Name of the market curve
 @item @var{typeCHAR}: Type of the curve (e.g. Spread Curve or Discount Curve)
-@item @var{descriptionCHAR}: Description of the object.
-@item @var{method_interpolationCHAR}: Interpolation method for the market curve (e.g. linear or monotone-convex). This interpolation method can be different to the interpolation method from the attached risk factor. For all nodes of the market curve the relative of absolute scenario dependent shock values (Derived from the attached risk factor curve) is interpolated and then applied to the market curve node.
-@item @var{nodesCHAR}: Pipe separated nodes of the market curve in days from the valuation date.
-@item @var{rates_baseCHAR}: Pipe separated rates of the market curve. One rate needed for each specified node.
+@item @var{descriptionCHAR}: Description of the object
+@item @var{method_interpolationCHAR}: Interpolation method for the market curve (e.g. linear or monotone-convex). This interpolation method can be different to the interpolation method from the attached risk factor. For all nodes of the market curve the relative of absolute scenario dependent shock values (Derived from the attached risk factor curve) is interpolated and then applied to the market curve node
+@item @var{nodesCHAR}: Pipe separated nodes of the market curve in days from the valuation date
+@item @var{rates_baseCHAR}: Pipe separated rates of the market curve. One rate needed for each specified node
 @item @var{compounding_typeCHAR}: Compounding type of curve (defaults to continuous)
 @item @var{compounding_freqCHAR}: Compounding frequency of curve (defaults to annual, only relevant if compounding type equals discrete. Otherwise, value will be neglected)
 @item @var{day_count_conventionCHAR}: Day count convention of curve (defaults to act/365)
-@item @var{floorNMBR}: floor rate for base and stress rates. The floor is applied when rates are set or, if there are already specified rates, the new floor is applied to old rates. 
+@item @var{floorNMBR}: floor rate for base and stress rates. The floor is applied when rates are set or, if there are already specified rates, the new floor is applied to old rates 
 @item @var{capNMBR}: cap rate for base and stress rates
+@item @var{american_flagBOOL}: boolean flag for american call and put option schedule
 @end itemize
 
 @itemize @bullet
@@ -707,27 +724,39 @@ The market data objects are specified in a separate file following the same conv
 @item @var{idCHAR}:  Unique ID of the aggregated curve. No stress or MC shocks are applied directly on the aggregated curve. The underlying curves have to be shocked directly.
 @item @var{nameCHAR}: Name of the aggregated market curve.
 @item @var{typeCHAR}: Type of the curve (Aggregated Curve)
-@item @var{descriptionCHAR}: Description of the object.
+@item @var{descriptionCHAR}: Description of the object
 @item @var{method_interpolationCHAR}: Interpolation method for the market curve (e.g. linear or monotone-convex). This interpolation method can be different to the interpolation method from the attached risk factor. For all nodes of the market curve the relative of absolute scenario dependent shock values (Derived from the attached risk factor curve) is interpolated and then applied to the market curve node.
 @item @var{nodesCHAR}: Pipe separated nodes of the market curve in days from the valuation date.
-@item @var{incrementsCHAR}: Pipe separated ID of underlying curve increments. Specify all curve increments which are then used in curve stacking. An incremental spread model can be specified with this procedure.
-@item @var{compounding_typeCHAR}: Compounding type of curve (defaults to continuous). 
+@item @var{incrementsCHAR}: Pipe separated ID of underlying curve increments. Specify all curve increments which are then used in curve stacking. An incremental spread model can be specified with this procedure
+@item @var{compounding_typeCHAR}: Compounding type of curve (defaults to continuous) 
 @item @var{compounding_freqCHAR}: Compounding frequency of curve (defaults to annual, only relevant if compounding type equals discrete. Otherwise, value will be neglected)
 @item @var{day_count_conventionCHAR}: Day count convention of curve (defaults to act/365)
-@item @var{floorNMBR}: floor rate for base and stress rates. The floor is applied when rates are set or, if there are already specified rates, the new floor is applied to old rates.
+@item @var{floorNMBR}: floor rate for base and stress rates. The floor is applied when rates are set or, if there are already specified rates, the new floor is applied to old rates
 @item @var{capNMBR}: cap rate for base and stress rates
 @end itemize
 Please note: If the curve increments of the aggregated curve has differenct settings for compounding type, frequency and day count convention, an automatic conversion will be performed.
 
 @itemize @bullet
-@item @var{HeaderINDEX}: market object specific Header classification for indizes and exchange rates. Basically, all market objects with exactly one scenario dependent value can be stored here.
-@item @var{idCHAR}:  Unique ID of the market index. Note: if it is required that the market index will be shocked during stress tests or in MC scenarios, the ID of the market curve must have an attached risk factor starting with @i{RF_} followed by the market curve ID. Otherwise, an automatic mapping is not possible.
-@item @var{nameCHAR}: Name of the market index.
+@item @var{HeaderINDEX}: market object specific Header classification for indizes and exchange rates. Basically, all market objects with exactly one scenario dependent value can be stored here
+@item @var{idCHAR}:  Unique ID of the market index. Note: if it is required that the market index will be shocked during stress tests or in MC scenarios, the ID of the market curve must have an attached risk factor starting with @i{RF_} followed by the market curve ID. Otherwise, an automatic mapping is not possible
+@item @var{nameCHAR}: Name of the market index
 @item @var{typeCHAR}: Type of the index (e.g. Equity Index, Commodity Index, Exchange Rate)
-@item @var{currencyCHARdescriptionCHAR}: Currency of the object.
+@item @var{currencyCHAR}: Currency of the object
 @item @var{descriptionCHAR}: Description of the object
-@item @var{value_baseNMBR}: Market value of the index.
+@item @var{value_baseNMBR}: Market value of the index
 @end itemize
+
+@itemize @bullet
+@item @var{HeaderSURFACE}: market object specific Header classification for volatility surfaces and cubes. 
+@item @var{idCHAR}:  Unique ID of the market volatility surface.
+@item @var{nameCHAR}: Name of the volatility surface
+@item @var{typeCHAR}: Type of the surface (e.g. INDEX, IR)
+@item @var{descriptionCHAR}: Description of the object
+@item @var{moneyness_typeCHAR}: Moneyness type of volatility surface. Can be K/S for relative moneyness and K-S for absolute moneyness
+@item @var{method_interpolationCHAR}: interpolation method for volatility surface or cube (e.g. nearest or (bi- or tri-)linear)
+@item @var{riskfactorsCHAR}: Pipe separated string with ids of underlying risk factors
+@end itemize
+
 
 @fonttextsize 10
 @example
@@ -743,6 +772,8 @@ HeaderINDEX,idCHAR,nameCHAR,typeCHAR,currencyCHAR,descriptionCHAR,value_baseNMBR
 Index,EQ_DE,DAX30,Equity Index,EUR,DAX Equity Index German Blue Chips,9820
 Index,COM_GOLD,Gold,Commodity Index,USD,Gold 1 Ounce USD,1073
 Index,FX_EURUSD,EUR_USD,Exchange Rate,EUR,EUR USD Exchange rate,1.08
+HeaderSURFACE,idCHAR,nameCHAR,typeCHAR,descriptionCHAR,moneyness_typeCHAR,method_interpolationCHAR,riskfactorsCHAR
+Surface,VOLA_IR_EUR,VOLA_IR_EUR,IR,Test description,K-S,linear,RF_VOLA_IR_EUR_730_365|RF_VOLA_IR_EUR_1825_3650
 @end group
 @end example
 @fonttextsize 11
