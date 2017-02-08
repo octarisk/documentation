@@ -1,0 +1,414 @@
+@menu
+* 	Matrix.help::
+* 	Curve.help::
+@end menu 
+@node 	Matrix.help
+@section 	Matrix.help
+@cindex 	 Function 	Matrix.help
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+@deftypefn{Octarisk Class} {@var{object}} = Matrix(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Matrix()
+
+Class for setting up Matrix objects.
+
+This class contains all attributes and methods related to the following Matrix types:
+
+Correlation
+
+In the following, all methods and attributes are explained and code example is given.
+
+Methods for Matrix object @var{obj}:
+@itemize @bullet
+@item Matrix(@var{id}) or Matrix(): Constructor of a Matrix object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.getValue(@var{xx},@var{yy}): Return matrix value for component on x-Axis @var{xx}
+and component on y-Axis @var{yy}. Component values are recognized as strings.
+
+@item Matrix.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean. True returns 
+documentation string, false (default) return empty string. [static method]
+@end itemize
+
+Attributes of Matrix:
+@itemize @bullet
+@item @var{id}: Matrix id. Has to be unique identifier. Default: empty string.
+@item @var{name}: Matrix name. Default: empty string.
+@item @var{description}: Matrix description. Default: empty string.
+@item @var{type}: Matrix type. Can be [Correlation]
+
+@item @var{components}: String cell specifying matrix components. For symmetric
+correlation  matrizes x and y-axis components are equal.
+@item @var{matrix}: Matrix containing all elements. Has to be of dimension n x n,
+while n is length of @var{components} cell.
+@item @var{components_xx}: Set automatically while setting @var{components} cell
+@item @var{components_yy}: Set automatically while setting @var{components} cell
+@end itemize
+
+
+For illustration see the following example:
+A symmetric 3 x 3 correlation matrix is specified and one specific correlation
+for a set of components as well as the whole matrix is retrieved:
+@example
+@group
+
+m = Matrix();
+component_cell = cell;
+component_cell(1) = 'INDEX_A';
+component_cell(2) = 'INDEX_B';
+component_cell(3) = 'INDEX_C';
+m = m.set('id','BASKET_CORR','type','Correlation','components',component_cell);
+m = m.set('matrix',[1.0,0.3,-0.2;0.3,1,0.1;-0.2,0.1,1]);
+m.get('matrix')
+corr_A_C = m.getValue('INDEX_A','INDEX_C')
+@end group
+@end example
+
+@end deftypefn
+@node 	Curve.help
+@section 	Curve.help
+@cindex 	 Function 	Curve.help
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+@deftypefn{Octarisk Class} {@var{object}} = Curve(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Curve()
+
+Class for setting up Curve objects.
+
+This class contains all attributes and methods related to the following Curve types:
+
+Discount Curve, Spread Curve, Dummy Curve,
+Aggregated Curve, Prepayment Curve,
+Call Schedule, Put Schedule,
+Historical Curve, Inflation Expectation Curve, Shock Curve.
+
+In the following, all methods and attributes are explained and code example is given.
+
+Methods for Curve object @var{obj}:
+@itemize @bullet
+@item Curve(@var{id}) or Curve(): Constructor of a Curve object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.getRate(@var{scenario},@var{node}): Return scenario curve values at given node (in days).
+Interpolation or Extrapolation is performed according to specified methods.
+@var{scenario} can be 'base', 'stress' or a certain MC timestep like '250d'.
+
+@item obj.getValue(@var{scenario}): Return all scenario curve values. @var{scenario}
+can be 'base', 'stress' or a certain MC timestep like '250d'.
+
+@item obj.apply_rf_shocks(@var{scenario},@var{riskfactor_object}): Set shock curve values for @var{scenario}
+Scenario shocks from provided @var{riskfactor_object} are used
+
+@item obj.isProp(@var{attribute}): Return true, if attribute is a property of Curve class. Return false otherwise.
+
+@item Curve.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean. True returns 
+documentation string, false (default) return empty string. [static method]
+@end itemize
+
+Attributes of Curves:
+@itemize @bullet
+@item @var{id}: Curve id. Has to be unique identifier. Default: empty string.
+@item @var{name}: Curve name. Default: empty string.
+@item @var{description}: Curve description. Default: empty string.
+@item @var{type}: Curve type. Can be [Discount Curve (default), Spread Curve, Dummy Curve,
+Aggregated Curve, Prepayment Curve,
+Call Schedule, Put Schedule,
+Historical Curve, Inflation Expectation Curve, Shock Curve]
+
+@item @var{day_count_convention}: Day count convention of curve. See 'help get_basis' 
+for details. Default: 'act/365'\n@item @var{basis}: Basis belonging to day count convention. Value is set automatically.
+@item @var{compounding_type}: Compounding type. Can be continuous, discrete or simple. 
+Default: 'cont'
+@item @var{compounding_freq}: Compounding frequency used for discrete compounding.
+Can be [daily, weekly, monthly, quarterly, semi-annual, annual]. Default: 'annual'
+
+@item @var{curve_function}: Type Aggregated Curve only: Specifies how 
+to aggregated curves, which are specified in attribute increments.
+Can be [sum, product, divide, factor]. [sum, product, divide] specifies
+mathematical operation applied on all curve increments.
+[factor] allows only one increment and uses @var{curve_parameter} for multiplication. Default: 'sum'
+@item @var{curve_parameter}: Type Aggregated Curve only: used as multiplication
+parameter for factor @var{curve_function}.
+@item @var{increments}: Type Aggregated Curve only: List of IDs of all
+underlying curves. Use @var{curve_function} to specify how to aggregated curves.
+
+@item @var{method_extrapolation}: Extrapolation method. Can be 'constant' (default) or 'linear'.
+@item @var{method_interpolation}: Interpolation method. See 'help interpolate_curve' for details. Default: 'linear'.
+@item @var{ufr}: Smith-Wilson Ultimate Forward Rate. Used for Smith-Wilson interpolation and extrapolation. Defaults to 0.042.
+@item @var{alpha}: Smith-Wilson Reversion parameter. Used for Smith-Wilson interpolation and extrapolation. Defaults to 0.19.
+
+@item @var{cap}: Cap rate. Cap rate is enforced on all set rates. Set to empty string for no cap rate. Default: empty string.
+@item @var{floor}: Floor rate. Floor rate is enforced on all existing and future rates. Set to empty string for no floor rate. Default: empty string.
+
+@item @var{nodes}: Vector with curve nodes.
+@item @var{rates_base}: Vector with curve rates. Has to be of same column size as @var{nodes}.
+@item @var{rates_mc}: Matrix with curve rates. Has to be of same column size as @var{nodes}.
+Columns: nodes, Lines: scenarios. MC rates for several MC timesteps are stored in layers.
+@item @var{rates_stress}: Matrix with curve rates. Has to be of same  as @var{nodes}.
+Columns correspond to nodes, lines correspond to scenarios.
+@item @var{timestep_mc}: String Cell array with MC timesteps. Automatically appended if values for new timesteps are set.
+
+@item @var{shocktype_mc}: Specify how to apply risk factor shocks in Monte Carlo
+scenarios and for method apply_rf_shocks. Can be [absolute, relative, sln_relative].
+Automatically set by scripts. Default: absolute
+@item @var{shocktype_stress}: Specify Stress risk factor shocks for method apply_rf_shocks.
+Can be [absolute, relative]
+by stree scenario configuration.
+@item @var{sln_level}: Vector with term specific shift level for risk factors modelled with shifted log-normal model.
+Automatically set by script during curve setup.
+@item @var{american_flag}: Flag for American (true) or European (false) call feature on bonds. Valid only if Curve type is  call or put schedule. Default: false.
+@end itemize
+
+
+For illustration see the following example:
+A discount curve c is specified. A shock curve s provides absolute shocks for stress
+and relative shocks for MC scenarios, which are linearly interpolated and
+subsequently applied to the discount curve c. In the end, stress and MC
+discount rates are interpolated for given nodes with method getRate, while all curve rates are extracted
+with getValue.
+@example
+@group
+
+c = Curve();
+c = c.set('id','Discount_Curve','type','Discount Curve', ...
+'nodes',[365,3650,7300],'rates_base',[0.01,0.02,0.04], ...
+'method_interpolation','linear','compounding_type','continuous', ...
+'day_count_convention','act/365');
+s = Curve();
+s = s.set('id','IR Shock','type','Shock Curve','nodes',[365,7300], ...
+'rates_base',[],'rates_stress',[0.01,0.01;0.02,0.02;-0.01,-0.01;-0.01,0.01], ...
+'rates_mc',[1.1,1.1;0.9,0.9;1.2,0.8;0.8,1.2],'timestep_mc','250d', ...
+'method_interpolation','linear','shocktype_stress','absolute', ...
+'shocktype_mc','relative');
+c = c.apply_rf_shock('stress',s);
+c = c.apply_rf_shock('250d',s);
+c_base = c.getRate('base',1825)
+c_rate_stress = c.getRate('stress',1825)
+c_rate_250d = c.getRate('250d',1825)
+c_rates_250d = c.getValue('250d')
+@end group
+@end example
+
+@end deftypefn
