@@ -25,13 +25,16 @@
 * 	getCapFloorRate::
 * 	get_basis::
 * 	get_basket_volatility::
+* 	get_bond_tf_rates::
 * 	get_cms_rate_hagan::
 * 	get_cms_rate_hull::
 * 	get_documentation::
+* 	get_documentation_classes::
 * 	get_forward_rate::
 * 	get_gpd_var::
 * 	get_marginal_distr_pearson::
 * 	get_sub_object::
+* 	get_sub_struct::
 * 	harrell_davis_weight::
 * 	ind2sub_tril::
 * 	instrument_valuation::
@@ -56,6 +59,7 @@
 * 	option_bond_hw::
 * 	option_bs::
 * 	option_willowtree::
+* 	perform_rf_stat_tests::
 * 	pricing_forward::
 * 	pricing_npv::
 * 	profiler_analysis::
@@ -187,7 +191,7 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
- Delete unneccessary wrapper scripts
+ Delete unneccessary scripts
 
 @node 	any2str
 @section 	any2str
@@ -2899,6 +2903,8 @@ Non-linear constraint functions provided by fmincon's function handle
 @code{nonlincon} are NOT processed. @*
 Return codes are also mapped according to fmincon expected return codes. 
 Note: This function mimics the behaviour of fmincon only.@*
+In order to speed up minimizing, a bounded minimization algorithm fminbnd
+is used in a first try. If this fails, sqp algorithm is called.
 
 Matlab:
 @example
@@ -2935,8 +2941,8 @@ Explanation of Input Parameters:
 @item @var{b}: inequality constraint vector
 @item @var{Aeq}: equality constraint matrix
 @item @var{beq}: equality constraint vector
-@item @var{lb}: lower bound
-@item @var{ub}: upper bound
+@item @var{lb}: lower bound (required for fminbnd, defaults to -10)
+@item @var{ub}: upper bound (required for fminbnd, defaults to 10)
 @end itemize
 @seealso{sqp}
 @end deftypefn
@@ -3507,6 +3513,166 @@ so the volatility has to be calculated during each basket option valuation.
 
 @end deftypefn
 
+@node 	get_bond_tf_rates
+@section 	get_bond_tf_rates
+@cindex 	 Function 	get_bond_tf_rates
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {[@var{tf_vec} @var{rate_vec} @var{df_vec}] =} get_bond_tf_rates(@var{valuation_date}, @var{cashflow_dates}, @var{cashflow_values}, @var{spread_constant}, @var{discount_nodes}, @var{discount_rates}, @var{basis}, @var{comp_type}, @var{comp_freq}, @var{interp_discount})
+
+Compute the time factors, rates and discount factors for a
+given cash flow pattern according to a given discount curve 
+and day count convention etc.@*
+Pre-requirements:@*
+@itemize @bullet
+@item installed octave financial package
+@item custom functions timefactor, discount_factor, interpolate_curve, 
+and convert_curve_rates
+@end itemize
+
+Input and output variables:
+@itemize @bullet
+@item @var{valuation_date}:  Structure with relevant information for 
+specification of the forward:@*
+@item @var{cashflow_dates}:  cashflow_dates is a 1xN vector with all 
+timesteps of the cash flow pattern
+@item @var{cashflow_values}: cashflow_values is a MxN matrix with cash flow 
+pattern.
+@item @var{spread_constant}: a constant spread added to the total yield 
+extracted from discount curve and spread curve (can be used to spread over yield)
+@item @var{discount_nodes}:  tmp_nodes is a 1xN vector with all timesteps of 
+the given curve
+@item @var{discount_rates}:  tmp_rates is a MxN matrix with discount curve 
+rates defined in columns. Each row contains a specific scenario with different 
+curve structure
+@item @var{basis}:   OPTIONAL: day-count convention of instrument (either 
+basis number between 1 and 11, or specified as string (act/365 etc.)
+@item @var{comp_type}:   OPTIONAL: compounding type of instrument 
+(disc, cont, simple)
+@item @var{comp_freq}:   OPTIONAL: compounding frequency of instrument 
+(1,2,3,4,6,12 payments per year)
+@item @var{comp_type_curve}: OPTIONAL: compounding type of curve 
+@item @var{basis_curve}: OPTIONAL: day-count convention of curve 
+@item @var{comp_freq_curve}: OPTIONAL: compounding frequency of curve 
+@item @var{interp_discount}: OPTIONAL: interpolation method of discount curve 
+@item @var{sensi_flag}: OPTIONAL: boolean variable (calculate sensitivities)
+(default: linear)
+@item @var{tf_vec}: returns a Mx1 vector with time factors per cash flow date
+@item @var{rate_vec}:  returns a Mx1 vector with rates per cf date
+@item @var{df_vec}:  returns a Mx1 vector with discount factors per cf date
+method)
+@end itemize
+@seealso{timefactor, discount_factor, interpolate_curve, convert_curve_rates}
+@end deftypefn
+
 @node 	get_cms_rate_hagan
 @section 	get_cms_rate_hagan
 @cindex 	 Function 	get_cms_rate_hagan
@@ -3893,6 +4059,128 @@ See also: \args\.
 @deftypefn {Function File} {} get_documentation(@var{type}, @var{path_octarisk}, @var{path_documentation})
 Print documentation for all Octave functions in specified path. 
 The documentation is extracted from the function headers and printed to a 
+file 'functions.texi', 'functionname.html' or to standard output if a  
+specific format (texinfo,  html, txt) is set.
+
+The path to all files has to be set in the variable path_documentation.
+@end deftypefn
+
+@node 	get_documentation_classes
+@section 	get_documentation_classes
+@cindex 	 Function 	get_documentation_classes
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {} get_documentation_classes(@var{type}, @var{path_octarisk}, @var{path_documentation})
+Print documentation for all Octave Class definitions in specified path. 
+The documentation is extracted from the static class methods and printed to a 
 file 'functions.texi', 'functionname.html' or to standard output if a  
 specific format (texinfo,  html, txt) is set.
 
@@ -4442,6 +4730,124 @@ See also: \args\.
 
 @deftypefn {Function File} {[@var{match_obj} @var{ret_code}] =} get_sub_object(@var{input_struct}, @var{input_id})
 Return the object contained in a structure  matching a given ID. 
+Return code 1 (success) and 0 (fail).
+@end deftypefn
+
+@node 	get_sub_struct
+@section 	get_sub_struct
+@cindex 	 Function 	get_sub_struct
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {[@var{match_struct} @var{ret_code}] =} get_sub_object(@var{input_struct}, @var{input_id})
+Return the sub-structure contained in a structure matching a given ID. 
 Return code 1 (success) and 0 (fail).
 @end deftypefn
 
@@ -5093,7 +5499,7 @@ See also: \args\.
 @end tex
 
 @deftypefn {Function File} {} interpolate_curve (@var{nodes}, @var{rates}, @var{timestep})
-@deftypefnx {Function File} {} interpolate_curve (@var{nodes}, @var{rates}, @var{timestep}, @var{ufr}, @var{alpha})
+@deftypefnx {Function File} {} interpolate_curve (@var{nodes}, @var{rates}, @var{timestep}, @var{interp_method}, @var{ufr}, @var{alpha}, @var{extrap_method})
 
 Calculate an interpolated rate on a curve for a given timestep.@*
 Supported methods are: linear (default), moneymarket, exponential, loglinear, 
@@ -5113,10 +5519,12 @@ Explanation of Input Parameters of the interpolation curve function:
 						different curve structure
 @item @var{timestep}: is a scalar, specifiying the interpolated timestep on 
 						vector nodes
+@item @var{interp_method}: OPTIONAL: interpolation method
 @item @var{ufr}:   OPTIONAL: (only used for smith-wilson): ultimate forward 
 								rate (default: last liquid point)
 @item @var{alpha}: OPTIONAL: (only used for smith-wilson): reversion speed 
 								to ultimate forward rate (default: 0.1)
+@item @var{extrap_method}: OPTIONAL: extrapolation method
 @end itemize
 @seealso{interp1, interp2, interp3, interpn}
 @end deftypefn
@@ -6411,7 +6819,7 @@ See also: \args\.
   \fi
 @end tex
 
-@deftypefn {Function File} {[@var{rf_ir_cur_cell} @var{curve_struct}] =} load_volacubes(@var{curve_struct}, @var{riskfactor_struct}, @var{mc_timesteps}, @var{path_output}, @var{saving})
+@deftypefn {Function File} {[@var{rf_ir_cur_cell} @var{curve_struct}] =} load_yieldcurves(@var{curve_struct}, @var{riskfactor_struct}, @var{mc_timesteps}, @var{path_output}, @var{saving})
 Generate curve objects from risk factor objects. Store all curves in provided 
 struct and return the final struct and a cell containing all interest rate 
 risk factor currency / ratings.
@@ -7582,6 +7990,124 @@ optimized by Currans Method to fulfill variance constraint (default: 20)
 @seealso{option_binomial, option_bs, option_exotic_mc}
 @end deftypefn
 
+@node 	perform_rf_stat_tests
+@section 	perform_rf_stat_tests
+@cindex 	 Function 	perform_rf_stat_tests
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} { [@var{retcode}] =} perform_rf_stat_tests(@var{riskfactor_cell},@var{riskfactor_struct},@var{RndMat},@var{distr_type})
+Perform statistical tests on risk factor shock vector. Return 1 if all tests
+pass, return 255 if at least one test fails.
+@end deftypefn
+
 @node 	pricing_forward
 @section 	pricing_forward
 @cindex 	 Function 	pricing_forward
@@ -7860,7 +8386,8 @@ basis number between 1 and 11, or specified as string (act/365 etc.)
 @item @var{comp_type_curve}: OPTIONAL: compounding type of curve 
 @item @var{basis_curve}: OPTIONAL: day-count convention of curve 
 @item @var{comp_freq_curve}: OPTIONAL: compounding frequency of curve 
-@item @var{interp_discount}: OPTIONAL: interpolation method of discount curve  
+@item @var{interp_discount}: OPTIONAL: interpolation method of discount curve 
+@item @var{sensi_flag}: OPTIONAL: boolean variable (calculate sensitivities)
 (default: linear)
 @item @var{npv}: returns a Mx1 vector with all net present values per scenario
 @item @var{MacDur}:  returns a Mx1 vector with all Macaulay durations
@@ -8354,7 +8881,7 @@ See also: \args\.
   \fi
 @end tex
 
-@deftypefn {Function File} {[@var{ret_dates} @var{ret_values} @var{accrued_interest}] =} rollout_structured_cashflows (@var{valuation_date},  @var{value_type}, @var{instrument}, @var{ref_curve}, @var{surface}, @var{vriskfactor})
+@deftypefn {Function File} {[@var{ret_dates} @var{ret_values} @var{accrued_interest}] =} rollout_structured_cashflows (@var{valuation_date}, @var{value_type}, @var{instrument}, @var{ref_curve}, @var{surface}, @var{riskfactor})
 
 Compute the dates and values of cash flows (interest and principal and 
 accrued interests and last coupon date for fixed rate bonds, 

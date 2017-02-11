@@ -5,7 +5,7 @@
 @node 	Matrix.help
 @section 	Matrix.help
 @cindex 	 Function 	Matrix.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -179,7 +179,7 @@ corr_A_C = m.getValue('INDEX_A','INDEX_C')
 @node 	Curve.help
 @section 	Curve.help
 @cindex 	 Function 	Curve.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
