@@ -423,7 +423,7 @@ After all instruments have been priced, the aggregation starts for all portfolio
 Inside the methods of the aforementioned classes, pricing or interpolation functions are called. Please note the class diagram needs to be updated and shows status of release version 0.3.0.
 The following class diagram gives an overview of all classes:
 
-@center @image{octariskclass,22cm}
+@image{octariskclass,21cm}
 
 See the class documentation in the next chapter for further information.
 
