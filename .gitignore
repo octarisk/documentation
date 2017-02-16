@@ -12,4 +12,5 @@
 *.vr
 *.html
 *.texi~
+*.mat
 # exclude the following folders
