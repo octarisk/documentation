@@ -12,7 +12,7 @@
 @node 	Matrix.help
 @section 	Matrix.help
 @cindex 	 Function 	Matrix.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -188,7 +188,7 @@ corr_A_C = m.getValue('INDEX_A','INDEX_C')
 @node 	Curve.help
 @section 	Curve.help
 @cindex 	 Function 	Curve.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -433,7 +433,7 @@ c_rates_250d = c.getValue('250d')
 @node 	Forward.help
 @section 	Forward.help
 @cindex 	 Function 	Forward.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -645,7 +645,7 @@ f.getValue('base')
 @node 	Option.help
 @section 	Option.help
 @cindex 	 Function 	Option.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -889,12 +889,14 @@ disp('Calibrating volatility spread over yield:')
 o = o.set('value_base',100);
 o = o.calc_vola_spread('31-Mar-2016',i,c,v);
 o.getValue('base')
+@end group
+@end example
 
 @end deftypefn
 @node 	Cash.help
 @section 	Cash.help
 @cindex 	 Function 	Cash.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1072,7 +1074,7 @@ value_stress = c.getValue('stress');
 @node 	Debt.help
 @section 	Debt.help
 @cindex 	 Function 	Debt.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1269,7 +1271,7 @@ d.getValue('stress')
 @node 	Sensitivity.help
 @section 	Sensitivity.help
 @cindex 	 Function 	Sensitivity.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1500,7 +1502,7 @@ Stress results are [119.7217363121810;88.6920436717158].
 @node 	Riskfactor.help
 @section 	Riskfactor.help
 @cindex 	 Function 	Riskfactor.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1718,7 +1720,7 @@ r = r.set('id','RF_EUR-SWAP_3Y','name','RF_EUR-SWAP_3Y', ...
 @node 	Index.help
 @section 	Index.help
 @cindex 	 Function 	Index.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2015 John W. Eaton
 @c
 @c This file is part of Octave.
 @c

@@ -62,6 +62,7 @@
 * 	perform_rf_stat_tests::
 * 	pricing_forward::
 * 	pricing_npv::
+* 	print_class2dot::
 * 	profiler_analysis::
 * 	replacement_script::
 * 	return_checked_input::
@@ -3509,7 +3510,17 @@ See also: \args\.
 
 Return diversified volatilities for synthetic basket instruments.
 The diversified volatility is dependent on the option maturity and strike,
-so the volatility has to be calculated during each basket option valuation.
+so the volatility has to be calculated for each basket option valuation.
+The following two methods are implemented:
+@itemize @bullet
+@item @var{Levy 1992}: Levy uses a log-normal density as a first-order 
+approximation to the true density. This holds for small maturities or
+volatilities only, since a weighted sum of log-normal distribution is not a log-normal
+distribution by itself.
+@item @var{VCV approach}: Assuming a normal distribution of underlying, the
+basket volatility is calculated by sigma = sqrt(w'*C*w) with Covariance Matrix C
+and the linear-combinations vector w.
+@end itemize
 
 @end deftypefn
 
@@ -8223,7 +8234,7 @@ See also: \args\.
 
 @deftypefn {Function File} {[@var{theo_value} ] =} pricing_forward (@var{valuation_date}, @var{forward}, @var{discount_curve_object}, @var{underlying_object}, @var{und_curve_object})
 
-Compute the theoretical value and price of equity and bond forwards and 
+Compute the theoretical value and price of FX, equity and bond forwards and 
 futures.@*
 
 Input and output variables:
@@ -8398,6 +8409,120 @@ method)
 @end itemize
 @seealso{timefactor, discount_factor, interpolate_curve, convert_curve_rates}
 @end deftypefn
+
+@node 	print_class2dot
+@section 	print_class2dot
+@cindex 	 Function 	print_class2dot
+@c Copyright (C) 2012-2015 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+ get all classes in folder and extract all Instrument classes
 
 @node 	profiler_analysis
 @section 	profiler_analysis
