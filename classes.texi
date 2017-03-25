@@ -1,11 +1,18 @@
 @menu
 * 	Matrix.help::
 * 	Curve.help::
+* 	Forward.help::
+* 	Option.help::
+* 	Cash.help::
+* 	Debt.help::
+* 	Sensitivity.help::
+* 	Riskfactor.help::
+* 	Index.help::
 @end menu 
 @node 	Matrix.help
 @section 	Matrix.help
 @cindex 	 Function 	Matrix.help
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -121,9 +128,11 @@ Class for setting up Matrix objects.
 
 This class contains all attributes and methods related to the following Matrix types:
 
-Correlation
+@itemize @bullet
+@item Correlation: specifies a symmetric correlation matrix.
+@end itemize
 
-In the following, all methods and attributes are explained and code example is given.
+In the following, all methods and attributes are explained and a code example is given.
 
 Methods for Matrix object @var{obj}:
 @itemize @bullet
@@ -137,11 +146,11 @@ Methods for Matrix object @var{obj}:
 and component on y-Axis @var{yy}. Component values are recognized as strings.
 
 @item Matrix.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
-If empty, defaults to plain text. Returnflag is boolean. True returns 
-documentation string, false (default) return empty string. [static method]
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
 @end itemize
 
-Attributes of Matrix:
+Attributes of Matrix objects:
 @itemize @bullet
 @item @var{id}: Matrix id. Has to be unique identifier. Default: empty string.
 @item @var{name}: Matrix name. Default: empty string.
@@ -179,7 +188,7 @@ corr_A_C = m.getValue('INDEX_A','INDEX_C')
 @node 	Curve.help
 @section 	Curve.help
 @cindex 	 Function 	Curve.help
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -295,12 +304,21 @@ Class for setting up Curve objects.
 
 This class contains all attributes and methods related to the following Curve types:
 
-Discount Curve, Spread Curve, Dummy Curve,
-Aggregated Curve, Prepayment Curve,
-Call Schedule, Put Schedule,
-Historical Curve, Inflation Expectation Curve, Shock Curve.
+@itemize @bullet
+@item Discount Curve: specify discount rates. Can be used as underlying for aggregated curves.
+@item Spread Curve: specify spread rates. Can be used as underlying for aggregated curves.
+@item Dummy Curve: used as default curve with no special meaning
+@item Aggregated Curve: stacked curve which combines underlying curves by aggregation functions (e.g. sum, factor)
+@item Prepayment Curve: specify prepayment rates per node (e.g. PSA curves).
+@item Call Schedule: curve used for Bonds with embedded call options
+@item Put Schedule: curve used for Bonds with embedded put options
+@item Historical Curve: curve with historical rates of index levels. Used for inflation linked or averaging instruments
+@item Inflation Expectation Curve: specify inflation expectation rates used for inflation linked instrument pricing
+@item Shock Curve: specify absolute or relative shocks per node, which can then be applied to other Curve types.
+@end itemize
 
-In the following, all methods and attributes are explained and code example is given.
+
+In the following, all methods and attributes are explained and a code example is given.
 
 Methods for Curve object @var{obj}:
 @itemize @bullet
@@ -323,11 +341,11 @@ Scenario shocks from provided @var{riskfactor_object} are used
 @item obj.isProp(@var{attribute}): Return true, if attribute is a property of Curve class. Return false otherwise.
 
 @item Curve.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
-If empty, defaults to plain text. Returnflag is boolean. True returns 
-documentation string, false (default) return empty string. [static method]
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
 @end itemize
 
-Attributes of Curves:
+Attributes of Curve objects:
 @itemize @bullet
 @item @var{id}: Curve id. Has to be unique identifier. Default: empty string.
 @item @var{name}: Curve name. Default: empty string.
@@ -344,7 +362,7 @@ Default: 'cont'
 @item @var{compounding_freq}: Compounding frequency used for discrete compounding.
 Can be [daily, weekly, monthly, quarterly, semi-annual, annual]. Default: 'annual'
 
-@item @var{curve_function}: Type Aggregated Curve only: Specifies how 
+@item @var{curve_function}: Type Aggregated Curve only: specifies how 
 to aggregated curves, which are specified in attribute increments.
 Can be [sum, product, divide, factor]. [sum, product, divide] specifies
 mathematical operation applied on all curve increments.
@@ -408,6 +426,1479 @@ c_base = c.getRate('base',1825)
 c_rate_stress = c.getRate('stress',1825)
 c_rate_250d = c.getRate('250d',1825)
 c_rates_250d = c.getValue('250d')
+@end group
+@end example
+
+@end deftypefn
+@node 	Forward.help
+@section 	Forward.help
+@cindex 	 Function 	Forward.help
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+@deftypefn{Octarisk Class} {@var{object}} = Forward(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Forward()
+
+Class for setting up Forward and Future objects.
+Possible underlyings are bonds, equities and FX rates. Therefore the following Forward types
+are introduced:
+
+@itemize @bullet
+@item Bond: Forward on bond underlyings. Underlying instrument will be priced incl. accrued interest.
+@item Equity: Forward on equity underlyings like stocks or equity funds. Only Continuous dividends are possible.
+@item FX: Forward on currencies. Price is depending on underlying price and foreign and domestic discount factors.
+@item EquityFuture: Standardized contract on equity underlyings. A net basis can be specified.
+@item BondFuture: Standardized contract on Bond underlyings. A net basis can be specified.
+@end itemize
+
+In the following, all methods and attributes are explained and a code example is given.
+
+Methods for Forward object @var{obj}:
+@itemize @bullet
+@item Forward(@var{id}) or Forward(): Constructor of a Forward object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.calc_value(@var{valuation_date},@var{scenario}, @var{discount_curve_object}, @var{underlying_object}, @var{und_curve_object})
+Calculate the value of Forwards based on valuation date, scenario type, discount curve and underlying instruments.
+Underlying discount curve @var{und_curve_object} is used for Forwards on Bond or FX rates only.
+
+@item obj.getValue(@var{scenario}): Return Forward value for given @var{scenario}.
+Method inherited from Superclass @var{Instrument}
+
+@item Forward.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
+@end itemize
+
+Attributes of Forward objects:
+@itemize @bullet
+@item @var{id}: Instrument id. Has to be unique identifier. (Default: empty string)
+@item @var{name}: Instrument name. (Default: empty string)
+@item @var{description}: Instrument description. (Default: empty string)
+@item @var{value_base}: Base value of instrument of type real numeric. (Default: 0.0)
+@item @var{currency}: Currency of instrument of type string. (Default: 'EUR')
+During instrument valuation and aggregation, FX conversion takes place if corresponding FX rate is available.
+@item @var{asset_class}: Asset class of instrument. (Default: 'derivative')
+@item @var{type}: Type of instrument, specific for class. Set to 'Forward'.
+@item @var{value_stress}: Line vector with instrument stress scenario values.
+@item @var{value_mc}: Line vector with instrument scenario values.
+MC values for several @var{timestep_mc} are stored in columns.
+@item @var{timestep_mc}: String Cell array with MC timesteps. If new timesteps are set, values are automatically appended.
+
+@item @var{issue_date}:  Issue date of Forward (date in format DD-MMM-YYYY)
+@item @var{maturity_date}:  Maturity date of Forward (date in format DD-MMM-YYYY)
+@item @var{day_count_convention}: Day count convention of curve. See 'help get_basis' 
+for details (Default: 'act/365')
+@item @var{compounding_type}: Compounding type. Can be continuous, discrete or simple. 
+(Default: 'cont')
+@item @var{compounding_freq}: Compounding frequency used for discrete compounding.
+Can be [daily, weekly, monthly, quarterly, semi-annual, annual]. (Default: 'annual')
+@item @var{strike_price}: Strike price (Default: 0.0)
+@item @var{underlying_id}:ID of underlying object. Default: '')
+@item @var{underlying_price_base}:  Underlying base price used only,
+if underlying object is a risk factor. Risk factor shocks are applied to underlying base price. (Default: 0.0)
+@item @var{underlying_sensitivity}:  Underlying sensitivity used only,
+if underlying object is a risk factor. Risk factor shocks are scaled by this sensitivity (Default: 1.0)
+@item @var{discount_curve}: Discount curve (Default: 'IR_EUR')
+@item @var{foreign_curve}:  Foreign curve, used for Bond and FX Forwards only (Default: 'IR_USD')
+@item @var{multiplier}: Multiplier. Used to scale price and value of one constract. (Default: 1)
+@item @var{dividend_yield}:  Dividend yield is part of total cost of carry. Used for Equity Forwards only. (Default: 0.0)
+@item @var{convenience_yield}:  Convenience yield is part of total cost of carry. Used for Equity Forwards only. (Default: 0.0)
+@item @var{storage_cost}:  Storage cost (yield) is part of total cost of carry. Used for Equity Forwards only. (Default: 0.0)
+@item @var{spread}:  Unsued: Spread of Forward (Default: 0.0) 
+@item @var{cf_dates}: Unused: Cash flow dates (Default: [])
+@item @var{cf_values}: Unused: Cash flow values (Default: [])
+@item @var{component_weight}:  Used for Bond futures only. Scale future future price.
+@item @var{net_basis}:  Net basis of futures. Used only, if @var{calc_price_from_netbasis} is set to true.
+@item @var{calc_price_from_netbasis}: Boolean Flag. True: use @var{net_basis} to calculate future price. (Default: false).
+@end itemize
+
+
+For illustration see the following example:
+An equity forward with 10 years to maturity, an underlying index and a discount curve are set up
+and the forward value (-27.2118960639903) is calculated and retrieved:
+@example
+@group
+
+c = Curve();
+c = c.set('id','IR_EUR','nodes',[365,3650,7300],'rates_base',[0.0001002070,0.0045624391,0.009346842],'method_interpolation','linear');
+i = Index();
+i = i.set('value_base',326.900);
+f = Forward();
+f = f.set('name','EQ_Forward_Index_Test','maturity_date','26-Mar-2036','strike_price',426.900);
+f = f.set('compounding_freq','annual');
+f = f.calc_value('31-Mar-2016','base',c,i);
+f.getValue('base')
+@end group
+@end example
+
+@end deftypefn
+@node 	Option.help
+@section 	Option.help
+@cindex 	 Function 	Option.help
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+@deftypefn{Octarisk Class} {@var{object}} = Option(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Option()
+
+Class for setting up Option objects.
+Possible underlyings are financial instruments or indizes. Therefore the following Option types
+are introduced:
+
+@itemize @bullet
+@item OPT_EUR_C: European Call option priced by Black-Scholes model
+@item OPT_EUR_P: European Put option priced by Black-Scholes model
+@item OPT_AM_C: American Call option priced by Willow tree model or Bjerksund-Stensland approximation
+@item OPT_AM_P: European Put option priced by Willow tree model or Bjerksund-Stensland approximation
+@item OPT_BAR_C: European Barrier Call option. Can have all combinations of out or in and up or down barrier types. Priced with Merton, Reiner, Rubinstein model.
+@item OPT_BAR_P: European Barrier Put option. Same restrictions as Barrier Call options.
+@item OPT_ASN_C: European Asian Call option. Average rate only. The following compounding types can be used:
+geometric continuous (Kemna-Vorst90 pricing model) or arithmetic continuous (Levy pricing model)
+@item OPT_ASN_P: European Asian Put option. Same restrictions as Asian Call options.
+@end itemize
+
+In the following, all methods and attributes are explained and a code example is given.
+
+Methods for Option object @var{obj}:
+@itemize @bullet
+@item Option(@var{id}) or Option(): Constructor of a Option object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.calc_value(@var{valuation_date},@var{scenario}, @var{underlying}, @var{discount_curve}, @var{volatility_surface}, @var{path_static})
+Calculate the value of Options based on valuation date, scenario type, discount curve, underlying instrument and volatility surface.
+The pricing model is chosen based on Option type and instrument model attributes.
+A path to precalculated Willow trees for pricing American options by Willowtree model can be provided.
+
+@item obj.calc_greeks(@var{valuation_date},@var{scenario}, @var{underlying}, @var{discount_curve}, @var{volatility_surface}, @var{path_static})
+Calculate sensitivities (the Greeks) for the given Option instrument.
+For plain-vanilla European Options the Greeks are calculated by Black-Scholes pricing.
+The Greeks of all other Option types will be calculated by numeric approximation.
+
+@item obj.calc_vola_spread(@var{valuation_date}, @var{underlying}, @var{discount_curve}, @var{volatility_surface}, @var{path_static})
+Calibrate volatility spread in order to match the Option price with the market price. The volatility spread will be used for further pricing.
+
+@item obj.getValue(@var{scenario}): Return Option value for given @var{scenario}.
+Method inherited from Superclass @var{Instrument}
+
+@item Option.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
+@end itemize
+
+Attributes of Option objects:
+@itemize @bullet
+@item @var{id}: Instrument id. Has to be unique identifier. (Default: empty string)
+@item @var{name}: Instrument name. (Default: empty string)
+@item @var{description}: Instrument description. (Default: empty string)
+@item @var{value_base}: Base value of instrument of type real numeric. (Default: 0.0)
+@item @var{currency}: Currency of instrument of type string. (Default: 'EUR')
+During instrument valuation and aggregation, FX conversion takes place if corresponding FX rate is available.
+@item @var{asset_class}: Asset class of instrument. (Default: 'derivative')
+@item @var{type}: Type of instrument, specific for class. Set to 'Option'.
+@item @var{value_stress}: Line vector with instrument stress scenario values.
+@item @var{value_mc}: Line vector with instrument scenario values.
+MC values for several @var{timestep_mc} are stored in columns.
+@item @var{timestep_mc}: String Cell array with MC timesteps. If new timesteps are set, values are automatically appended.
+
+@item @var{maturity_date}:  Maturity date of Option (date in format DD-MMM-YYYY)
+@item @var{day_count_convention}: Day count convention of curve. See 'help get_basis' 
+for details (Default: 'act/365')
+@item @var{compounding_type}: Compounding type. Can be continuous, discrete or simple. 
+(Default: 'cont')
+@item @var{compounding_freq}: Compounding frequency used for discrete compounding.
+Can be [daily, weekly, monthly, quarterly, semi-annual, annual]. (Default: 'annual')
+@item @var{spread}: Interest rate spread used in calculating risk free interest rate. Default: 0.0;
+@item @var{discount_curve}: ID of discount curve. Default: empty string
+@item @var{underlying}: ID of underlying object (instrument or risk factor). Default: empty string
+@item @var{vola_surface}: ID of volatility surface. Default: empty string
+@item @var{vola_sensi}: Sensitivity scaling factor for volatility. Default: 1
+@item @var{strike}: Strike value of Option. Default: 100
+@item @var{spot}: Spot value of underlying instrment. Only used, if underlying is risk factor.
+@item @var{multiplier}: Multiplier of Option. Resulting Option price is scales by this multiplier. Default: 5
+@item @var{div_yield}: Continuous dividend yield of underlying (act/365 day count convention assumed). Default: 0.0
+
+@item @var{timesteps_size}: American Willow Tree timestep size (in days). Default: 5
+@item @var{willowtree_nodes}: American Willow Tree nodes per timestep. Default: 20
+@item @var{pricing_function_american}: American pricing model [Willowtree,BjSten]. Default: 'BjSten'
+
+@item @var{upordown}: Barrier Up or Down description. Default: 'U'
+@item @var{outorin}: Barrier In or Out description. Default: 'out'
+@item @var{barrierlevel}: Barrier level. Default: 0.0
+@item @var{rebate}: Barrier rebate (payoff in case of a barrier event). Default: 0.0
+
+@item @var{averaging_type} Asian option averaging type ['rate','strike']. Defaults to 'rate'.
+@item @var{averaging_rule} = Asian option underlying distribution of average type ['geometric','arithmetic']. Defaults to 'geometric'
+@item @var{averaging_monitoring} Asian option average monitoring. Can only be 'continuous'
+
+@item @var{theo_delta}: Sensitivity to changes in underlying's price. Calculate by method @var{calc_greeks}.
+@item @var{theo_gamma}: Sensitivity to changes in changes of underlying's price. Calculate by method @var{calc_greeks}.
+@item @var{theo_vega}: Sensitivity to changes in volatility. Calculate by method @var{calc_greeks}.
+@item @var{theo_theta}: Sensitivity to changes in remaining days to maturity. Calculate by method @var{calc_greeks}.
+@item @var{theo_rho}: Sensitivity to changes in risk free rate. Calculate by method @var{calc_greeks}.
+@item @var{theo_omega}: Specified as @var{theo_delta} scaled by underlying value over option base value. Calculate by method @var{calc_greeks}.
+@end itemize
+
+
+For illustration see the following example:
+An American equity Option with 10 years to maturity, an underlying index, a volatility surface and a discount curve are set up
+and the Option value (123.043), volatility spread and the Greeks are calculated by the Willowtree model and retrieved:
+@example
+@group
+
+disp('Pricing American Option Object (Willowtree)')
+c = Curve();
+c = c.set('id','IR_EUR','nodes',[730,3650,4380], ...
+'rates_base',[0.0001001034,0.0045624391,0.0062559362], ...
+'method_interpolation','linear');
+v = Surface();
+v = v.set('axis_x',3650,'axis_x_name','TERM','axis_y',1.1, ...
+'axis_y_name','MONEYNESS');
+v = v.set('values_base',0.210360082233);
+v = v.set('type','INDEX');
+i = Index();
+i = i.set('value_base',286.867623322,'currency','USD');
+o = Option();
+o = o.set('maturity_date','29-Mar-2026','currency','USD', ...
+'timesteps_size',5,'willowtree_nodes',30);
+o = o.set('strike',368.7362,'multiplier',1,'sub_Type','OPT_AM_P');
+o = o.set('pricing_function_american','Willowtree');
+o = o.calc_value('31-Mar-2016','base',i,c,v);
+o = o.calc_greeks('31-Mar-2016','base',i,c,v);
+value_base = o.getValue('base')
+theo_omega = o.get('theo_omega')
+disp('Calibrating volatility spread over yield:')
+o = o.set('value_base',100);
+o = o.calc_vola_spread('31-Mar-2016',i,c,v);
+o.getValue('base')
+
+@end deftypefn
+@node 	Cash.help
+@section 	Cash.help
+@cindex 	 Function 	Cash.help
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+@deftypefn{Octarisk Class} {@var{object}} = Cash(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Cash()
+
+Class for setting up Cash objects.
+
+This class contains all attributes and methods related to the following Cash types:
+
+@itemize @bullet
+@item Cash: Specify riskless cash instruments
+@end itemize
+
+In the following, all methods and attributes are explained and a code example is given.
+
+Methods for Cash object @var{obj}:
+@itemize @bullet
+@item Cash(@var{id}) or Cash(): Constructor of a Cash object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.calc_value(@var{scenario},@var{scen_number}): Extends base value to vector of row size @var{scen_number}
+and stores vector for given @var{scenario}. Cash instruments are per definition risk free.
+
+@item obj.getValue(@var{scenario}): Return Cash value for given @var{scenario}.
+Method inherited from Superclass @var{Instrument}
+
+@item Cash.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
+@end itemize
+
+Attributes of Cash objects:
+@itemize @bullet
+@item @var{id}: Instrument id. Has to be unique identifier. Default: empty string.
+@item @var{name}: Instrument name. Default: empty string.
+@item @var{description}: Instrument description. Default: empty string.
+@item @var{value_base}: Base value of instrument of type real numeric. Default: 0.0.
+@item @var{currency}: Currency of instrument of type string. Default: 'EUR'
+During instrument valuation and aggregation, FX conversion takes place if corresponding FX rate is available.
+@item @var{asset_class}: Asset class of instrument. Default: 'unknown'
+@item @var{type}: Type of instrument, specific for class. Set to 'cash'.
+@item @var{value_stress}: Line vector with instrument stress scenario values.
+@item @var{value_mc}: Line vector with instrument scenario values.
+MC values for several @var{timestep_mc} are stored in columns.
+@item @var{timestep_mc}: String Cell array with MC timesteps. If new timesteps are set, values are automatically appended.
+@end itemize
+
+
+For illustration see the following example:
+A THB Cash instrument is being generated and during value calculation the stress and MC scenario values
+with 20 resp. 1000 scenarios are derived from the base value:
+@example
+@group
+
+c = Cash();
+c = c.set('id','THB_CASH','name','Cash Position THB');
+c = c.set('asset_class','cash','currency','THB');
+c = c.set('value_base',346234.1256);
+c = c.calc_value('stress',20);
+c = c.calc_value('250d',1000);
+value_stress = c.getValue('stress');
+@end group
+@end example
+
+@end deftypefn
+@node 	Debt.help
+@section 	Debt.help
+@cindex 	 Function 	Debt.help
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+@deftypefn{Octarisk Class} {@var{object}} = Debt(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Debt()
+
+Class for setting up Debt objects. The idea of this class is to model baskets (funds) of bond instruments.
+The shocked value is derived from a sensitivity approach based on Modified duration and
+convexity. These sensitivities describe the total basket properties in terms of interest rate sensitivity.
+The following formula is applied to calculate the instrument shock:
+@example
+@group
+   dP
+  --- = -D dY + 0.5 C dY^2
+   P
+@end group
+@end example
+
+If you want to model all underlying bonds directly, use Bond class for underlyings and Synthetic class for the basket (fund).
+
+This class contains all attributes and methods related to the following Debt types:
+
+@itemize @bullet
+@item DBT: Standard debt type
+@end itemize
+
+In the following, all methods and attributes are explained and a code example is given.
+
+Methods for Debt object @var{obj}:
+@itemize @bullet
+@item Debt(@var{id}) or Debt(): Constructor of a Debt object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.calc_value(@var{discount_curve},@var{scenario}): Calculate instrument shocked value based on interest rate sensitivity.
+Modified Duration and Convexity are used to predict change in value based on absolute shock discount curve at given term.
+
+@item obj.getValue(@var{scenario}): Return Debt value for given @var{scenario}.
+Method inherited from Superclass @var{Instrument}
+
+@item Debt.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
+@end itemize
+
+Attributes of Debt objects:
+@itemize @bullet
+@item @var{id}: Instrument id. Has to be unique identifier. Default: empty string.
+@item @var{name}: Instrument name. Default: empty string.
+@item @var{description}: Instrument description. Default: empty string.
+@item @var{value_base}: Base value of instrument of type real numeric. Default: 0.0.
+@item @var{currency}: Currency of instrument of type string. Default: 'EUR'
+During instrument valuation and aggregation, FX conversion takes place if corresponding FX rate is available.
+@item @var{asset_class}: Asset class of instrument. Default: 'debt'
+@item @var{type}: Type of instrument, specific for class. Set to 'debt'.
+@item @var{value_stress}: Line vector with instrument stress scenario values.
+@item @var{value_mc}: Line vector with instrument scenario values.
+MC values for several @var{timestep_mc} are stored in columns.
+@item @var{timestep_mc}: String Cell array with MC timesteps. If new timesteps are set, values are automatically appended.
+
+@item @var{discount_curve}: Discount curve is used as sensitivity curve to derive absolute shocks at term given by duration.
+@item @var{term}: Term of debt instrument (in years). Equals average maturity of all underlying cash flows.
+@item @var{duration}: Modified duration of debt instrument.
+@item @var{convexity}: Convexity of debt instrument.
+@end itemize
+
+
+For illustration see the following example:
+Stress values of a debt instrument with average maturity of underlyings of 8.35 years and given duration and convexity
+are calculated based on 100bp parallel down- and upshift scenarios of a given discount curve.
+Stress results are [108.5300000000000;91.1969278203125]
+@example
+@group
+
+c = Curve();
+c = c.set('id','IR_EUR','nodes',[730,3650,4380],'rates_base',[0.01,0.02,0.025],'method_interpolation','linear');
+c = c.set('rates_stress',[0.00,0.01,0.015;0.02,0.031,0.035],'method_interpolation','linear');
+d = Debt();
+d = d.set('duration',8.35,'convexity',18,'term',8.35);
+d = d.calc_value(c,'stress');
+d.getValue('base')
+d.getValue('stress')
+@end group
+@end example
+
+@end deftypefn
+@node 	Sensitivity.help
+@section 	Sensitivity.help
+@cindex 	 Function 	Sensitivity.help
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+@deftypefn{Octarisk Class} {@var{object}} = Sensitivity(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Sensitivity()
+
+Class for setting up Sensitivity objects. The idea of this class is to model an instrument
+whose shocks are derived from underlying risk factor shocks or idiosyncratic risk (for MC only).
+The shocks from these risk factors are then applied to the instrument base value under the
+assumption of a Geometric Brownian Motion or Brownian Motion.
+Basically, all real assets like Equity or Commodity can be modelled with this class.
+The combined shock is a linear combination of all underlying risk factor shocks:
+@example
+@group
+V_shock = V_base * exp(Sum_i=1...n [dRF_i * w_i]) (Model: GBM)
+V_shock = V_base + (Sum_i=1...n [dRF_i * w_i]) (Model: BM)
+@end group
+@end example
+with the new shock Value V_shock, base V_base, risk factor shock dRF_i and risk factor weight w_i.
+
+This class contains all attributes and methods related to the following Sensitivity types:
+
+@itemize @bullet
+@item EQU: Equity sensitivity type
+@item RET: Real Estate sensitivity type
+@item COM: Commodity sensitivity type
+@item STK: Stock sensitivity type
+@item ALT: Alternative investments sensitivity type
+@end itemize
+
+which stands for Equity, Real Estate, Commodity, Stock and Alternative Investments.
+All sensitivity types assume a geometric brownian motion or brownian motion as underlying stochastic process.
+
+In the following, all methods and attributes are explained and a code example is given.
+
+Methods for Sensitivity object @var{obj}:
+@itemize @bullet
+@item Sensitivity(@var{id}) or Sensitivity(): Constructor of a Sensitivity object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.valuate(@var{valuation_date}, @var{scenario}, @var{instrument_struct}, @var{surface_struct}, @var{matrix_struct},
+@var{curve_struct}, @var{index_struct}, @var{riskfactor_struct}, [ @var{para_struct} ])
+Generic instrument valuation method. All objects required for valuation of the instrument
+are taken from provided structures (e.g. curves, riskfactors, underlying indizes).
+Method inherited from Superclass @var{Instrument}.
+
+@item obj.getValue(@var{scenario}): Return Sensitivity value for given @var{scenario}.
+Method inherited from Superclass @var{Instrument}
+
+@item Sensitivity.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
+@end itemize
+
+Attributes of Sensitivity objects:
+@itemize @bullet
+@item @var{id}: Instrument id. Has to be unique identifier. Default: empty string.
+@item @var{name}: Instrument name. Default: empty string.
+@item @var{description}: Instrument description. Default: empty string.
+@item @var{value_base}: Base value of instrument of type real numeric. Default: 0.0.
+@item @var{currency}: Currency of instrument of type string. Default: 'EUR'
+During instrument valuation and aggregation, FX conversion takes place if corresponding FX rate is available.
+@item @var{asset_class}: Asset class of instrument. Default: empty string
+@item @var{type}: Type of instrument, specific for class. Set to 'sensitivity'.
+@item @var{value_stress}: Line vector with instrument stress scenario values.
+@item @var{value_mc}: Line vector with instrument scenario values.
+MC values for several @var{timestep_mc} are stored in columns.
+@item @var{timestep_mc}: String Cell array with MC timesteps. If new timesteps are set, values are automatically appended.
+
+@item @var{riskfactors}: Cell with IDs of all underlying risk factors. Default: empy cell.
+@item @var{sensitivities}: Vector with weights of riskfactors of same length and order as riskfactors cell. Default: empty vector
+@item @var{idio_vola}: Idiosyncratic volatility of sensitivity instrument. Used only if one riskfactor is set to 'IDIO'.
+Applies a shock given by a normal distributed random variable with standard deviation taken from the value of attribute @var{idio_vola}
+and a mean of zero.
+@item @var{model}: Model specifies the stochastic process. Can be a Geometric Brownian
+Notion (GBM) or Brownian Notion (BM). (Default: 'GBM')
+@item @var{cf_dates}: Unused: Cash flow dates (Default: [])
+@item @var{cf_values}: Unused: Cash flow values (Default: [])
+@end itemize
+
+
+For illustration see the following example:
+An All Country World Index (ACWI) fund with base value of 100 USD shall be modelled.
+Underlying risk factors are the MSCI Emerging Market and MSCI World Index.
+The sensitivities to both risk factors
+are equal to the weights of the subindices in the ACWI index. Both risk factors
+are shocked during a stress scenario and the total shock values for the fund are calculated:
+
+@example
+@group
+r1 = Riskfactor();
+r1 = r1.set('id','MSCI_WORLD','scenario_stress',[0.2;-0.1], ...
+	'model','GBM','shift_type',[1;1]);
+r2 = Riskfactor();
+r2 = r2.set('id','MSCI_EM','scenario_stress',[0.1;-0.2], ...
+	'model','GBM','shift_type',[1;1] );
+riskfactor_struct = struct();
+riskfactor_struct(1).id = r1.id;
+riskfactor_struct(1).object = r1;
+riskfactor_struct(2).id = r2.id;
+riskfactor_struct(2).object = r2;
+s = Sensitivity();
+s = s.set('id','MSCI_ACWI_ETF','sub_type','EQU', 'currency', 'USD' ...
+	'asset_class','Equity', 'model', 'GBM', ...
+	'riskfactors',cellstr(['MSCI_WORLD';'MSCI_EM']), ...
+	'sensitivities',[0.8,0.2],'value_base',100.00);
+instrument_struct = struct();
+instrument_struct(1).id = s.id;
+instrument_struct(1).object = s;
+s = s.valuate('31-Dec-2016', 'stress', ...
+	instrument_struct, [], [], ...
+	[], [], riskfactor_struct);
+s.getValue('stress')
+@end group
+@end example
+
+Stress results are [119.7217363121810;88.6920436717158].
+
+@end deftypefn
+@node 	Riskfactor.help
+@section 	Riskfactor.help
+@cindex 	 Function 	Riskfactor.help
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+@deftypefn{Octarisk Class} {@var{object}} = Riskfactor(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Riskfactor()
+
+Class for setting up Riskfactor objects.
+
+The mapping between e.g. curve or index objects and their corresponding risk factors
+is automatically done by using regular expressions to match the names.
+Riskfactors always have to begin with 'RF_' followed by the object name.
+If certain nodes of curves or surfaces are shocked, the name is followed by an additional node identifier,
+e.g. 'RF_IR_EUR_SWAP_1Y' for shocking an interest rate curve or 'RF_VOLA_IR_EUR_1825_3650'
+for shocking a certain point on the volatility tenor / term surface.
+
+Riskfactors can be either shocked during stresses, where custom absolute or relative shocks can be defined.
+During Monte-Carlo scenario generation risk factor shocks are calculated by applying statistical processes
+according to specified stochastic model. The random numbers follow a match of given
+mean, standard deviation, skewness and kurtosis according to distributions selected by
+the Pearson Type I-VII distribution system.
+
+This class contains all attributes and methods related to the following Riskfactor types:
+
+@itemize @bullet
+@item RF_IR: Interest rate risk factor.
+@item RF_SPREAD: Spread risk factor.
+@item RF_COM: Commodity risk factor.
+@item RF_RE: Real estate risk factor.
+@item RF_EQ: Equity risk factor.
+@item RF_VOLA: Volatility risk factor.
+@item RF_ALT: Alternative investment risk factor.
+@item RF_INFL: Inflation risk factor.
+@item RF_FX: Forex risk factor.
+@end itemize
+
+In the following, all methods and attributes are explained and a code example is given.
+
+Methods for Riskfactor object @var{obj}:
+@itemize @bullet
+@item Riskfactor(@var{id}) or Riskfactor(): Constructor of a Riskfactor object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.getValue(@var{scenario}, @var{abs_flag}, @var{sensitivity}): Return Riskfactor value
+according to scenario type. If optional parameter abs_flag is true returns Riskfactor scenario values.
+Therefore static method Riskfactor.get_abs_values will be called.
+
+@item Riskfactor.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
+@item Riskfactor.get_abs_values(@var{model}, @var{scen_deltavec}, @var{value_base}, @var{sensitivity}): Calculate absolute
+scenario value for given base value, sensitivity, model and shock.  [static method]
+@item Riskfactor.get_basis(@var{dcc_string}): Return basis integer value for given day count convention string.
+@end itemize
+
+Attributes of Riskfactor objects:
+@itemize @bullet
+@item @var{id}: Riskfactor id. Has to be unique identifier. Default: empty string.
+@item @var{name}: Riskfactor name. Default: empty string.
+@item @var{description}: Riskfactor description. Default: empty string.
+@item @var{type}: Riskfactor type. Can be [RF_IR, RF_SPREAD, RF_COM, RF_RE, RF_EQ, RF_VOLA, RF_ALT, RF_INFL or RF_FX]
+
+@item @var{model}: Stochastic risk factor model. Can be [Geometric Brownian Motion (GBM), Brownian Motioan (BM),
+Black-Karasinsky Model (BKM), Shifted LogNormal (SLN), Ornstein-Uhlenbeck (OU), Square-Root Diffusion (SRD)]. Default: empty string.
+@item @var{mean}: Annualized targeted marginal mean (drift) of risk factor. Default: 0.0
+@item @var{std}: Annualized targeted marginal standard deviation of risk factor. Default: 0.0
+@item @var{skew}: Targeted marginal skewness of risk factor. Default: 0.0
+@item @var{kurt}: Targeted marginal kurtosis of risk factor. Default: 0.0
+@item @var{value_base}:  Base value of risk factor (required for mean reverting stochastic models). Default: 0.0
+@item @var{mr_level}: Mean reversion level. Default: 0.0
+@item @var{mr_rate}: Mean reversion parameter. Default: 0.0
+@item @var{node}:  Risk factor term value in first dimension (in days). For curves equals term in days at x-axis (term). Default: 0.0
+@item @var{node2}:  Risk factor term value in second dimension. For interest rate surfaces equals term in days at y-axis (tenor or term).
+For index surfaces equals moneyness. Default: 0.0
+@item @var{node3}:  Risk factor term value in third dimension. For volatility cubes equals moneyness at z-axis. Default: 0.0
+@item @var{sln_level}: Shift parameter (shift level) of shifted log-normal distribution. Default: 0.0
+
+@item @var{scenario_mc}: Vector with risk factor shock values. 
+MC rates for several MC timesteps are stored in layers.
+@item @var{scenario_stress}: Vector with risk factor shock values. 
+@item @var{timestep_mc}: String Cell array with MC timesteps. Automatically appended if values for new timesteps are set.
+
+@item @var{shocktype_mc}: Specify how to apply risk factor shocks in Monte Carlo
+scenarios. Can be [absolute, relative, sln_relative].
+Automatically set by scripts. Default: absolute
+@item @var{shift_type}: Specify a vector specifying stress risk factor shift type .
+Can be either 0 (absolute) or 1 (relative) shift.
+@end itemize
+
+
+For illustration see the following example:
+A swap risk factor modelled by a shifted log-normal model at the three year node
+is set up and shifted in three stress scenarios (absolute up- and downshift, relative downshift):
+@example
+@group
+
+disp('Setting up Swap(3650) risk factor')
+r = Riskfactor();
+r = r.set('id','RF_EUR-SWAP_3Y','name','RF_EUR-SWAP_3Y', ...
+    'scenario_stress',[0.02;-0.01;0.8], ...
+    'type','RF_IR','model','SLN','shift_type',[0;0;1], ...
+	'mean',0.0,'std',0.117,'skew',0.0,'kurt',3, ...
+	'node',1095,'sln_level',0.03)
+@end group
+@end example
+
+@end deftypefn
+@node 	Index.help
+@section 	Index.help
+@cindex 	 Function 	Index.help
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+@deftypefn{Octarisk Class} {@var{object}} = Index(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Index()
+
+Class for setting up Index objects.
+
+Index class is used for specifying asset indizes, exchange rates and consumer price
+indizes. Indizes serve as underlyings for e.g. Options or Forwards, are used
+to set up forex rates or CPI indizes for inflation linked products.
+Indizes can be shocked with risk factors (e.g. risk factor types RF_EQ or RF_FX)
+or in MC scenarios.
+
+This class contains all attributes and methods related to the following Index types:
+
+@itemize @bullet
+@item EQUITY INDEX
+@item BOND INDEX
+@item VOLATILITY INDEX
+@item COMMODITY INDEX
+@item REAL ESTATE INDEX
+@item EXCHANGE RATE
+@item CPI (Consumer Price index)
+@end itemize
+
+In the following, all methods and attributes are explained and a code example is given.
+
+Methods for Index object @var{obj}:
+@itemize @bullet
+@item Index(@var{id}) or Index(): Constructor of a Index object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.getValue(@var{scenario}): Return Index value according to scenario type.
+
+@item Index.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
+
+@item Index.get_basis(@var{dcc_string}): Return basis integer value for 
+given day count convention string. [static method]
+@end itemize
+
+Attributes of Index objects:
+@itemize @bullet
+@item @var{id}: Index id. Has to be unique identifier. Default: empty string.
+@item @var{name}: Index name. Default: empty string.
+@item @var{description}: Index description. Default: empty string.
+@item @var{type}: Index type. Can be [EQUITY INDEX, BOND INDEX, VOLATILITY INDEX,
+COMMODITY INDEX, REAL ESTATE INDEX, EXCHANGE RATE, CPI]. Default: empty string.
+@item @var{value_base}:  Base value of index. Default: 1.0
+@item @var{currency}: Index currency. Default: 'EUR'
+
+@item @var{scenario_mc}: Vector with Monte Carlo index values. 
+\n@item @var{scenario_stress}: Vector with Stress index values. 
+@item @var{timestep_mc}: String Cell array with MC timesteps. Automatically appended if values for new timesteps are set.
+@item @var{shift_type}: (unused) Specify a vector specifying stress index shift type .
+Can be either 0 (absolute) or 1 (relative) shift.
+@end itemize
+
+
+For illustration see the following example:
+@example
+@group
+
+disp('Setting up an equity index and Exchange Rate')
+i = Index();
+i = i.set('id','MSCIWORLD','value_base',1000, ...
+	'scenario_stress',[2000;1333;800],'currency','USD');
+fx = Index();
+fx = fx.set('id','FX_EURUSD','value_base',1.1,  ...
+	'scenario_stress',[1.2;1.18;1.23]);
 @end group
 @end example
 
