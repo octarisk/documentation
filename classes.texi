@@ -8,11 +8,13 @@
 * 	Sensitivity.help::
 * 	Riskfactor.help::
 * 	Index.help::
+* 	Synthetic.help::
+* 	Surface.help::
 @end menu 
 @node 	Matrix.help
 @section 	Matrix.help
 @cindex 	 Function 	Matrix.help
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -188,7 +190,7 @@ corr_A_C = m.getValue('INDEX_A','INDEX_C')
 @node 	Curve.help
 @section 	Curve.help
 @cindex 	 Function 	Curve.help
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -433,7 +435,7 @@ c_rates_250d = c.getValue('250d')
 @node 	Forward.help
 @section 	Forward.help
 @cindex 	 Function 	Forward.help
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -574,6 +576,9 @@ Underlying discount curve @var{und_curve_object} is used for Forwards on Bond or
 @item obj.getValue(@var{scenario}): Return Forward value for given @var{scenario}.
 Method inherited from Superclass @var{Instrument}
 
+@item obj.calc_sensitivities(@var{valuation_date}, @var{discount_curve_object}, @var{underlying_object}, @var{und_curve_object})
+Calculate sensitivities (the Greeks) of all Forward and Future by numeric approximation.
+
 @item Forward.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
 If empty, defaults to plain text. Returnflag is boolean: True returns 
 documentation string, false (default) returns empty string. [static method]
@@ -603,8 +608,8 @@ for details (Default: 'act/365')
 @item @var{compounding_freq}: Compounding frequency used for discrete compounding.
 Can be [daily, weekly, monthly, quarterly, semi-annual, annual]. (Default: 'annual')
 @item @var{strike_price}: Strike price (Default: 0.0)
-@item @var{underlying_id}:ID of underlying object. Default: '')
-@item @var{underlying_price_base}:  Underlying base price used only,
+@item @var{underlying_id}:ID of underlying object. (Default: '')
+@item @var{underlying_price_base}:  Underlying base price. Used only
 if underlying object is a risk factor. Risk factor shocks are applied to underlying base price. (Default: 0.0)
 @item @var{underlying_sensitivity}:  Underlying sensitivity used only,
 if underlying object is a risk factor. Risk factor shocks are scaled by this sensitivity (Default: 1.0)
@@ -620,6 +625,15 @@ if underlying object is a risk factor. Risk factor shocks are scaled by this sen
 @item @var{component_weight}:  Used for Bond futures only. Scale future future price.
 @item @var{net_basis}:  Net basis of futures. Used only, if @var{calc_price_from_netbasis} is set to true.
 @item @var{calc_price_from_netbasis}: Boolean Flag. True: use @var{net_basis} to calculate future price. (Default: false).
+
+@item @var{theo_delta}: Sensitivity to changes in underlying's price. Calculated by method @var{calc_sensitivities}.
+@item @var{theo_gamma}: Sensitivity to changes in changes of underlying's price. Calculated by method @var{calc_sensitivities}.
+@item @var{theo_vega}: Sensitivity to changes in volatility. Calculated by method @var{calc_sensitivities}.
+@item @var{theo_theta}: Sensitivity to changes in remaining days to maturity. Calculated by method @var{calc_sensitivities}.
+@item @var{theo_rho}: Sensitivity to changes in risk free rate. Calculated by method @var{calc_sensitivities}.
+@item @var{theo_domestic_rho}: Sensitivity to changes in domestic interest rate. Calculated by method @var{calc_sensitivities}.
+@item @var{theo_foreign_rho}: Sensitivity to changes in foreign interest rate. Calculated by method @var{calc_sensitivities}.
+@item @var{theo_price}: Forward price. Calculated by method @var{calc_value}.
 @end itemize
 
 
@@ -630,11 +644,14 @@ and the forward value (-27.2118960639903) is calculated and retrieved:
 @group
 
 c = Curve();
-c = c.set('id','IR_EUR','nodes',[365,3650,7300],'rates_base',[0.0001002070,0.0045624391,0.009346842],'method_interpolation','linear');
+c = c.set('id','IR_EUR','nodes',[365,3650,7300]);
+c = c.set('rates_base',[0.0001002070,0.0045624391,0.009346842]);
+c = c.set('method_interpolation','linear');
 i = Index();
 i = i.set('value_base',326.900);
 f = Forward();
-f = f.set('name','EQ_Forward_Index_Test','maturity_date','26-Mar-2036','strike_price',426.900);
+f = f.set('name','EQ_Forward_Index_Test','maturity_date','26-Mar-2036');
+f = f.set('strike_price',426.900);
 f = f.set('compounding_freq','annual');
 f = f.calc_value('31-Mar-2016','base',c,i);
 f.getValue('base')
@@ -645,7 +662,7 @@ f.getValue('base')
 @node 	Option.help
 @section 	Option.help
 @cindex 	 Function 	Option.help
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -762,15 +779,20 @@ Possible underlyings are financial instruments or indizes. Therefore the followi
 are introduced:
 
 @itemize @bullet
-@item OPT_EUR_C: European Call option priced by Black-Scholes model
-@item OPT_EUR_P: European Put option priced by Black-Scholes model
-@item OPT_AM_C: American Call option priced by Willow tree model or Bjerksund-Stensland approximation
-@item OPT_AM_P: European Put option priced by Willow tree model or Bjerksund-Stensland approximation
+@item OPT_EUR_C: European Call option priced by Black-Scholes model.
+@item OPT_EUR_P: European Put option priced by Black-Scholes model.
+@item OPT_AM_C: American Call option priced by Willow tree model or Bjerksund-Stensland approximation.
+@item OPT_AM_P: European Put option priced by Willow tree model or Bjerksund-Stensland approximation.
 @item OPT_BAR_C: European Barrier Call option. Can have all combinations of out or in and up or down barrier types. Priced with Merton, Reiner, Rubinstein model.
 @item OPT_BAR_P: European Barrier Put option. Same restrictions as Barrier Call options.
 @item OPT_ASN_C: European Asian Call option. Average rate only. The following compounding types can be used:
 geometric continuous (Kemna-Vorst90 pricing model) or arithmetic continuous (Levy pricing model)
 @item OPT_ASN_P: European Asian Put option. Same restrictions as Asian Call options.
+@item OPT_BIN_C: European Binary Call option. Binary types gap, supershare, asset-or-nothing or cash-or-nothing. Priced with Reiner-Rubinstein model.
+@item OPT_BIN_P: European Binary Put option. Same restrictions as Binary Call options.
+@item OPT_LBK_C: European Lookback Call option. Lookback types floating_strike or fixed_strike.
+Priced with Conze and Viswanathan or Goldman, Sosin and Gatto model.
+@item OPT_LBP_P: European Lookback Put option. Same restrictions as Lookback Call options.
 @end itemize
 
 In the following, all methods and attributes are explained and a code example is given.
@@ -831,7 +853,7 @@ Can be [daily, weekly, monthly, quarterly, semi-annual, annual]. (Default: 'annu
 @item @var{underlying}: ID of underlying object (instrument or risk factor). Default: empty string
 @item @var{vola_surface}: ID of volatility surface. Default: empty string
 @item @var{vola_sensi}: Sensitivity scaling factor for volatility. Default: 1
-@item @var{strike}: Strike value of Option. Default: 100
+@item @var{strike}: Strike value of Option (used to set maximum and minimum values for lookback options). Default: 100
 @item @var{spot}: Spot value of underlying instrment. Only used, if underlying is risk factor.
 @item @var{multiplier}: Multiplier of Option. Resulting Option price is scales by this multiplier. Default: 5
 @item @var{div_yield}: Continuous dividend yield of underlying (act/365 day count convention assumed). Default: 0.0
@@ -839,6 +861,10 @@ Can be [daily, weekly, monthly, quarterly, semi-annual, annual]. (Default: 'annu
 @item @var{timesteps_size}: American Willow Tree timestep size (in days). Default: 5
 @item @var{willowtree_nodes}: American Willow Tree nodes per timestep. Default: 20
 @item @var{pricing_function_american}: American pricing model [Willowtree,BjSten]. Default: 'BjSten'
+
+@item @var{binary_type}: Binary option type. Can be ['cash','gap','asset','supershare']. Defaults to 'cash'.
+@item @var{lookback_type}: Lookback option type. Can be ['floating_strike','fixed_strike']. Defaults to 'floating_strike'.
+@item @var{payoff_strike}: Binary Option payoff strike (used as e.g. upper bound or strike). Default: 100
 
 @item @var{upordown}: Barrier Up or Down description. Default: 'U'
 @item @var{outorin}: Barrier In or Out description. Default: 'out'
@@ -896,7 +922,7 @@ o.getValue('base')
 @node 	Cash.help
 @section 	Cash.help
 @cindex 	 Function 	Cash.help
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1074,7 +1100,7 @@ value_stress = c.getValue('stress');
 @node 	Debt.help
 @section 	Debt.help
 @cindex 	 Function 	Debt.help
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1271,7 +1297,7 @@ d.getValue('stress')
 @node 	Sensitivity.help
 @section 	Sensitivity.help
 @cindex 	 Function 	Sensitivity.help
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1502,7 +1528,7 @@ Stress results are [119.7217363121810;88.6920436717158].
 @node 	Riskfactor.help
 @section 	Riskfactor.help
 @cindex 	 Function 	Riskfactor.help
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1720,7 +1746,7 @@ r = r.set('id','RF_EUR-SWAP_3Y','name','RF_EUR-SWAP_3Y', ...
 @node 	Index.help
 @section 	Index.help
 @cindex 	 Function 	Index.help
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1901,6 +1927,436 @@ i = i.set('id','MSCIWORLD','value_base',1000, ...
 fx = Index();
 fx = fx.set('id','FX_EURUSD','value_base',1.1,  ...
 	'scenario_stress',[1.2;1.18;1.23]);
+@end group
+@end example
+
+@end deftypefn
+@node 	Synthetic.help
+@section 	Synthetic.help
+@cindex 	 Function 	Synthetic.help
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+@deftypefn{Octarisk Class} {@var{object}} = Synthetic(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Synthetic()
+
+Class for setting up Synthetic objects.
+A Synthetic instrument is a linear combination of underlying instruments. The following Synthetic types
+are introduced:
+
+@itemize @bullet
+@item SYNTH: Synthetic instrument with underlyings. The Synthetic price
+is based on the linear combination of underlying instrument's prices.
+@item Basket: The same as type SYNTH, but additional attributes for specifying
+underlying volatility surface and volatility types are introduced to enable basket option valuation.
+@end itemize
+
+In the following, all methods and attributes are explained and a code example is given.
+
+Methods for Synthetic object @var{obj}:
+@itemize @bullet
+@item Synthetic(@var{id}) or Synthetic(): Constructor of a Synthetic object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.calc_value(@var{valuation_date},@var{scenario}, @var{instrument_struct}, @var{index_struct})
+Calculate the value of Synthetic instruments based on valuation date, scenario type, underlying instruments and FX rates.
+The provided structures have to contain the referenced underlying instrument objects and FX rates.
+
+@item obj.getValue(@var{scenario}): Return Synthetic value for given @var{scenario}.
+Method inherited from Superclass @var{Instrument}
+
+@item Synthetic.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
+@end itemize
+
+Attributes of Synthetic objects:
+@itemize @bullet
+@item @var{id}: Instrument id. Has to be unique identifier. (Default: empty string)
+@item @var{name}: Instrument name. (Default: empty string)
+@item @var{description}: Instrument description. (Default: empty string)
+@item @var{value_base}: Base value of instrument of type real numeric. (Default: 0.0)
+@item @var{currency}: Currency of instrument of type string. (Default: 'EUR')
+During instrument valuation and aggregation, FX conversion takes place if corresponding FX rate is available.
+@item @var{asset_class}: Asset class of instrument. (Default: 'derivative')
+@item @var{type}: Type of instrument, specific for class. Set to 'Synthetic'.
+@item @var{value_stress}: Line vector with instrument stress scenario values.
+@item @var{value_mc}: Line vector with instrument scenario values.
+MC values for several @var{timestep_mc} are stored in columns.
+@item @var{timestep_mc}: String Cell array with MC timesteps. If new timesteps are set, values are automatically appended.
+
+@item @var{day_count_convention}: Day count convention of curve. See 'help get_basis' 
+for details (Default: 'act/365')
+@item @var{compounding_type}: Compounding type. Can be continuous, discrete or simple. 
+(Default: 'cont')
+@item @var{compounding_freq}: Compounding frequency used for discrete compounding.
+Can be [daily, weekly, monthly, quarterly, semi-annual, annual]. (Default: 'annual')
+@item @var{instruments}: Underlying instrument identifiers (Cellstring )
+@item @var{weights}: Underlying instruments weights (Numeric vector)
+@item @var{discount_curve}: Discount curve (Default: empty string)
+@item @var{instr_vol_surfaces}: Required for Options on Baskets only:
+Underlying instruments volatility surface identifiers (Cellstring )
+@item @var{correlation_matrix}: Required for Options on Baskets only:
+Correlation matrix object of Basket underlyings (Default: empty string)
+@item @var{basket_vola_type}: Required for Options on Baskets only:
+Approximation method for basket volatility calculation  [Levy, VCV, Beisser] (Default: 'Levy')
+@end itemize
+
+
+For illustration see the following example:
+A fund modelled as synthetic instrument with two underlying indizes (MSCI World and Euro Stoxx 50) is set up
+and the synthetic value (1909.090909) is calculated and retrieved:
+@example
+@group
+
+fprintf('Pricing Synthetic Instrument');
+s = Synthetic();
+instrument_cell = cell;
+instrument_cell(1) = 'EURO_STOXX_50';
+instrument_cell(2) = 'MSCIWORLD';
+s = s.set('id','TestSynthetic','instruments',instrument_cell);
+s = s.set('weights',[1,1],'currency','EUR');
+i1 = Index();
+i1 = i1.set('id','EURO_STOXX_50','value_base',1000,'scenario_stress',2000);
+i2 = Index();
+i2 = i2.set('id','MSCIWORLD','value_base',1000);
+i2 = i2.set('scenario_stress',2000,'currency','USD');
+fx = Index();
+fx = fx.set('id','FX_EURUSD','value_base',1.1,'scenario_stress',1.2);
+instrument_struct = struct();
+instrument_struct(1).id = i1.id;
+instrument_struct(1).object = i1;
+instrument_struct(2).id = i2.id;
+instrument_struct(2).object = i2;
+index_struct = struct();
+index_struct(1).id = fx.id;
+index_struct(1).object = fx;
+valuation_date = datenum('31-Mar-2016');
+s = s.calc_value(valuation_date,'base',instrument_struct,index_struct);
+s.getValue('base')
+@end group
+@end example
+@end deftypefn
+@node 	Surface.help
+@section 	Surface.help
+@cindex 	 Function 	Surface.help
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+@deftypefn{Octarisk Class} {@var{object}} = Surface(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Surface()
+
+Class for setting up Surface objects.
+
+Surface class is used for specifying Index, IR, Stochastic, Prepayment or Dummy Surfaces.
+A Surface (or Cube) stores two- or three-dimensional values (e.g. term, tenor and/or
+moneyness dependent volatility values.
+Surfaces can be shocked with risk factors (e.g. risk factor types RF_VOLA_EQ or RF_VOLA_IR)
+at any coordinates of the multi-dimensional space in MC or stress scenarios.
+
+This class contains all attributes and methods related to the following Surface types:
+
+@itemize @bullet
+@item @var{Index} two-dimensional surface (term vs. moneyness) for setting up Equity volatility values.
+@item @var{IR} two- or three-dimensional surface (term vs. moneyness) / cube (term vs. tenor vs. moneyness)
+for setting up Interest rate volatility values.
+@item @var{Stochastic} one- or two-dimensional curve / surface to store scenario dependent values
+(e.g. stochastic cash flow surface with values dependent on date and quantile)
+@item @var{Prepayment} two-dimensional prepayment surface with prepayment factors dependent
+on e.g. interest rate shock and coupon rates.
+@item @var{Dummy} Dummy curve for various purposes.
+@end itemize
+
+In the following, all methods and attributes are explained and a code example is given.
+
+Methods for Surface object @var{obj}:
+@itemize @bullet
+@item Surface(@var{id}) or Surface(): Constructor of a Surface object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.getValue(@var{scenario}, @var{x}, @var{y}, @var{z}): Return Surface value at given coordinates according to scenario type.
+Interpolate surface base value and risk factor shock (only possible after call of method @var{apply_rf_shocks} )
+
+@item Surface.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
+
+@item obj.apply_rf_shocks(@var{riskfactor_struct}): Apply risk factor shocks to Surface base values and store
+the shocks for later use in attribute @var{shock_struct}. These shocks are then applied to the surface base value with method getValue.
+The risk factors are taken from the provided structure according to the surface risk factor IDs given by the attribute @var{riskfactors}.
+
+@item Surface.interpolate(@var{x}, @var{y}, @var{z}): Return Surface base value at given coordinates.
+@end itemize
+
+Attributes of Surface objects:
+@itemize @bullet
+@item @var{id}: Surface id. Has to be unique identifier. Default: empty string.
+@item @var{name}: Surface name. Default: empty string.
+@item @var{description}: Surface description. Default: empty string.
+@item @var{type}: Surface type. Can be [Index, IR, Stochastic, Prepayment, Dummy Surfaces]. Default: Index.
+@item @var{day_count_convention}: Day count convention of curve. See 'help get_basis' 
+for details (Default: 'act/365')
+@item @var{compounding_type}: Compounding type. Can be continuous, discrete or simple. 
+(Default: 'cont')
+@item @var{compounding_freq}: Compounding frequency used for discrete compounding.
+Can be [daily, weekly, monthly, quarterly, semi-annual, annual]. (Default: 'annual')
+@item @var{values_base}:  Base values of Surface.
+@item @var{moneyness_type}:  Moneyness type. Can be K/S for relative moneyness
+or K-S for absolute moneyness. (Default: 'K/S').
+@item @var{shock_struct}: Structure containing all risk factor shock specifications
+(e.g. model, risk factor coordinates, shock values and shift type)
+@item @var{riskfactors}: Cell specifying all risk factor IDs
+@item @var{axis_x}: x-axis coordinates
+@item @var{axis_y}: y-axis coordinates
+@item @var{axis_z}: z-axis coordinates
+@item @var{axis_x_name}: x-axis name
+@item @var{axis_y_name}: y-axis name
+@item @var{axis_z_name}: z-axis name
+
+@end itemize
+
+
+For illustration see the following example:
+@example
+@group
+
+disp('Setting up an Index Surface and Risk factor, apply shocks and retrieve values:')
+r1 = Riskfactor();
+r1 = r1.set('id','V1','scenario_stress',[1.0;-0.5], ...
+'model','GBM','shift_type',[1;1], ...
+'node',730,'node2',1);
+riskfactor_struct(1).id = r1.id;
+riskfactor_struct(1).object = r1;
+v = Surface();
+v = v.set('id','V1','axis_x',[365,3650], ...
+'axis_x_name','TERM','axis_y',[0.9,1.0,1.1], ...
+'axis_y_name','MONEYNESS');
+v = v.set('values_base',[0.25,0.36;0.22,0.32;0.26,0.34]);
+riskfactor_cell = cell;
+riskfactor_cell(1) = 'V1';
+v = v.set('type','INDEX','riskfactors',riskfactor_cell);
+v = v.apply_rf_shocks(riskfactor_struct);
+base_value = v.interpolate(365,0.9)
+base_value = v.getValue('base',365,0.9)
+stress_value = v.getValue('stress',365,0.9)
 @end group
 @end example
 

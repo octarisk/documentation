@@ -3,16 +3,7 @@
 * 	any2str::
 * 	calcConvexityAdjustment::
 * 	calibrate_evt_gpd::
-* 	calibrate_option_asian_levy::
-* 	calibrate_option_asian_vorst90::
-* 	calibrate_option_barrier::
-* 	calibrate_option_bjsten::
-* 	calibrate_option_bs::
-* 	calibrate_option_willowtree::
-* 	calibrate_soy_sqp::
-* 	calibrate_swaption::
-* 	calibrate_swaption_underlyings::
-* 	calibrate_yield_to_maturity::
+* 	calibrate_generic::
 * 	compile_oct_files::
 * 	convert_curve_rates::
 * 	correct_correlation_matrix::
@@ -23,6 +14,7 @@
 * 	fmincon::
 * 	generate_willowtree::
 * 	getCapFloorRate::
+* 	getFlooredSpotByFlooringForwardCurve::
 * 	get_basis::
 * 	get_basket_volatility::
 * 	get_bond_tf_rates::
@@ -55,9 +47,11 @@
 * 	option_asian_levy::
 * 	option_asian_vorst90::
 * 	option_barrier::
+* 	option_binary::
 * 	option_bjsten::
 * 	option_bond_hw::
 * 	option_bs::
+* 	option_lookback::
 * 	option_willowtree::
 * 	perform_rf_stat_tests::
 * 	pricing_forward::
@@ -83,7 +77,7 @@
 @node 	adapt_matlab
 @section 	adapt_matlab
 @cindex 	 Function 	adapt_matlab
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -197,7 +191,7 @@ See also: \args\.
 @node 	any2str
 @section 	any2str
 @cindex 	 Function 	any2str
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -317,7 +311,7 @@ boolean values and structs.
 @node 	calcConvexityAdjustment
 @section 	calcConvexityAdjustment
 @cindex 	 Function 	calcConvexityAdjustment
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -454,7 +448,7 @@ Input and output variables:
 @node 	calibrate_evt_gpd
 @section 	calibrate_evt_gpd
 @cindex 	 Function 	calibrate_evt_gpd
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -584,10 +578,10 @@ Explanation of Parameters:
 @end itemize
 @end deftypefn
 
-@node 	calibrate_option_asian_levy
-@section 	calibrate_option_asian_levy
-@cindex 	 Function 	calibrate_option_asian_levy
-@c Copyright (C) 2012-2015 John W. Eaton
+@node 	calibrate_generic
+@section 	calibrate_generic
+@cindex 	 Function 	calibrate_generic
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -697,1082 +691,17 @@ See also: \args\.
   \fi
 @end tex
 
-@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_option_asian_levy(@var{putcallflag}, @var{S}, @var{X}, @var{T}, @var{rf}, @var{sigma}, @var{multiplicator}, @var{market_value})
-Calibrate the implied volatility spread for Asian options according to 
-modified Black-Scholes valuation formula.
-@end deftypefn
-
-@node 	calibrate_option_asian_vorst90
-@section 	calibrate_option_asian_vorst90
-@cindex 	 Function 	calibrate_option_asian_vorst90
-@c Copyright (C) 2012-2015 John W. Eaton
-@c
-@c This file is part of Octave.
-@c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
-@c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
-@c
-@c You should have received a copy of the GNU General Public License
-@c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
-
-@c The following macro marks words that aspell should ignore during
-@c spellchecking.  Within Texinfo it has no effect as it merely replaces
-@c the macro call with the argument itself.
-
-@macro nospell {arg}
-\arg\
-@end macro
-
-@c The following macro works around the Info/plain text expansion of @code{XXX}
-@c which is `XXX'.  This looks particularly bad when the macro body is
-@c single or double-quoted text, such as a property value `"position"'
-@ifinfo
-@macro qcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro qcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
-@c printed manual (that information should be in the supporting text for
-@c each group of functions and variables).
-@c
-@c Implementation Note:
-@c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
-
-@macro seealso {args}
-@iftex
-@vskip 2pt
-@end iftex
-@ifnottex
-
-@end ifnottex
-@ifnotinfo
-@noindent
-@strong{See also:} \args\.
-@end ifnotinfo
-@ifinfo
-@noindent
-See also: \args\.
-@end ifinfo
-@end macro
-
-@c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
-@c can be confusing if the code segment itself ends with a transpose operator.
-@ifinfo
-@macro tcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro tcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is a new addition to Texinfo.
-
-@macro xbackslashchar
-\\
-@end macro
-
-@c These may be useful for all, not just for octave.texi.
-@tex
-  \ifx\rgbDarkRed\thisisundefined
-    \def\rgbDarkRed{0.50 0.09 0.12}
-  \fi
-  \ifx\linkcolor\thisisundefined
-    \relax
-  \else
-    \global\def\linkcolor{\rgbDarkRed}
-  \fi
-  \ifx\urlcolor\thisisundefined
-    \relax
-  \else
-    \global\def\urlcolor{\rgbDarkRed}
-  \fi
-  \ifx\urefurlonlylinktrue\thisisundefined
-    \relax
-  \else
-    \global\urefurlonlylinktrue
-  \fi
-@end tex
-
-@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_option_asian_vorst90(@var{putcallflag}, @var{S}, @var{X}, @var{T}, @var{rf}, @var{sigma}, @var{multiplicator}, @var{market_value})
-Calibrate the implied volatility spread for Asian options according to 
-modified Black-Scholes valuation formula.
-@end deftypefn
-
-@node 	calibrate_option_barrier
-@section 	calibrate_option_barrier
-@cindex 	 Function 	calibrate_option_barrier
-@c Copyright (C) 2012-2015 John W. Eaton
-@c
-@c This file is part of Octave.
-@c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
-@c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
-@c
-@c You should have received a copy of the GNU General Public License
-@c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
-
-@c The following macro marks words that aspell should ignore during
-@c spellchecking.  Within Texinfo it has no effect as it merely replaces
-@c the macro call with the argument itself.
-
-@macro nospell {arg}
-\arg\
-@end macro
-
-@c The following macro works around the Info/plain text expansion of @code{XXX}
-@c which is `XXX'.  This looks particularly bad when the macro body is
-@c single or double-quoted text, such as a property value `"position"'
-@ifinfo
-@macro qcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro qcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
-@c printed manual (that information should be in the supporting text for
-@c each group of functions and variables).
-@c
-@c Implementation Note:
-@c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
-
-@macro seealso {args}
-@iftex
-@vskip 2pt
-@end iftex
-@ifnottex
-
-@end ifnottex
-@ifnotinfo
-@noindent
-@strong{See also:} \args\.
-@end ifnotinfo
-@ifinfo
-@noindent
-See also: \args\.
-@end ifinfo
-@end macro
-
-@c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
-@c can be confusing if the code segment itself ends with a transpose operator.
-@ifinfo
-@macro tcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro tcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is a new addition to Texinfo.
-
-@macro xbackslashchar
-\\
-@end macro
-
-@c These may be useful for all, not just for octave.texi.
-@tex
-  \ifx\rgbDarkRed\thisisundefined
-    \def\rgbDarkRed{0.50 0.09 0.12}
-  \fi
-  \ifx\linkcolor\thisisundefined
-    \relax
-  \else
-    \global\def\linkcolor{\rgbDarkRed}
-  \fi
-  \ifx\urlcolor\thisisundefined
-    \relax
-  \else
-    \global\def\urlcolor{\rgbDarkRed}
-  \fi
-  \ifx\urefurlonlylinktrue\thisisundefined
-    \relax
-  \else
-    \global\urefurlonlylinktrue
-  \fi
-@end tex
-
-@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_option_barrier(@var{putcallflag}, @var{S}, @var{X}, @var{T}, @var{rf}, @var{sigma}, @var{q}, @var{rebate}, @var{multiplicator}, @var{market_value})
-Calibrate the implied volatility spread for European Barrier options.
-@end deftypefn
-
-@node 	calibrate_option_bjsten
-@section 	calibrate_option_bjsten
-@cindex 	 Function 	calibrate_option_bjsten
-@c Copyright (C) 2012-2015 John W. Eaton
-@c
-@c This file is part of Octave.
-@c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
-@c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
-@c
-@c You should have received a copy of the GNU General Public License
-@c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
-
-@c The following macro marks words that aspell should ignore during
-@c spellchecking.  Within Texinfo it has no effect as it merely replaces
-@c the macro call with the argument itself.
-
-@macro nospell {arg}
-\arg\
-@end macro
-
-@c The following macro works around the Info/plain text expansion of @code{XXX}
-@c which is `XXX'.  This looks particularly bad when the macro body is
-@c single or double-quoted text, such as a property value `"position"'
-@ifinfo
-@macro qcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro qcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
-@c printed manual (that information should be in the supporting text for
-@c each group of functions and variables).
-@c
-@c Implementation Note:
-@c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
-
-@macro seealso {args}
-@iftex
-@vskip 2pt
-@end iftex
-@ifnottex
-
-@end ifnottex
-@ifnotinfo
-@noindent
-@strong{See also:} \args\.
-@end ifnotinfo
-@ifinfo
-@noindent
-See also: \args\.
-@end ifinfo
-@end macro
-
-@c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
-@c can be confusing if the code segment itself ends with a transpose operator.
-@ifinfo
-@macro tcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro tcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is a new addition to Texinfo.
-
-@macro xbackslashchar
-\\
-@end macro
-
-@c These may be useful for all, not just for octave.texi.
-@tex
-  \ifx\rgbDarkRed\thisisundefined
-    \def\rgbDarkRed{0.50 0.09 0.12}
-  \fi
-  \ifx\linkcolor\thisisundefined
-    \relax
-  \else
-    \global\def\linkcolor{\rgbDarkRed}
-  \fi
-  \ifx\urlcolor\thisisundefined
-    \relax
-  \else
-    \global\def\urlcolor{\rgbDarkRed}
-  \fi
-  \ifx\urefurlonlylinktrue\thisisundefined
-    \relax
-  \else
-    \global\urefurlonlylinktrue
-  \fi
-@end tex
-
-@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_option_bjsten(@var{putcallflag}, @var{S}, @var{X}, @var{T}, @var{rf}, @var{sigma}, @var{multiplicator}, @var{market_value})
-Calibrate the implied volatility spread for American options according to 
-Bjerksund and Stensland valuation formula.
-@end deftypefn
-
-@node 	calibrate_option_bs
-@section 	calibrate_option_bs
-@cindex 	 Function 	calibrate_option_bs
-@c Copyright (C) 2012-2015 John W. Eaton
-@c
-@c This file is part of Octave.
-@c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
-@c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
-@c
-@c You should have received a copy of the GNU General Public License
-@c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
-
-@c The following macro marks words that aspell should ignore during
-@c spellchecking.  Within Texinfo it has no effect as it merely replaces
-@c the macro call with the argument itself.
-
-@macro nospell {arg}
-\arg\
-@end macro
-
-@c The following macro works around the Info/plain text expansion of @code{XXX}
-@c which is `XXX'.  This looks particularly bad when the macro body is
-@c single or double-quoted text, such as a property value `"position"'
-@ifinfo
-@macro qcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro qcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
-@c printed manual (that information should be in the supporting text for
-@c each group of functions and variables).
-@c
-@c Implementation Note:
-@c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
-
-@macro seealso {args}
-@iftex
-@vskip 2pt
-@end iftex
-@ifnottex
-
-@end ifnottex
-@ifnotinfo
-@noindent
-@strong{See also:} \args\.
-@end ifnotinfo
-@ifinfo
-@noindent
-See also: \args\.
-@end ifinfo
-@end macro
-
-@c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
-@c can be confusing if the code segment itself ends with a transpose operator.
-@ifinfo
-@macro tcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro tcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is a new addition to Texinfo.
-
-@macro xbackslashchar
-\\
-@end macro
-
-@c These may be useful for all, not just for octave.texi.
-@tex
-  \ifx\rgbDarkRed\thisisundefined
-    \def\rgbDarkRed{0.50 0.09 0.12}
-  \fi
-  \ifx\linkcolor\thisisundefined
-    \relax
-  \else
-    \global\def\linkcolor{\rgbDarkRed}
-  \fi
-  \ifx\urlcolor\thisisundefined
-    \relax
-  \else
-    \global\def\urlcolor{\rgbDarkRed}
-  \fi
-  \ifx\urefurlonlylinktrue\thisisundefined
-    \relax
-  \else
-    \global\urefurlonlylinktrue
-  \fi
-@end tex
-
-@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_option_bs(@var{putcallflag}, @var{S}, @var{X}, @var{T}, @var{rf}, @var{sigma}, @var{multiplicator}, @var{market_value})
-Calibrate the implied volatility spread for European options according to 
-Black-Scholes valuation formula.
-@end deftypefn
-
-@node 	calibrate_option_willowtree
-@section 	calibrate_option_willowtree
-@cindex 	 Function 	calibrate_option_willowtree
-@c Copyright (C) 2012-2015 John W. Eaton
-@c
-@c This file is part of Octave.
-@c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
-@c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
-@c
-@c You should have received a copy of the GNU General Public License
-@c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
-
-@c The following macro marks words that aspell should ignore during
-@c spellchecking.  Within Texinfo it has no effect as it merely replaces
-@c the macro call with the argument itself.
-
-@macro nospell {arg}
-\arg\
-@end macro
-
-@c The following macro works around the Info/plain text expansion of @code{XXX}
-@c which is `XXX'.  This looks particularly bad when the macro body is
-@c single or double-quoted text, such as a property value `"position"'
-@ifinfo
-@macro qcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro qcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
-@c printed manual (that information should be in the supporting text for
-@c each group of functions and variables).
-@c
-@c Implementation Note:
-@c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
-
-@macro seealso {args}
-@iftex
-@vskip 2pt
-@end iftex
-@ifnottex
-
-@end ifnottex
-@ifnotinfo
-@noindent
-@strong{See also:} \args\.
-@end ifnotinfo
-@ifinfo
-@noindent
-See also: \args\.
-@end ifinfo
-@end macro
-
-@c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
-@c can be confusing if the code segment itself ends with a transpose operator.
-@ifinfo
-@macro tcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro tcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is a new addition to Texinfo.
-
-@macro xbackslashchar
-\\
-@end macro
-
-@c These may be useful for all, not just for octave.texi.
-@tex
-  \ifx\rgbDarkRed\thisisundefined
-    \def\rgbDarkRed{0.50 0.09 0.12}
-  \fi
-  \ifx\linkcolor\thisisundefined
-    \relax
-  \else
-    \global\def\linkcolor{\rgbDarkRed}
-  \fi
-  \ifx\urlcolor\thisisundefined
-    \relax
-  \else
-    \global\def\urlcolor{\rgbDarkRed}
-  \fi
-  \ifx\urefurlonlylinktrue\thisisundefined
-    \relax
-  \else
-    \global\urefurlonlylinktrue
-  \fi
-@end tex
-
-@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_option_willowtree(@var{putcallflag},@var{americanflag}, @var{S}, @var{X}, @var{T}, @var{rf}, @var{sigma}, @var{divyield}, @var{stepsize}, @var{nodes}, @var{multiplicator}, @var{market_value}, @var{path_static})
-Calibrate implied volatility spread for American options according 
-to Willowtree valuation formula.
-@seealso{option_willowtree}
-@end deftypefn
-
-@node 	calibrate_soy_sqp
-@section 	calibrate_soy_sqp
-@cindex 	 Function 	calibrate_soy_sqp
-@c Copyright (C) 2012-2015 John W. Eaton
-@c
-@c This file is part of Octave.
-@c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
-@c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
-@c
-@c You should have received a copy of the GNU General Public License
-@c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
-
-@c The following macro marks words that aspell should ignore during
-@c spellchecking.  Within Texinfo it has no effect as it merely replaces
-@c the macro call with the argument itself.
-
-@macro nospell {arg}
-\arg\
-@end macro
-
-@c The following macro works around the Info/plain text expansion of @code{XXX}
-@c which is `XXX'.  This looks particularly bad when the macro body is
-@c single or double-quoted text, such as a property value `"position"'
-@ifinfo
-@macro qcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro qcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
-@c printed manual (that information should be in the supporting text for
-@c each group of functions and variables).
-@c
-@c Implementation Note:
-@c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
-
-@macro seealso {args}
-@iftex
-@vskip 2pt
-@end iftex
-@ifnottex
-
-@end ifnottex
-@ifnotinfo
-@noindent
-@strong{See also:} \args\.
-@end ifnotinfo
-@ifinfo
-@noindent
-See also: \args\.
-@end ifinfo
-@end macro
-
-@c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
-@c can be confusing if the code segment itself ends with a transpose operator.
-@ifinfo
-@macro tcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro tcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is a new addition to Texinfo.
-
-@macro xbackslashchar
-\\
-@end macro
-
-@c These may be useful for all, not just for octave.texi.
-@tex
-  \ifx\rgbDarkRed\thisisundefined
-    \def\rgbDarkRed{0.50 0.09 0.12}
-  \fi
-  \ifx\linkcolor\thisisundefined
-    \relax
-  \else
-    \global\def\linkcolor{\rgbDarkRed}
-  \fi
-  \ifx\urlcolor\thisisundefined
-    \relax
-  \else
-    \global\def\urlcolor{\rgbDarkRed}
-  \fi
-  \ifx\urefurlonlylinktrue\thisisundefined
-    \relax
-  \else
-    \global\urefurlonlylinktrue
-  \fi
-@end tex
-
-@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_soy_sqp(@var{valuation_date}, @var{tmp_cashflow_dates}, @var{tmp_cashflow_values}, @var{tmp_act_value}, @var{tmp_nodes}, @var{tmp_rates}, @var{spread_nodes}, @var{spread_rates}, @var{basis}, @var{comp_type}, @var{comp_freq}, @var{,interp_discount}, @var{interp_spread})
-
-Calibrate the spread over yield according to given cashflows discounted on an 
-appropriate yield curve.
-@end deftypefn
-
-@node 	calibrate_swaption
-@section 	calibrate_swaption
-@cindex 	 Function 	calibrate_swaption
-@c Copyright (C) 2012-2015 John W. Eaton
-@c
-@c This file is part of Octave.
-@c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
-@c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
-@c
-@c You should have received a copy of the GNU General Public License
-@c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
-
-@c The following macro marks words that aspell should ignore during
-@c spellchecking.  Within Texinfo it has no effect as it merely replaces
-@c the macro call with the argument itself.
-
-@macro nospell {arg}
-\arg\
-@end macro
-
-@c The following macro works around the Info/plain text expansion of @code{XXX}
-@c which is `XXX'.  This looks particularly bad when the macro body is
-@c single or double-quoted text, such as a property value `"position"'
-@ifinfo
-@macro qcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro qcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
-@c printed manual (that information should be in the supporting text for
-@c each group of functions and variables).
-@c
-@c Implementation Note:
-@c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
-
-@macro seealso {args}
-@iftex
-@vskip 2pt
-@end iftex
-@ifnottex
-
-@end ifnottex
-@ifnotinfo
-@noindent
-@strong{See also:} \args\.
-@end ifnotinfo
-@ifinfo
-@noindent
-See also: \args\.
-@end ifinfo
-@end macro
-
-@c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
-@c can be confusing if the code segment itself ends with a transpose operator.
-@ifinfo
-@macro tcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro tcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is a new addition to Texinfo.
-
-@macro xbackslashchar
-\\
-@end macro
-
-@c These may be useful for all, not just for octave.texi.
-@tex
-  \ifx\rgbDarkRed\thisisundefined
-    \def\rgbDarkRed{0.50 0.09 0.12}
-  \fi
-  \ifx\linkcolor\thisisundefined
-    \relax
-  \else
-    \global\def\linkcolor{\rgbDarkRed}
-  \fi
-  \ifx\urlcolor\thisisundefined
-    \relax
-  \else
-    \global\def\urlcolor{\rgbDarkRed}
-  \fi
-  \ifx\urefurlonlylinktrue\thisisundefined
-    \relax
-  \else
-    \global\urefurlonlylinktrue
-  \fi
-@end tex
-
-@deftypefn {Function File} {[@var{vola_spread}] =} calibrate_swaption(@var{PayerReceiverFlag}, @var{F}, @var{X}, @var{T}, @var{r}, @var{sigma}, @var{m}, @var{tau}, @var{multiplicator}, @var{market_value}, @var{model})
-Calibrate the implied volatility spread for European swaptions according to 
-Black76 or Bachelier (default) valuation model.
-In extreme out-of-the-money scenarios there could be no solution in changing 
-the volatility. But we dont care in this case at all,
-since the influence of the volatility is neglectable in these extreme cases.
-@end deftypefn
-
-@node 	calibrate_swaption_underlyings
-@section 	calibrate_swaption_underlyings
-@cindex 	 Function 	calibrate_swaption_underlyings
-@c Copyright (C) 2012-2015 John W. Eaton
-@c
-@c This file is part of Octave.
-@c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
-@c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
-@c
-@c You should have received a copy of the GNU General Public License
-@c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
-
-@c The following macro marks words that aspell should ignore during
-@c spellchecking.  Within Texinfo it has no effect as it merely replaces
-@c the macro call with the argument itself.
-
-@macro nospell {arg}
-\arg\
-@end macro
-
-@c The following macro works around the Info/plain text expansion of @code{XXX}
-@c which is `XXX'.  This looks particularly bad when the macro body is
-@c single or double-quoted text, such as a property value `"position"'
-@ifinfo
-@macro qcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro qcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
-@c printed manual (that information should be in the supporting text for
-@c each group of functions and variables).
-@c
-@c Implementation Note:
-@c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
-
-@macro seealso {args}
-@iftex
-@vskip 2pt
-@end iftex
-@ifnottex
-
-@end ifnottex
-@ifnotinfo
-@noindent
-@strong{See also:} \args\.
-@end ifnotinfo
-@ifinfo
-@noindent
-See also: \args\.
-@end ifinfo
-@end macro
-
-@c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
-@c can be confusing if the code segment itself ends with a transpose operator.
-@ifinfo
-@macro tcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro tcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is a new addition to Texinfo.
-
-@macro xbackslashchar
-\\
-@end macro
-
-@c These may be useful for all, not just for octave.texi.
-@tex
-  \ifx\rgbDarkRed\thisisundefined
-    \def\rgbDarkRed{0.50 0.09 0.12}
-  \fi
-  \ifx\linkcolor\thisisundefined
-    \relax
-  \else
-    \global\def\linkcolor{\rgbDarkRed}
-  \fi
-  \ifx\urlcolor\thisisundefined
-    \relax
-  \else
-    \global\def\urlcolor{\rgbDarkRed}
-  \fi
-  \ifx\urefurlonlylinktrue\thisisundefined
-    \relax
-  \else
-    \global\urefurlonlylinktrue
-  \fi
-@end tex
-
-@deftypefn {Function File} {[@var{vola_spread}] =} calibrate_swaption_underlyings(@var{call_flag}, @var{strike}, @var{V_fix}, @var{V_float}, @var{effdate}, @var{sigma}, @var{model}, @var{multiplier}, @var{value})
-Calibrate the implied volatility spread for European swaptions according to 
-Black76 or Bachelier (default) valuation model, if underlying fixed and
-floating legs are used.
-@end deftypefn
-
-@node 	calibrate_yield_to_maturity
-@section 	calibrate_yield_to_maturity
-@cindex 	 Function 	calibrate_yield_to_maturity
-@c Copyright (C) 2012-2015 John W. Eaton
-@c
-@c This file is part of Octave.
-@c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
-@c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
-@c
-@c You should have received a copy of the GNU General Public License
-@c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
-
-@c The following macro marks words that aspell should ignore during
-@c spellchecking.  Within Texinfo it has no effect as it merely replaces
-@c the macro call with the argument itself.
-
-@macro nospell {arg}
-\arg\
-@end macro
-
-@c The following macro works around the Info/plain text expansion of @code{XXX}
-@c which is `XXX'.  This looks particularly bad when the macro body is
-@c single or double-quoted text, such as a property value `"position"'
-@ifinfo
-@macro qcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro qcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c The following macro is used for the on-line help system, but we don't
-@c want lots of `See also: foo, bar, and baz' strings cluttering the
-@c printed manual (that information should be in the supporting text for
-@c each group of functions and variables).
-@c
-@c Implementation Note:
-@c For TeX, @vskip produces a nice separation.
-@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
-@c for HTML.  We use a simple blank line to produce the correct behavior.
-
-@macro seealso {args}
-@iftex
-@vskip 2pt
-@end iftex
-@ifnottex
-
-@end ifnottex
-@ifnotinfo
-@noindent
-@strong{See also:} \args\.
-@end ifnotinfo
-@ifinfo
-@noindent
-See also: \args\.
-@end ifinfo
-@end macro
-
-@c The following macro works around a situation where the Info/plain text
-@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
-@c can be confusing if the code segment itself ends with a transpose operator.
-@ifinfo
-@macro tcode{arg}
-\arg\
-@end macro
-@end ifinfo
-@ifnotinfo
-@macro tcode{arg}
-@code{\arg\}
-@end macro
-@end ifnotinfo
-
-@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
-@c @backslashchar, which is a new addition to Texinfo.
-
-@macro xbackslashchar
-\\
-@end macro
-
-@c These may be useful for all, not just for octave.texi.
-@tex
-  \ifx\rgbDarkRed\thisisundefined
-    \def\rgbDarkRed{0.50 0.09 0.12}
-  \fi
-  \ifx\linkcolor\thisisundefined
-    \relax
-  \else
-    \global\def\linkcolor{\rgbDarkRed}
-  \fi
-  \ifx\urlcolor\thisisundefined
-    \relax
-  \else
-    \global\def\urlcolor{\rgbDarkRed}
-  \fi
-  \ifx\urefurlonlylinktrue\thisisundefined
-    \relax
-  \else
-    \global\urefurlonlylinktrue
-  \fi
-@end tex
-
-@deftypefn {Function File} { [@var{vola_spread}] =} calibrate_yield_to_maturity(@var{valuation_date}, @var{tmp_cashflow_dates}, @var{tmp_cashflow_values}, @var{act_value}) 
-
-Calibrate the yield to maturity according to given cashflows.
+@deftypefn {Function File} { [@var{calibrated_value} @var{retcode}] =} calibrate_generic(@var{objf}, @var{x0}, @var{lb}, @var{ub}) 
+
+Calibrate a given objective function according to start parameter and bounds.
+This function calls the generic optimizer fmincon.
+@seealso{fmincon}
 @end deftypefn
 
 @node 	compile_oct_files
 @section 	compile_oct_files
 @cindex 	 Function 	compile_oct_files
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1886,7 +815,7 @@ See also: \args\.
 @node 	convert_curve_rates
 @section 	convert_curve_rates
 @cindex 	 Function 	convert_curve_rates
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2057,7 +986,7 @@ timefactor calculation (scalar)
 @node 	correct_correlation_matrix
 @section 	correct_correlation_matrix
 @cindex 	 Function 	correct_correlation_matrix
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2179,7 +1108,7 @@ Reference: 'Implementing Value at Risk', Best, Philip W., 1998.
 @node 	discount_factor
 @section 	discount_factor
 @cindex 	 Function 	discount_factor
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2312,7 +1241,7 @@ quarter,semi-annual,annual] (scalar or string)
 @node 	doc_instrument
 @section 	doc_instrument
 @cindex 	 Function 	doc_instrument
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2482,7 +1411,7 @@ returns 1 in case of a valid property.
 @node 	doc_riskfactor
 @section 	doc_riskfactor
 @cindex 	 Function 	doc_riskfactor
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2662,7 +1591,7 @@ Get / set methods for retrieving or setting risk factor properties.
 @node 	estimate_parameter
 @section 	estimate_parameter
 @cindex 	 Function 	estimate_parameter
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2788,7 +1717,7 @@ assuming ergodic and regression methods. @*
 @node 	fmincon
 @section 	fmincon
 @cindex 	 Function 	fmincon
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2951,7 +1880,7 @@ Explanation of Input Parameters:
 @node 	generate_willowtree
 @section 	generate_willowtree
 @cindex 	 Function 	generate_willowtree
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -3093,7 +2022,7 @@ Variables:
 @node 	getCapFloorRate
 @section 	getCapFloorRate
 @cindex 	 Function 	getCapFloorRate
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -3249,10 +2178,152 @@ Floorlet_rate = max(0, X - F);
 @seealso{swaption_bachelier, swaption_black76}
 @end deftypefn
 
+@node 	getFlooredSpotByFlooringForwardCurve
+@section 	getFlooredSpotByFlooringForwardCurve
+@cindex 	 Function 	getFlooredSpotByFlooringForwardCurve
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {[@var{TermForward} @var{spotrates_floored} @var{forwardrates}  @var{forwardrates_floored}] =} getFlooredSpotByFlooringForwardCurve(@var{TermSpot}, @var{SpotRates}, @var{floor_rate}, @var{term_forwardrate}, @var{basis}, @var{comp_type}, @var{comp_freq}, @var{interp_method})
+
+Compute the floored spot curve calculated by flooring the forward curve.
+@*
+Explanation of Input Parameters:
+@itemize @bullet
+@item @var{TermSpot}: is a 1xN vector with all timesteps of the given curve
+@item @var{SpotRates}: is MxN matrix with curve rates defined in columns. Each 
+row contains a specific scenario with different curve structure
+@item @var{floor_rate}: is a scalar, specifiying the floor applied to forward rates
+@item @var{term_forwardrate}: is a scalar, specifiying forward period
+@item @var{basis}: (optional) day count convention of instrument (default: act/365)
+@item @var{comp_type}: (optional) specifies compounding rule (simple, 
+discrete, continuous (defaults to 'cont')).
+@item @var{comp_freq}: (optional) compounding frequency (default: annual)
+@item @var{interp_method}: (optional) specifies interpolation method for 
+retrieving interest rates (defaults to 'linear').
+@end itemize
+@*
+Explanation of Output Parameters:
+@itemize @bullet
+@item @var{TermForward}: 1xN vector with all timesteps for output curves
+@item @var{spotrates_floored}: MxN matrix with floored spot curves
+@item @var{forwardrates}: MxN matrix with forward curves
+@item @var{forwardrates_floored}: MxN matrix with floored forward curves
+@end itemize
+@seealso{timefactor}
+@end deftypefn
+
 @node 	get_basis
 @section 	get_basis
 @cindex 	 Function 	get_basis
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -3396,7 +2467,7 @@ The following mapping will be done for the input strings:
 @node 	get_basket_volatility
 @section 	get_basket_volatility
 @cindex 	 Function 	get_basket_volatility
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -3506,9 +2577,9 @@ See also: \args\.
   \fi
 @end tex
 
-@deftypefn {Function File} {[@var{basket_vola} ] =} get_basket_volatility (@var{valuation_date}, @var{value_type}, @var{option}, @var{instrument_struct}, @var{index_struct}, @var{curve_struct}, @var{riskfactor_struct}, @var{matrix_struct}, @var{surface_struct})
+@deftypefn {Function File} {[@var{basket_vola}, @var{basket_dict} ] =} get_basket_volatility (@var{valuation_date}, @var{value_type}, @var{option}, @var{instrument_struct}, @var{index_struct}, @var{curve_struct}, @var{riskfactor_struct}, @var{matrix_struct}, @var{surface_struct})
 
-Return diversified volatilities for synthetic basket instruments.
+Return diversified volatility for synthetic basket instruments.
 The diversified volatility is dependent on the option maturity and strike,
 so the volatility has to be calculated for each basket option valuation.
 The following two methods are implemented:
@@ -3520,6 +2591,8 @@ distribution by itself.
 @item @var{VCV approach}: Assuming a normal distribution of underlying, the
 basket volatility is calculated by sigma = sqrt(w'*C*w) with Covariance Matrix C
 and the linear-combinations vector w.
+@item @var{Beisser}: Calculate lower limit of option prices by adjusting
+input volatilities and strikes. Also returns modified strike @var{basket_dict}.
 @end itemize
 
 @end deftypefn
@@ -3527,7 +2600,7 @@ and the linear-combinations vector w.
 @node 	get_bond_tf_rates
 @section 	get_bond_tf_rates
 @cindex 	 Function 	get_bond_tf_rates
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -3687,7 +2760,7 @@ method)
 @node 	get_cms_rate_hagan
 @section 	get_cms_rate_hagan
 @cindex 	 Function 	get_cms_rate_hagan
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -3826,7 +2899,7 @@ Explanation of Input Parameters:
 @node 	get_cms_rate_hull
 @section 	get_cms_rate_hull
 @cindex 	 Function 	get_cms_rate_hull
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -3957,7 +3030,7 @@ Explanation of Input Parameters:
 @node 	get_documentation
 @section 	get_documentation
 @cindex 	 Function 	get_documentation
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -4079,7 +3152,7 @@ The path to all files has to be set in the variable path_documentation.
 @node 	get_documentation_classes
 @section 	get_documentation_classes
 @cindex 	 Function 	get_documentation_classes
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -4201,7 +3274,7 @@ The path to all files has to be set in the variable path_documentation.
 @node 	get_forward_rate
 @section 	get_forward_rate
 @cindex 	 Function 	get_forward_rate
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -4341,7 +3414,7 @@ retrieving interest rates (defaults to 'linear').
 @node 	get_gpd_var
 @section 	get_gpd_var
 @cindex 	 Function 	get_gpd_var
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -4477,7 +3550,7 @@ Example call for calculation of VAR and ES for several confidence levels:
 @node 	get_marginal_distr_pearson
 @section 	get_marginal_distr_pearson
 @cindex 	 Function 	get_marginal_distr_pearson
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -4629,7 +3702,7 @@ distribution
 @node 	get_sub_object
 @section 	get_sub_object
 @cindex 	 Function 	get_sub_object
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -4747,7 +3820,7 @@ Return code 1 (success) and 0 (fail).
 @node 	get_sub_struct
 @section 	get_sub_struct
 @cindex 	 Function 	get_sub_struct
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -4865,7 +3938,7 @@ Return code 1 (success) and 0 (fail).
 @node 	harrell_davis_weight
 @section 	harrell_davis_weight
 @cindex 	 Function 	harrell_davis_weight
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -4995,7 +4068,7 @@ Variables:
 @node 	ind2sub_tril
 @section 	ind2sub_tril
 @cindex 	 Function 	ind2sub_tril
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -5140,7 +4213,7 @@ when @var{idx} is a row or column matrix of linear indeces then @var{r} and
 @node 	instrument_valuation
 @section 	instrument_valuation
 @cindex 	 Function 	instrument_valuation
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -5280,7 +4353,7 @@ Variables:
 @node 	integrationtests
 @section 	integrationtests
 @cindex 	 Function 	integrationtests
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -5399,7 +4472,7 @@ have to be hard coded in this script.
 @node 	interpolate_curve
 @section 	interpolate_curve
 @cindex 	 Function 	interpolate_curve
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -5543,7 +4616,7 @@ Explanation of Input Parameters of the interpolation curve function:
 @node 	load_correlation_matrix
 @section 	load_correlation_matrix
 @cindex 	 Function 	load_correlation_matrix
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -5660,7 +4733,7 @@ Load data from mktdata object specification file and generate objects with parse
 @node 	load_instruments
 @section 	load_instruments
 @cindex 	 Function 	load_instruments
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -5778,7 +4851,7 @@ The order of the final instrument struct is automatically set that all derivativ
 @node 	load_matrix_objects
 @section 	load_matrix_objects
 @cindex 	 Function 	load_matrix_objects
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -5897,7 +4970,7 @@ and return the final struct and a cell containing the failed matrix ids.
 @node 	load_mktdata_objects
 @section 	load_mktdata_objects
 @cindex 	 Function 	load_mktdata_objects
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -6014,7 +5087,7 @@ Load data from mktdata object specification file and generate objects with parse
 @node 	load_positions
 @section 	load_positions
 @cindex 	 Function 	load_positions
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -6131,7 +5204,7 @@ Load data from position specification file and generate objects with parsed data
 @node 	load_riskfactor_scenarios
 @section 	load_riskfactor_scenarios
 @cindex 	 Function 	load_riskfactor_scenarios
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -6248,7 +5321,7 @@ Generate MC scenario shock values for risk factor curve objects. Store all MC sc
 @node 	load_riskfactor_stresses
 @section 	load_riskfactor_stresses
 @cindex 	 Function 	load_riskfactor_stresses
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -6365,7 +5438,7 @@ Generate stresses for risk factor curve objects. Store all stresses in provided 
 @node 	load_riskfactors
 @section 	load_riskfactors
 @cindex 	 Function 	load_riskfactors
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -6482,7 +5555,7 @@ Load data from riskfactor specification file and generate objects with parsed da
 @node 	load_stresstests
 @section 	load_stresstests
 @cindex 	 Function 	load_stresstests
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -6601,7 +5674,7 @@ struct and a cell containing the failed position ids.
 @node 	load_volacubes
 @section 	load_volacubes
 @cindex 	 Function 	load_volacubes
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -6720,7 +5793,7 @@ and return the final struct and a cell containing the failed volatility ids.
 @node 	load_yieldcurves
 @section 	load_yieldcurves
 @cindex 	 Function 	load_yieldcurves
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -6839,7 +5912,7 @@ risk factor currency / ratings.
 @node 	octarisk
 @section 	octarisk
 @cindex 	 Function 	octarisk
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -6951,81 +6024,16 @@ See also: \args\.
 
 @deftypefn {Function File} {} octarisk (@var{path_working_folder})
 
-Version: 0.0.0, 2015/11/24, Stefan Schloegl:   initial version @* 
-         0.0.1, 2015/12/16, Stefan Schloegl:   added Willow Tree model for pricing american equity options, @*
-                                             added volatility surface model for term / moneyness structure of volatility for index vol @*
-         0.0.2, 2016/01/19, Stefan Schloegl:   added new instrument types FRB, FRN, FAB, ZCB @*
-                                             added synthetic instruments (linear combinations of other instruments) @*
-                                             added equity forwards and Black-Karasinski stochastic process @*
-			0.0.3, 2016/02/05, Stefan Schloegl:	  added spread risk factors, general cash flow pricing  @*
-			0.0.4, 2016/03/28, Stefan Schloegl:   changed the implementation to object oriented approach (introduced instrument, risk factor classes) @*
-         0.1.0, 2016/04/02, Stefan Schloegl:   added volatility cube model (Surface class) for tenor / term / moneyness structure of volatility for ir vol @*
-         0.2.0, 2016/04/19, Stefan Schloegl:   improved the file interface and format for input files (market data, risk factors, instruments, positions, stresstests)  @*
-         0.4.0, 2016/10/08, Stefan Schloegl:   transfered instrument full valuation part into separate function. @*
-@*
-Calculate Monte-Carlo Value-at-Risk (VAR) and Expected Shortfall (ES) for instruments, positions and portfolios at a given confidence level on 
-1D and 250D time horizon with a full valuation approach.
+Full valuation Monte-Carlo risk calculation framework.
 
-See octarisk documentation for further information.
+See www.octarisk.com for further information.
 
-@*
-Input files in csv format:
-@itemize @bullet
-@item Instruments data: specification of instrument universe (name, id, market value, underlying risk factor, cash flows etc.)
-@item Riskfactors data: specification of risk factors (name, id, stochastic model, statistic parameters)
-@item Positions data: specification of portfolio and position data (portfolio id, instrument id, position size)
-@item Stresstest data: specification of stresstest risk factor shocks (stresstest name, risk factor shock values and types)
-@item Covariance matrix: covariance matrix of all risk factors
-@item Volatility surfaces (index volatility: term vs. moneyness, call moneyness spot / strike, linear interpolation and constant extrapolation)
-@end itemize
-@*
-Output data:
-@itemize @bullet
-@item portfolio report: instruments and position VAR and ES, diversification effects
-@item profit and loss distributions: plot of profit and loss histogramm and distribution, most important positions and instruments
-@end itemize
-@*
-Supported instrument types:
-@itemize @bullet
-@item equity (stocks and funds priced via multi-factor model and idiosyncratic risk)
-@item commodity (physical and funds priced via multi-factor model and idiosyncratic risk)
-@item real estate (stocks and funds priced via multi-factor model and idiosyncratic risk)
-@item custom cash flow instruments (NPV of all custom CFs) 
-@item bond funds priced via duration-based sensitivity approach
-@item fixed rate bonds (NPV of all CFs)
-@item floating rate notes (scenario dependent cash flow values, NPV of all CFs)
-@item fixed amortizing bonds (either annuity bonds or amortizable bonds, NPV of all CFs)
-@item zero coupon bonds (NPV of notional)
-@item European equity options (Black-Scholes model)
-@item American equity options (Willow Tree model)
-@item European swaptions (Black76 and Bachelier model)
-@item Equity forward
-@item Synthetic instruments (linear combinations of other valuated instruments)
-@end itemize
-@*
-Supported stochastic processes for risk factors:
-@itemize @bullet
-@item Geometric Brownian Motion 
-@item Black-Karasinski process
-@item Brownian Motion 
-@item Ornstein-Uhlenbeck process
-@item Square-root diffusion process 
-@end itemize
-@*
-Supported copulas for MC scenario generation:
-@itemize @bullet
-@item Gaussian copula
-@item t-copula with one parameter specification for common degrees of freedom
-@end itemize
-@*
-Further functionality will be implemented in the future (e.g. inflation linked instruments)
-@seealso{option_willowtree, option_bs, harrell_davis_weight, swaption_black76, pricing_forward, rollout_cashflows, scenario_generation_MC}
 @end deftypefn
 
 @node 	option_asian_levy
 @section 	option_asian_levy
 @cindex 	 Function 	option_asian_levy
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -7163,7 +6171,7 @@ Variables:
 @node 	option_asian_vorst90
 @section 	option_asian_vorst90
 @cindex 	 Function 	option_asian_vorst90
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -7299,7 +6307,7 @@ Variables:
 @node 	option_barrier
 @section 	option_barrier
 @cindex 	 Function 	option_barrier
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -7432,10 +6440,193 @@ standard deviation
 @seealso{option_willowtree, swaption_black76, option_bs}
 @end deftypefn
 
+@node 	option_binary
+@section 	option_binary
+@cindex 	 Function 	option_binary
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {[@var{value}] =} option_binary (@var{CallPutFlag}, @var{binary_type}, @var{S}, @var{X1}, @var{X2}, @var{T}, @var{r}, @var{sigma}, @var{divrate})
+
+Compute the prices of European Binary call or put options according to 
+Reiner and Rubinstein (Unscrambling the Binary Code, RISK 4 (October 1991), 
+pp. 75-83)  valuation formulas:@*
+@*
+Option type Gap@*
+A gap call option pays the difference (gap) between spot and either one of two
+strike values:
+@example
+@group
+C(S,X1,X2,T) = X2*exp(-rT)*N(d)
+P(S,X1,X2,T) = X2*exp(-rT)*N(-d)
+d = (log(S/X1) + (r - divrate + 0.5*sigma^2)*T)/(sigma*sqrt(T))
+@end group
+@end example
+@*
+Option type Cash-or-Nothing@*
+A cash or nothing option pays the pre-defined amount X2 if the value is larger
+than the strike X1 (call option) or lower than the strike X1(put option):
+@example
+@group
+C(S,X1,X2,T) = N(d)*X2*exp(-rT)
+P(S,X1,X2,T) = N(-d)*X2*exp(-rT)
+d = (log(S/X1) + (r - divrate - 0.5*sigma^2)*T)/(sigma*sqrt(T))
+@end group
+@end example
+@*
+Option type Asset-or-Nothing@*
+An asset or nothing option pays the future spot value S if the value is larger
+than the strike X1(call option) or lower than the strike X1 (put option):
+@example
+@group
+C(S,X1,T) = S*N(d)*exp(-divrate*T)
+P(S,X1,T) = S*N(-d)*exp(-divrate*T)
+d = (log(S/X1) + (r - divrate + 0.5*sigma^2)*T)/(sigma*sqrt(T))
+@end group
+@end example
+@*
+Option type Supershare@*
+A supershare option has a payoff, if the future spot values lies between
+an lower bound X1 and upper bound X2, and is zero otherwise:
+@example
+@group
+Value(S,X1,X2,T) = (S*exp(-divrate*T)/X1) * (N(d1) - N(d2))
+d1 = (log(S/X1) + (r - divrate + 0.5*sigma^2)*T)/(sigma*sqrt(T))
+d2 = (log(S/X2) + (r - divrate + 0.5*sigma^2)*T)/(sigma*sqrt(T))
+@end group
+@end example
+@*
+All formulas are taken from Haug, Complete Guide to Option Pricing Formulas,
+2nd edition, page 174ff.@*
+@*
+Variables:
+@itemize @bullet
+@item @var{CallPutFlag}: Call: '1', Put: '0'
+@item @var{binary_type}: can be 'gap','cash','asset'
+@item @var{S}: stock price at time 0
+@item @var{X1}: strike price (lower bound for supershare or gap options)
+@item @var{X2}: payoff strike price (used for Gap and cash options, upper bound 
+of supershare options)
+@item @var{T}: time to maturity in days 
+@item @var{r}: annual risk-free interest rate (continuously compounded, act/365)
+@item @var{sigma}: implied volatility of the stock price measured as annual 
+standard deviation
+@item @var{divrate}: dividend rate p.a., continously compounded
+@end itemize
+@seealso{option_willowtree, option_bs}
+@end deftypefn
+
 @node 	option_bjsten
 @section 	option_bjsten
 @cindex 	 Function 	option_bjsten
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -7582,7 +6773,7 @@ standard deviation
 @node 	option_bond_hw
 @section 	option_bond_hw
 @cindex 	 Function 	option_bond_hw
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -7710,7 +6901,7 @@ References:
 @node 	option_bs
 @section 	option_bs
 @cindex 	 Function 	option_bs
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -7850,10 +7041,163 @@ standard deviation
 @seealso{option_willowtree, swaption_black76}
 @end deftypefn
 
+@node 	option_lookback
+@section 	option_lookback
+@cindex 	 Function 	option_lookback
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {[@var{value}] =} option_lookback (@var{CallPutFlag}, @var{lookback_type}, @var{S}, @var{X1}, @var{X2}, @var{T}, @var{r}, @var{sigma}, @var{divrate})
+
+Compute the prices of European Lookback call or put options of type
+floating strike or fixed strike.@*
+@*
+Floating Strike options:@*
+A floating strike lookback call / put gives you the right to buy / sell the
+the underlying security at the lowest / highest price observed during options
+lifetime. Pricing according to Goldman, Sosin and Gatto (1979) ("Path dependent
+options: Buy at the Low Sell at the High", Journal of Finance, 34(5), 1111-
+1127) valuation formulas.@*
+@*
+Fixed Strike options:@*
+A fixed strike lookback call / put pays out the maximum of the difference 
+between the highed observed price and the strike and 0 (call option) or the maximum
+of the difference between strike and lowest observed price and 0 (put option).
+Pricing according to Conze and Viswanathan (1991) ("Path dependent
+options: The Case of Lookback Options", Journal of Finance, 36, 1893 - 1907)
+formulas.
+@*
+@*
+All formulas are taken from Haug, Complete Guide to Option Pricing Formulas,
+2nd edition, page 141ff.@*
+@*
+Variables:
+@itemize @bullet
+@item @var{CallPutFlag}: Call: '1', Put: '0'
+@item @var{lookback_type}: can be 'floating_strike','fixed_strike'
+@item @var{S}: stock price at time 0
+@item @var{X1}: strike price (or S_min or S_max for fixed strike)
+@item @var{X2}: payoff strike of fixed strike option
+@item @var{T}: time to maturity in days 
+@item @var{r}: annual risk-free interest rate (continuously compounded, act/365)
+@item @var{sigma}: implied volatility of the stock price measured as annual 
+standard deviation
+@item @var{divrate}: dividend rate p.a., continously compounded
+@end itemize
+@seealso{option_binary, option_bs}
+@end deftypefn
+
 @node 	option_willowtree
 @section 	option_willowtree
 @cindex 	 Function 	option_willowtree
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -8004,7 +7348,7 @@ optimized by Currans Method to fulfill variance constraint (default: 20)
 @node 	perform_rf_stat_tests
 @section 	perform_rf_stat_tests
 @cindex 	 Function 	perform_rf_stat_tests
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -8122,7 +7466,7 @@ pass, return 255 if at least one test fails.
 @node 	pricing_forward
 @section 	pricing_forward
 @cindex 	 Function 	pricing_forward
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -8251,7 +7595,7 @@ Input and output variables:
 @node 	pricing_npv
 @section 	pricing_npv
 @cindex 	 Function 	pricing_npv
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -8413,7 +7757,7 @@ method)
 @node 	print_class2dot
 @section 	print_class2dot
 @cindex 	 Function 	print_class2dot
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -8527,7 +7871,7 @@ See also: \args\.
 @node 	profiler_analysis
 @section 	profiler_analysis
 @cindex 	 Function 	profiler_analysis
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -8650,7 +7994,7 @@ Input variables:
 @node 	replacement_script
 @section 	replacement_script
 @cindex 	 Function 	replacement_script
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -8772,7 +8116,7 @@ Output data: Rewritten m.files
 @node 	return_checked_input
 @section 	return_checked_input
 @cindex 	 Function 	return_checked_input
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -8896,7 +8240,7 @@ part.
 @node 	rollout_structured_cashflows
 @section 	rollout_structured_cashflows
 @cindex 	 Function 	rollout_structured_cashflows
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -9024,7 +8368,7 @@ surface is used for Consumer Price Index.
 @node 	save_objects
 @section 	save_objects
 @cindex 	 Function 	save_objects
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -9141,7 +8485,7 @@ Save provided structs for riskfactors, instruments, positions and stresstests.
 @node 	scenario_generation_MC
 @section 	scenario_generation_MC
 @cindex 	 Function 	scenario_generation_MC
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -9262,7 +8606,7 @@ arbitrary marginal distributions within the Pearson distribution system.@*
 @node 	struct2obj
 @section 	struct2obj
 @cindex 	 Function 	struct2obj
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -9382,7 +8726,7 @@ sets the logging level.
 @node 	swaption_bachelier
 @section 	swaption_bachelier
 @cindex 	 Function 	swaption_bachelier
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -9521,7 +8865,7 @@ Variables:
 @node 	swaption_black76
 @section 	swaption_black76
 @cindex 	 Function 	swaption_black76
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -9665,7 +9009,7 @@ compounding is assumed)
 @node 	swaption_underlyings
 @section 	swaption_underlyings
 @cindex 	 Function 	swaption_underlyings
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -9785,7 +9129,7 @@ or Normal pricing functions using underlying fixed and floating legs.
 @node 	test_io
 @section 	test_io
 @cindex 	 Function 	test_io
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -9908,7 +9252,7 @@ See section B.2 for an example.
 @node 	test_oct_files
 @section 	test_oct_files
 @cindex 	 Function 	test_oct_files
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -10023,7 +9367,7 @@ See also: \args\.
 @node 	timefactor
 @section 	timefactor
 @cindex 	 Function 	timefactor
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -10154,7 +9498,7 @@ Input and output variables:
 @node 	unittests
 @section 	unittests
 @cindex 	 Function 	unittests
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -10271,7 +9615,7 @@ Call unittests of specified functions and return test statistics.
 @node 	unvech
 @section 	unvech
 @cindex 	 Function 	unvech
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -10397,7 +9741,7 @@ that 1 and -1 can be used for symmetric and antisymmetric matrix respectively.
 @node 	update_mktdata_objects
 @section 	update_mktdata_objects
 @cindex 	 Function 	update_mktdata_objects
-@c Copyright (C) 2012-2015 John W. Eaton
+@c Copyright (C) 2012-2016 John W. Eaton
 @c
 @c This file is part of Octave.
 @c

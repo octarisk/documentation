@@ -1,683 +1,738 @@
 digraph G {
-        fontname = "Bitstream Vera Sans"
-        fontsize = 8
-        node [
-                fontname = "Bitstream Vera Sans"
-                fontsize = 8
-                shape = "record"
-        ]
-       edge [
-                fontname = "Bitstream Vera Sans"
-                fontsize = 8
-        ]
-Instrument [ 
-	 label = "{ Instrument | 
-		Properties \l 
-		asset_class : string \l 
-		currency : string \l 
-		description : string \l 
-		id : string \l 
-		name : string \l 
-		timestep_mc : cell \l 
-		type : string \l 
-		value_base : numeric \l 
-		value_mc : numeric \l 
-		value_stress : numeric \l 
-		 | 
-		Methods \l 
-		Instrument \l 
-		getValue \l 
-		isProp \l 
-		valuate \l 
-	}"
-]
-Riskfactor [ 
-	 label = "{ Riskfactor | 
-		Properties \l 
-		description : string \l 
-		id : string \l 
-		kurt : numeric \l 
-		mean : numeric \l 
-		model : string \l 
-		mr_level : numeric \l 
-		mr_rate : numeric \l 
-		name : string \l 
-		node : numeric \l 
-		node2 : numeric \l 
-		node3 : numeric \l 
-		scenario_mc : numeric \l 
-		scenario_stress : numeric \l 
-		shift_type : numeric \l 
-		shocktype_mc : string \l 
-		skew : numeric \l 
-		sln_level : numeric \l 
-		std : numeric \l 
-		timestep_mc : cell \l 
-		type : string \l 
-		value_base : numeric \l 
-		 | 
-		Methods \l 
-		Riskfactor \l 
-		get \l 
-		getValue \l 
-		set \l 
-	}"
-]
-Matrix [ 
-	 label = "{ Matrix | 
-		Properties \l 
-		components : cell \l 
-		components_xx : cell \l 
-		components_yy : cell \l 
-		description : string \l 
-		id : string \l 
-		matrix : numeric \l 
-		name : string \l 
-		type : string \l 
-		 | 
-		Methods \l 
-		Matrix \l 
-		get \l 
-		getValue \l 
-		set \l 
-	}"
-]
-Surface [ 
-	 label = "{ Surface | 
-		Properties \l 
-		axis_x : numeric \l 
-		axis_x_name : string \l 
-		axis_y : numeric \l 
-		axis_y_name : string \l 
-		axis_z : numeric \l 
-		axis_z_name : string \l 
-		basis : numeric \l 
-		compounding_freq : string \l 
-		compounding_type : string \l 
-		day_count_convention : string \l 
-		description : string \l 
-		id : string \l 
-		method_interpolation : string \l 
-		moneyness_type : string \l 
-		name : string \l 
-		riskfactors : cell \l 
-		shock_struct : numeric \l 
-		type : string \l 
-		values_base : numeric \l 
-		 | 
-		Methods \l 
-		Surface \l 
-		apply_rf_shocks \l 
-		get \l 
-		getValue \l 
-		interpolate \l 
-		set \l 
-	}"
-]
-Curve [ 
-	 label = "{ Curve | 
-		Properties \l 
-		alpha : numeric \l 
-		american_flag : numeric \l 
-		basis : numeric \l 
-		cap : string \l 
-		compounding_freq : string \l 
-		compounding_type : string \l 
-		curve_function : string \l 
-		curve_parameter : numeric \l 
-		day_count_convention : string \l 
-		description : string \l 
-		floor : string \l 
-		id : string \l 
-		increments : string \l 
-		method_extrapolation : string \l 
-		method_interpolation : string \l 
-		name : string \l 
-		nodes : numeric \l 
-		rates_base : numeric \l 
-		rates_mc : numeric \l 
-		rates_stress : numeric \l 
-		shocktype_mc : string \l 
-		shocktype_stress : string \l 
-		sln_level : numeric \l 
-		timestep_mc : cell \l 
-		type : string \l 
-		ufr : numeric \l 
-		 | 
-		Methods \l 
-		Curve \l 
-		apply_rf_shock \l 
-		get \l 
-		getRate \l 
-		getValue \l 
-		isProp \l 
-		set \l 
-	}"
-]
-Index [ 
-	 label = "{ Index | 
-		Properties \l 
-		currency : string \l 
-		description : string \l 
-		id : string \l 
-		name : string \l 
-		scenario_mc : numeric \l 
-		scenario_stress : numeric \l 
-		shift_type : numeric \l 
-		timestep_mc : cell \l 
-		type : string \l 
-		value_base : numeric \l 
-		 | 
-		Methods \l 
-		Index \l 
-		get \l 
-		getValue \l 
-		set \l 
-	}"
-]
-Bond [ 
-	 label = "{ Bond | 
-		Properties \l 
-		accrued_interest : numeric \l 
-		alpha : numeric \l 
-		annuity_amount : numeric \l 
-		asset_class : string \l 
-		basis : numeric \l 
-		business_day_direction : numeric \l 
-		business_day_rule : numeric \l 
-		calibration_flag : numeric \l 
-		call_schedule : string \l 
-		cf_dates : numeric \l 
-		cf_values : numeric \l 
-		cf_values_mc : numeric \l 
-		cf_values_stress : numeric \l 
-		clean_value_base : numeric \l 
-		cms_comp_type : string \l 
-		cms_convex_model : string \l 
-		cms_model : string \l 
-		cms_sliding_term : numeric \l 
-		cms_spread : numeric \l 
-		cms_term : numeric \l 
-		compounding_freq : numeric \l 
-		compounding_type : string \l 
-		convex_adj : bool \l 
-		convexity : numeric \l 
-		coupon_generation_method : string \l 
-		coupon_rate : numeric \l 
-		cpi_historical_curve : string \l 
-		cpi_index : string \l 
-		currency : string \l 
-		day_count_convention : string \l 
-		description : string \l 
-		discount_curve : string \l 
-		dollar_convexity : numeric \l 
-		dollar_duration : numeric \l 
-		dv01 : numeric \l 
-		eff_convexity : numeric \l 
-		eff_duration : numeric \l 
-		embedded_option_flag : bool \l 
-		embedded_option_value : numeric \l 
-		enable_business_day_rule : numeric \l 
-		fixed_annuity : numeric \l 
-		id : string \l 
-		in_arrears : bool \l 
-		infl_exp_curve : string \l 
-		infl_exp_lag : string \l 
-		ir_shock : numeric \l 
-		issue_date : string \l 
-		last_coupon_date : numeric \l 
-		last_reset_rate : numeric \l 
-		long_first_period : numeric \l 
-		long_last_period : numeric \l 
-		mac_duration : numeric \l 
-		maturity_date : string \l 
-		mod_duration : numeric \l 
-		name : string \l 
-		notional : numeric \l 
-		notional_at_end : numeric \l 
-		notional_at_start : numeric \l 
-		outstanding_balance : numeric \l 
-		prepayment_curve : string \l 
-		prepayment_flag : bool \l 
-		prepayment_procedure : string \l 
-		prepayment_rate : numeric \l 
-		prepayment_source : string \l 
-		prepayment_type : string \l 
-		principal_payment : numeric \l 
-		prorated : bool \l 
-		psa_factor_term : numeric \l 
-		put_schedule : string \l 
-		pv01 : numeric \l 
-		rate_composition : string \l 
-		reference_curve : string \l 
-		sigma : numeric \l 
-		soy : numeric \l 
-		spot_value : numeric \l 
-		spread : numeric \l 
-		spread_curve : string \l 
-		spread_duration : numeric \l 
-		stochastic_rf_type : string \l 
-		stochastic_riskfactor : string \l 
-		stochastic_surface : string \l 
-		sub_type : string \l 
-		t_degree_freedom : numeric \l 
-		term : numeric \l 
-		timestep_mc : cell \l 
-		timestep_mc_cf : cell \l 
-		treenodes : numeric \l 
-		type : string \l 
-		use_annuity_amount : numeric \l 
-		use_indexation_lag : bool \l 
-		use_outstanding_balance : numeric \l 
-		use_principal_pmt : numeric \l 
-		value_base : numeric \l 
-		value_mc : numeric \l 
-		value_stress : numeric \l 
-		vola_spread : numeric \l 
-		vola_surface : string \l 
-		ytm : numeric \l 
-		 | 
-		Methods \l 
-		Bond \l 
-		calc_sensitivities \l 
-		calc_spread_over_yield \l 
-		calc_value \l 
-		calc_yield_to_mat \l 
-		get \l 
-		getCF \l 
-		rollout \l 
-		set \l 
-	}"
-]
-Option [ 
-	 label = "{ Option | 
-		Properties \l 
-		asset_class : string \l 
-		averaging_monitoring : string \l 
-		averaging_rule : string \l 
-		averaging_type : string \l 
-		barrierlevel : numeric \l 
-		basis : numeric \l 
-		call_flag : numeric \l 
-		cf_dates : numeric \l 
-		cf_values : numeric \l 
-		compounding_freq : numeric \l 
-		compounding_type : string \l 
-		currency : string \l 
-		day_count_convention : string \l 
-		description : string \l 
-		discount_curve : string \l 
-		div_yield : numeric \l 
-		id : string \l 
-		maturity_date : string \l 
-		multiplier : numeric \l 
-		name : string \l 
-		option_type : string \l 
-		outorin : string \l 
-		pricing_function_american : string \l 
-		rebate : numeric \l 
-		spot : numeric \l 
-		spread : numeric \l 
-		strike : numeric \l 
-		sub_type : string \l 
-		theo_delta : numeric \l 
-		theo_gamma : numeric \l 
-		theo_omega : numeric \l 
-		theo_rho : numeric \l 
-		theo_theta : numeric \l 
-		theo_vega : numeric \l 
-		timestep_mc : cell \l 
-		timesteps_size : numeric \l 
-		type : string \l 
-		underlying : string \l 
-		upordown : string \l 
-		value_base : numeric \l 
-		value_mc : numeric \l 
-		value_stress : numeric \l 
-		vola_sensi : numeric \l 
-		vola_spread : numeric \l 
-		vola_surface : string \l 
-		willowtree_nodes : numeric \l 
-		 | 
-		Methods \l 
-		Option \l 
-		calc_greeks \l 
-		calc_value \l 
-		calc_vola_spread \l 
-		get \l 
-		set \l 
-	}"
-]
-Forward [ 
-	 label = "{ Forward | 
-		Properties \l 
-		asset_class : string \l 
-		basis : numeric \l 
-		calc_price_from_netbasis : bool \l 
-		cf_dates : numeric \l 
-		cf_values : numeric \l 
-		component_weight : numeric \l 
-		compounding_freq : string \l 
-		compounding_type : string \l 
-		convenience_yield : numeric \l 
-		currency : string \l 
-		day_count_convention : string \l 
-		description : string \l 
-		discount_curve : string \l 
-		dividend_yield : numeric \l 
-		foreign_curve : string \l 
-		id : string \l 
-		issue_date : string \l 
-		maturity_date : string \l 
-		multiplier : numeric \l 
-		name : string \l 
-		net_basis : numeric \l 
-		spread : numeric \l 
-		storage_cost : numeric \l 
-		strike_price : numeric \l 
-		sub_type : string \l 
-		timestep_mc : cell \l 
-		type : string \l 
-		underlying_id : string \l 
-		underlying_price_base : numeric \l 
-		underlying_sensitivity : numeric \l 
-		value_base : numeric \l 
-		value_mc : numeric \l 
-		value_stress : numeric \l 
-		 | 
-		Methods \l 
-		Forward \l 
-		calc_value \l 
-		get \l 
-		set \l 
-	}"
-]
-Debt [ 
-	 label = "{ Debt | 
-		Properties \l 
-		asset_class : string \l 
-		cf_dates : numeric \l 
-		cf_values : numeric \l 
-		convexity : numeric \l 
-		currency : string \l 
-		description : string \l 
-		discount_curve : string \l 
-		duration : numeric \l 
-		id : string \l 
-		name : string \l 
-		sub_type : string \l 
-		term : numeric \l 
-		timestep_mc : cell \l 
-		type : string \l 
-		value_base : numeric \l 
-		value_mc : numeric \l 
-		value_stress : numeric \l 
-		 | 
-		Methods \l 
-		Debt \l 
-		calc_value \l 
-		get \l 
-		set \l 
-	}"
-]
-CapFloor [ 
-	 label = "{ CapFloor | 
-		Properties \l 
-		CapFlag : bool \l 
-		accrued_interest : numeric \l 
-		asset_class : string \l 
-		basis : numeric \l 
-		business_day_direction : numeric \l 
-		business_day_rule : numeric \l 
-		calibration_flag : numeric \l 
-		cf_dates : numeric \l 
-		cf_values : numeric \l 
-		cf_values_mc : numeric \l 
-		cf_values_stress : numeric \l 
-		cms_comp_type : string \l 
-		cms_convex_model : string \l 
-		cms_model : string \l 
-		cms_sliding_term : numeric \l 
-		cms_spread : numeric \l 
-		cms_term : numeric \l 
-		compounding_freq : numeric \l 
-		compounding_type : string \l 
-		convex_adj : bool \l 
-		convexity : numeric \l 
-		coupon_generation_method : string \l 
-		coupon_rate : numeric \l 
-		cpi_historical_curve : string \l 
-		cpi_index : string \l 
-		currency : string \l 
-		day_count_convention : string \l 
-		description : string \l 
-		discount_curve : string \l 
-		dollar_convexity : numeric \l 
-		dollar_duration : numeric \l 
-		dv01 : numeric \l 
-		eff_convexity : numeric \l 
-		eff_duration : numeric \l 
-		enable_business_day_rule : numeric \l 
-		id : string \l 
-		in_arrears : numeric \l 
-		infl_exp_curve : string \l 
-		infl_exp_lag : string \l 
-		ir_shock : numeric \l 
-		issue_date : string \l 
-		last_reset_rate : numeric \l 
-		long_first_period : numeric \l 
-		long_last_period : numeric \l 
-		mac_duration : numeric \l 
-		maturity_date : string \l 
-		mod_duration : numeric \l 
-		model : string \l 
-		name : string \l 
-		notional : numeric \l 
-		notional_at_end : numeric \l 
-		notional_at_start : numeric \l 
-		prorated : bool \l 
-		pv01 : numeric \l 
-		reference_curve : string \l 
-		soy : numeric \l 
-		spread : numeric \l 
-		spread_duration : numeric \l 
-		strike : numeric \l 
-		sub_type : string \l 
-		term : numeric \l 
-		timestep_mc : cell \l 
-		timestep_mc_cf : cell \l 
-		type : string \l 
-		use_indexation_lag : bool \l 
-		value_base : numeric \l 
-		value_mc : numeric \l 
-		value_stress : numeric \l 
-		vola_spread : numeric \l 
-		vola_surface : string \l 
-		ytm : numeric \l 
-		 | 
-		Methods \l 
-		CapFloor \l 
-		calc_sensitivities \l 
-		calc_value \l 
-		get \l 
-		getCF \l 
-		rollout \l 
-		set \l 
-	}"
-]
-Cash [ 
-	 label = "{ Cash | 
-		Properties \l 
-		asset_class : string \l 
-		cf_dates : numeric \l 
-		cf_values : numeric \l 
-		currency : string \l 
-		description : string \l 
-		discount_curve : string \l 
-		id : string \l 
-		name : string \l 
-		sub_type : string \l 
-		timestep_mc : cell \l 
-		type : string \l 
-		value_base : numeric \l 
-		value_mc : numeric \l 
-		value_stress : numeric \l 
-		 | 
-		Methods \l 
-		Cash \l 
-		calc_value \l 
-		get \l 
-		set \l 
-	}"
-]
-Sensitivity [ 
-	 label = "{ Sensitivity | 
-		Properties \l 
-		asset_class : string \l 
-		cf_dates : numeric \l 
-		cf_values : numeric \l 
-		currency : string \l 
-		description : string \l 
-		id : string \l 
-		idio_vola : numeric \l 
-		model : string \l 
-		name : string \l 
-		riskfactors : cell \l 
-		sensitivities : numeric \l 
-		sub_type : string \l 
-		timestep_mc : cell \l 
-		type : string \l 
-		value_base : numeric \l 
-		value_mc : numeric \l 
-		value_stress : numeric \l 
-		 | 
-		Methods \l 
-		Sensitivity \l 
-		get \l 
-		set \l 
-	}"
-]
-Stochastic [ 
-	 label = "{ Stochastic | 
-		Properties \l 
-		asset_class : string \l 
-		currency : string \l 
-		description : string \l 
-		id : string \l 
-		name : string \l 
-		quantile_base : numeric \l 
-		stochastic_curve : string \l 
-		stochastic_rf_type : string \l 
-		stochastic_riskfactor : string \l 
-		sub_type : string \l 
-		t_degree_freedom : numeric \l 
-		timestep_mc : cell \l 
-		type : string \l 
-		value_base : numeric \l 
-		value_mc : numeric \l 
-		value_stress : numeric \l 
-		 | 
-		Methods \l 
-		Stochastic \l 
-		calc_value \l 
-		get \l 
-		set \l 
-	}"
-]
-Swaption [ 
-	 label = "{ Swaption | 
-		Properties \l 
-		asset_class : string \l 
-		basis : numeric \l 
-		calibration_flag : numeric \l 
-		call_flag : bool \l 
-		cf_dates : numeric \l 
-		cf_values : numeric \l 
-		compounding_freq : numeric \l 
-		compounding_type : string \l 
-		currency : string \l 
-		day_count_convention : string \l 
-		description : string \l 
-		discount_curve : string \l 
-		effective_date : string \l 
-		id : string \l 
-		implied_volatility : numeric \l 
-		maturity_date : string \l 
-		model : string \l 
-		multiplier : numeric \l 
-		name : string \l 
-		no_payments : numeric \l 
-		spot : numeric \l 
-		spread : numeric \l 
-		strike : numeric \l 
-		sub_type : string \l 
-		tenor : numeric \l 
-		timestep_mc : cell \l 
-		type : string \l 
-		und_fixed_leg : string \l 
-		und_fixed_value : numeric \l 
-		und_float_value : numeric \l 
-		und_floating_leg : string \l 
-		underlying : string \l 
-		use_underlyings : bool \l 
-		value_base : numeric \l 
-		value_mc : numeric \l 
-		value_stress : numeric \l 
-		vola_sensi : numeric \l 
-		vola_spread : numeric \l 
-		vola_surface : string \l 
-		 | 
-		Methods \l 
-		Swaption \l 
-		calc_value \l 
-		calc_vola_spread \l 
-		get \l 
-		set \l 
-	}"
-]
-Synthetic [ 
-	 label = "{ Synthetic | 
-		Properties \l 
-		asset_class : string \l 
-		basis : numeric \l 
-		cf_dates : numeric \l 
-		cf_values : numeric \l 
-		compounding_freq : string \l 
-		compounding_type : string \l 
-		correlation_matrix : string \l 
-		currency : string \l 
-		day_count_convention : string \l 
-		description : string \l 
-		discount_curve : string \l 
-		id : string \l 
-		instr_vol_surfaces : cell \l 
-		instruments : cell \l 
-		is_basket : bool \l 
-		name : string \l 
-		sub_type : string \l 
-		timestep_mc : cell \l 
-		type : string \l 
-		value_base : numeric \l 
-		value_mc : numeric \l 
-		value_stress : numeric \l 
-		weights : numeric \l 
-		 | 
-		Methods \l 
-		Synthetic \l 
-		calc_value \l 
-		get \l 
-		set \l 
-	}"
-]
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	Curve [ 
+		label = "{ Curve | 
+			Properties \l 
+			alpha : numeric \l 
+			american_flag : numeric \l 
+			basis : numeric \l 
+			cap : string \l 
+			compounding_freq : string \l 
+			compounding_type : string \l 
+			curve_function : string \l 
+			curve_parameter : numeric \l 
+			day_count_convention : string \l 
+			description : string \l 
+			floor : string \l 
+			id : string \l 
+			increments : string \l 
+			method_extrapolation : string \l 
+			method_interpolation : string \l 
+			name : string \l 
+			nodes : numeric \l 
+			rates_base : numeric \l 
+			rates_mc : numeric \l 
+			rates_stress : numeric \l 
+			shocktype_mc : string \l 
+			shocktype_stress : string \l 
+			sln_level : numeric \l 
+			timestep_mc : cell \l 
+			type : string \l 
+			ufr : numeric \l 
+			 | 
+			Methods \l 
+			Curve \l 
+			apply_rf_shock \l 
+			get \l 
+			getRate \l 
+			getValue \l 
+			isProp \l 
+			set \l 
+		}"
+	]
+	Index [ 
+		label = "{ Index | 
+			Properties \l 
+			currency : string \l 
+			description : string \l 
+			id : string \l 
+			name : string \l 
+			scenario_mc : numeric \l 
+			scenario_stress : numeric \l 
+			shift_type : numeric \l 
+			timestep_mc : cell \l 
+			type : string \l 
+			value_base : numeric \l 
+			 | 
+			Methods \l 
+			Index \l 
+			get \l 
+			getValue \l 
+			set \l 
+		}"
+	]
+	Instrument [ 
+		label = "{ Instrument | 
+			Properties \l 
+			asset_class : string \l 
+			currency : string \l 
+			description : string \l 
+			id : string \l 
+			name : string \l 
+			timestep_mc : cell \l 
+			type : string \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			 | 
+			Methods \l 
+			Instrument \l 
+			getValue \l 
+			isProp \l 
+			valuate \l 
+		}"
+	]
+	Matrix [ 
+		label = "{ Matrix | 
+			Properties \l 
+			components : cell \l 
+			components_xx : cell \l 
+			components_yy : cell \l 
+			description : string \l 
+			id : string \l 
+			matrix : numeric \l 
+			name : string \l 
+			type : string \l 
+			 | 
+			Methods \l 
+			Matrix \l 
+			get \l 
+			getValue \l 
+			set \l 
+		}"
+	]
+	Parameter [ 
+		label = "{ Parameter | 
+			Properties \l 
+			description : string \l 
+			id : string \l 
+			name : string \l 
+			type : string \l 
+			 | 
+			Methods \l 
+			Parameter \l 
+			get \l 
+			set \l 
+		}"
+	]
+	Riskfactor [ 
+		label = "{ Riskfactor | 
+			Properties \l 
+			description : string \l 
+			id : string \l 
+			kurt : numeric \l 
+			mean : numeric \l 
+			model : string \l 
+			mr_level : numeric \l 
+			mr_rate : numeric \l 
+			name : string \l 
+			node : numeric \l 
+			node2 : numeric \l 
+			node3 : numeric \l 
+			scenario_mc : numeric \l 
+			scenario_stress : numeric \l 
+			shift_type : numeric \l 
+			shocktype_mc : string \l 
+			skew : numeric \l 
+			sln_level : numeric \l 
+			std : numeric \l 
+			timestep_mc : cell \l 
+			type : string \l 
+			value_base : numeric \l 
+			 | 
+			Methods \l 
+			Riskfactor \l 
+			get \l 
+			getValue \l 
+			set \l 
+		}"
+	]
+	Surface [ 
+		label = "{ Surface | 
+			Properties \l 
+			axis_x : numeric \l 
+			axis_x_name : string \l 
+			axis_y : numeric \l 
+			axis_y_name : string \l 
+			axis_z : numeric \l 
+			axis_z_name : string \l 
+			basis : numeric \l 
+			compounding_freq : string \l 
+			compounding_type : string \l 
+			day_count_convention : string \l 
+			description : string \l 
+			id : string \l 
+			method_interpolation : string \l 
+			moneyness_type : string \l 
+			name : string \l 
+			riskfactors : cell \l 
+			shock_struct : numeric \l 
+			type : string \l 
+			values_base : numeric \l 
+			 | 
+			Methods \l 
+			Surface \l 
+			apply_rf_shocks \l 
+			get \l 
+			getValue \l 
+			interpolate \l 
+			set \l 
+		}"
+	]
+	Bond [ 
+		label = "{ Bond | 
+			Properties \l 
+			accrued_interest : numeric \l 
+			alpha : numeric \l 
+			annuity_amount : numeric \l 
+			asset_class : string \l 
+			basis : numeric \l 
+			business_day_direction : numeric \l 
+			business_day_rule : numeric \l 
+			calibration_flag : numeric \l 
+			call_schedule : string \l 
+			cf_dates : numeric \l 
+			cf_values : numeric \l 
+			cf_values_mc : numeric \l 
+			cf_values_stress : numeric \l 
+			clean_value_base : numeric \l 
+			cms_comp_type : string \l 
+			cms_convex_model : string \l 
+			cms_model : string \l 
+			cms_sliding_term : numeric \l 
+			cms_spread : numeric \l 
+			cms_term : numeric \l 
+			compounding_freq : numeric \l 
+			compounding_type : string \l 
+			convex_adj : bool \l 
+			convexity : numeric \l 
+			coupon_generation_method : string \l 
+			coupon_prepay : string \l 
+			coupon_rate : numeric \l 
+			cpi_historical_curve : string \l 
+			cpi_index : string \l 
+			currency : string \l 
+			day_count_convention : string \l 
+			description : string \l 
+			discount_curve : string \l 
+			dollar_convexity : numeric \l 
+			dollar_duration : numeric \l 
+			dv01 : numeric \l 
+			eff_convexity : numeric \l 
+			eff_duration : numeric \l 
+			embedded_option_flag : bool \l 
+			embedded_option_value : numeric \l 
+			enable_business_day_rule : numeric \l 
+			fixed_annuity : numeric \l 
+			fva_type : string \l 
+			fwd_sliding_term : numeric \l 
+			fwd_term : numeric \l 
+			id : string \l 
+			in_arrears : bool \l 
+			infl_exp_curve : string \l 
+			infl_exp_lag : string \l 
+			ir_shock : numeric \l 
+			issue_date : string \l 
+			key_rate_eff_convex : numeric \l 
+			key_rate_eff_dur : numeric \l 
+			key_rate_mon_convex : numeric \l 
+			key_rate_mon_dur : numeric \l 
+			key_rate_shock : numeric \l 
+			key_rate_width : numeric \l 
+			key_term : numeric \l 
+			last_coupon_date : numeric \l 
+			last_reset_rate : numeric \l 
+			long_first_period : numeric \l 
+			long_last_period : numeric \l 
+			mac_duration : numeric \l 
+			maturity_date : string \l 
+			mod_duration : numeric \l 
+			name : string \l 
+			notional : numeric \l 
+			notional_at_end : numeric \l 
+			notional_at_start : numeric \l 
+			outstanding_balance : numeric \l 
+			prepayment_curve : string \l 
+			prepayment_flag : bool \l 
+			prepayment_procedure : string \l 
+			prepayment_rate : numeric \l 
+			prepayment_source : string \l 
+			prepayment_type : string \l 
+			principal_payment : numeric \l 
+			prorated : bool \l 
+			psa_factor_term : numeric \l 
+			put_schedule : string \l 
+			pv01 : numeric \l 
+			rate_composition : string \l 
+			reference_curve : string \l 
+			sigma : numeric \l 
+			soy : numeric \l 
+			spot_value : numeric \l 
+			spread : numeric \l 
+			spread_curve : string \l 
+			spread_duration : numeric \l 
+			stochastic_rf_type : string \l 
+			stochastic_riskfactor : string \l 
+			stochastic_surface : string \l 
+			strike_rate : numeric \l 
+			sub_type : string \l 
+			t_degree_freedom : numeric \l 
+			term : numeric \l 
+			timestep_mc : cell \l 
+			timestep_mc_cf : cell \l 
+			treenodes : numeric \l 
+			type : string \l 
+			underlying_maturity_date : string \l 
+			use_annuity_amount : numeric \l 
+			use_indexation_lag : bool \l 
+			use_outstanding_balance : numeric \l 
+			use_principal_pmt : numeric \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			vola_spread : numeric \l 
+			vola_surface : string \l 
+			ytm : numeric \l 
+			 | 
+			Methods \l 
+			Bond \l 
+			calc_key_rates \l 
+			calc_sensitivities \l 
+			calc_spread_over_yield \l 
+			calc_value \l 
+			calc_yield_to_mat \l 
+			get \l 
+			getCF \l 
+			rollout \l 
+			set \l 
+		}"
+]	
+	CapFloor [ 
+		label = "{ CapFloor | 
+			Properties \l 
+			CapFlag : bool \l 
+			accrued_interest : numeric \l 
+			asset_class : string \l 
+			basis : numeric \l 
+			business_day_direction : numeric \l 
+			business_day_rule : numeric \l 
+			calibration_flag : numeric \l 
+			cf_dates : numeric \l 
+			cf_values : numeric \l 
+			cf_values_mc : numeric \l 
+			cf_values_stress : numeric \l 
+			cms_comp_type : string \l 
+			cms_convex_model : string \l 
+			cms_model : string \l 
+			cms_sliding_term : numeric \l 
+			cms_spread : numeric \l 
+			cms_term : numeric \l 
+			compounding_freq : numeric \l 
+			compounding_type : string \l 
+			convex_adj : bool \l 
+			convexity : numeric \l 
+			coupon_generation_method : string \l 
+			coupon_rate : numeric \l 
+			cpi_historical_curve : string \l 
+			cpi_index : string \l 
+			currency : string \l 
+			day_count_convention : string \l 
+			description : string \l 
+			discount_curve : string \l 
+			dollar_convexity : numeric \l 
+			dollar_duration : numeric \l 
+			dv01 : numeric \l 
+			eff_convexity : numeric \l 
+			eff_duration : numeric \l 
+			enable_business_day_rule : numeric \l 
+			id : string \l 
+			in_arrears : numeric \l 
+			infl_exp_curve : string \l 
+			infl_exp_lag : string \l 
+			ir_shock : numeric \l 
+			issue_date : string \l 
+			last_reset_rate : numeric \l 
+			long_first_period : numeric \l 
+			long_last_period : numeric \l 
+			mac_duration : numeric \l 
+			maturity_date : string \l 
+			mod_duration : numeric \l 
+			model : string \l 
+			name : string \l 
+			notional : numeric \l 
+			notional_at_end : numeric \l 
+			notional_at_start : numeric \l 
+			prorated : bool \l 
+			pv01 : numeric \l 
+			reference_curve : string \l 
+			soy : numeric \l 
+			spread : numeric \l 
+			spread_duration : numeric \l 
+			strike : numeric \l 
+			sub_type : string \l 
+			term : numeric \l 
+			theta : numeric \l 
+			timestep_mc : cell \l 
+			timestep_mc_cf : cell \l 
+			type : string \l 
+			use_indexation_lag : bool \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			vega : numeric \l 
+			vola_shock : numeric \l 
+			vola_spread : numeric \l 
+			vola_surface : string \l 
+			ytm : numeric \l 
+			 | 
+			Methods \l 
+			CapFloor \l 
+			calc_sensitivities \l 
+			calc_value \l 
+			calc_vola_spread \l 
+			get \l 
+			getCF \l 
+			rollout \l 
+			set \l 
+		}"
+]	
+	Cash [ 
+		label = "{ Cash | 
+			Properties \l 
+			asset_class : string \l 
+			cf_dates : numeric \l 
+			cf_values : numeric \l 
+			currency : string \l 
+			description : string \l 
+			discount_curve : string \l 
+			id : string \l 
+			name : string \l 
+			sub_type : string \l 
+			timestep_mc : cell \l 
+			type : string \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			 | 
+			Methods \l 
+			Cash \l 
+			calc_value \l 
+			get \l 
+			set \l 
+		}"
+]	
+	Debt [ 
+		label = "{ Debt | 
+			Properties \l 
+			asset_class : string \l 
+			cf_dates : numeric \l 
+			cf_values : numeric \l 
+			convexity : numeric \l 
+			currency : string \l 
+			description : string \l 
+			discount_curve : string \l 
+			duration : numeric \l 
+			id : string \l 
+			name : string \l 
+			sub_type : string \l 
+			term : numeric \l 
+			timestep_mc : cell \l 
+			type : string \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			 | 
+			Methods \l 
+			Debt \l 
+			calc_value \l 
+			get \l 
+			set \l 
+		}"
+]	
+	Forward [ 
+		label = "{ Forward | 
+			Properties \l 
+			asset_class : string \l 
+			basis : numeric \l 
+			calc_price_from_netbasis : bool \l 
+			cf_dates : numeric \l 
+			cf_values : numeric \l 
+			component_weight : numeric \l 
+			compounding_freq : string \l 
+			compounding_type : string \l 
+			convenience_yield : numeric \l 
+			currency : string \l 
+			day_count_convention : string \l 
+			description : string \l 
+			discount_curve : string \l 
+			dividend_yield : numeric \l 
+			foreign_curve : string \l 
+			id : string \l 
+			issue_date : string \l 
+			maturity_date : string \l 
+			multiplier : numeric \l 
+			name : string \l 
+			net_basis : numeric \l 
+			spread : numeric \l 
+			storage_cost : numeric \l 
+			strike_price : numeric \l 
+			sub_type : string \l 
+			theo_delta : numeric \l 
+			theo_domestic_rho : numeric \l 
+			theo_foreign_rho : numeric \l 
+			theo_gamma : numeric \l 
+			theo_price : numeric \l 
+			theo_rho : numeric \l 
+			theo_theta : numeric \l 
+			theo_vega : numeric \l 
+			timestep_mc : cell \l 
+			type : string \l 
+			underlying_id : string \l 
+			underlying_price_base : numeric \l 
+			underlying_sensitivity : numeric \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			 | 
+			Methods \l 
+			Forward \l 
+			calc_sensitivities \l 
+			calc_value \l 
+			get \l 
+			set \l 
+		}"
+]	
+	Option [ 
+		label = "{ Option | 
+			Properties \l 
+			asset_class : string \l 
+			averaging_monitoring : string \l 
+			averaging_rule : string \l 
+			averaging_type : string \l 
+			barrierlevel : numeric \l 
+			basis : numeric \l 
+			binary_type : string \l 
+			calibration_flag : numeric \l 
+			call_flag : numeric \l 
+			cf_dates : numeric \l 
+			cf_values : numeric \l 
+			compounding_freq : numeric \l 
+			compounding_type : string \l 
+			currency : string \l 
+			day_count_convention : string \l 
+			description : string \l 
+			discount_curve : string \l 
+			div_yield : numeric \l 
+			id : string \l 
+			lookback_type : string \l 
+			maturity_date : string \l 
+			multiplier : numeric \l 
+			name : string \l 
+			option_type : string \l 
+			outorin : string \l 
+			payoff_strike : numeric \l 
+			pricing_function_american : string \l 
+			rebate : numeric \l 
+			spot : numeric \l 
+			spread : numeric \l 
+			strike : numeric \l 
+			sub_type : string \l 
+			theo_delta : numeric \l 
+			theo_gamma : numeric \l 
+			theo_omega : numeric \l 
+			theo_rho : numeric \l 
+			theo_theta : numeric \l 
+			theo_vega : numeric \l 
+			timestep_mc : cell \l 
+			timesteps_size : numeric \l 
+			type : string \l 
+			underlying : string \l 
+			upordown : string \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			vola_sensi : numeric \l 
+			vola_spread : numeric \l 
+			vola_surface : string \l 
+			willowtree_nodes : numeric \l 
+			 | 
+			Methods \l 
+			Option \l 
+			calc_greeks \l 
+			calc_greeks_basket_beisser \l 
+			calc_value \l 
+			calc_value_basket_beisser \l 
+			calc_vola_spread \l 
+			get \l 
+			set \l 
+		}"
+]	
+	Sensitivity [ 
+		label = "{ Sensitivity | 
+			Properties \l 
+			asset_class : string \l 
+			cf_dates : numeric \l 
+			cf_values : numeric \l 
+			currency : string \l 
+			description : string \l 
+			id : string \l 
+			idio_vola : numeric \l 
+			model : string \l 
+			name : string \l 
+			riskfactors : cell \l 
+			sensitivities : numeric \l 
+			sub_type : string \l 
+			timestep_mc : cell \l 
+			type : string \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			 | 
+			Methods \l 
+			Sensitivity \l 
+			get \l 
+			set \l 
+		}"
+]	
+	Stochastic [ 
+		label = "{ Stochastic | 
+			Properties \l 
+			asset_class : string \l 
+			currency : string \l 
+			description : string \l 
+			id : string \l 
+			name : string \l 
+			quantile_base : numeric \l 
+			stochastic_curve : string \l 
+			stochastic_rf_type : string \l 
+			stochastic_riskfactor : string \l 
+			sub_type : string \l 
+			t_degree_freedom : numeric \l 
+			timestep_mc : cell \l 
+			type : string \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			 | 
+			Methods \l 
+			Stochastic \l 
+			calc_value \l 
+			get \l 
+			set \l 
+		}"
+]	
+	Swaption [ 
+		label = "{ Swaption | 
+			Properties \l 
+			asset_class : string \l 
+			basis : numeric \l 
+			calibration_flag : numeric \l 
+			call_flag : bool \l 
+			cf_dates : numeric \l 
+			cf_values : numeric \l 
+			compounding_freq : numeric \l 
+			compounding_type : string \l 
+			currency : string \l 
+			day_count_convention : string \l 
+			description : string \l 
+			discount_curve : string \l 
+			effective_date : string \l 
+			id : string \l 
+			implied_volatility : numeric \l 
+			maturity_date : string \l 
+			model : string \l 
+			multiplier : numeric \l 
+			name : string \l 
+			no_payments : numeric \l 
+			spot : numeric \l 
+			spread : numeric \l 
+			strike : numeric \l 
+			sub_type : string \l 
+			tenor : numeric \l 
+			theo_delta : numeric \l 
+			theo_gamma : numeric \l 
+			theo_rho : numeric \l 
+			theo_theta : numeric \l 
+			theo_vega : numeric \l 
+			timestep_mc : cell \l 
+			type : string \l 
+			und_fixed_leg : string \l 
+			und_fixed_value : numeric \l 
+			und_float_value : numeric \l 
+			und_floating_leg : string \l 
+			underlying : string \l 
+			use_underlyings : bool \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			vola_sensi : numeric \l 
+			vola_spread : numeric \l 
+			vola_surface : string \l 
+			 | 
+			Methods \l 
+			Swaption \l 
+			calc_greeks \l 
+			calc_value \l 
+			calc_vola_spread \l 
+			get \l 
+			set \l 
+		}"
+]	
+	Synthetic [ 
+		label = "{ Synthetic | 
+			Properties \l 
+			asset_class : string \l 
+			basis : numeric \l 
+			basket_vola_type : string \l 
+			cf_dates : numeric \l 
+			cf_values : numeric \l 
+			compounding_freq : string \l 
+			compounding_type : string \l 
+			correlation_matrix : string \l 
+			currency : string \l 
+			day_count_convention : string \l 
+			description : string \l 
+			discount_curve : string \l 
+			id : string \l 
+			instr_vol_surfaces : cell \l 
+			instruments : cell \l 
+			is_basket : bool \l 
+			name : string \l 
+			sub_type : string \l 
+			timestep_mc : cell \l 
+			type : string \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			weights : numeric \l 
+			 | 
+			Methods \l 
+			Synthetic \l 
+			calc_value \l 
+			get \l 
+			set \l 
+		}"
+]	
 edge [
 	arrowhead = "empty"
 ]
 Instrument -> Bond 
-Instrument -> Option 
-Instrument -> Forward 
-Instrument -> Debt 
 Instrument -> CapFloor 
 Instrument -> Cash 
+Instrument -> Debt 
+Instrument -> Forward 
+Instrument -> Option 
 Instrument -> Sensitivity 
 Instrument -> Stochastic 
 Instrument -> Swaption 

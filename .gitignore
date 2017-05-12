@@ -13,4 +13,5 @@
 *.html
 *.texi~
 *.mat
+*.dot~
 # exclude the following folders
