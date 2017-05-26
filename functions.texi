@@ -1,5 +1,6 @@
 @menu
 * 	adapt_matlab::
+* 	aggregate_positions::
 * 	any2str::
 * 	calcConvexityAdjustment::
 * 	calibrate_evt_gpd::
@@ -187,6 +188,142 @@ See also: \args\.
   \fi
 @end tex
  Delete unneccessary scripts
+
+@node 	aggregate_positions
+@section 	aggregate_positions
+@cindex 	 Function 	aggregate_positions
+@c Copyright (C) 2012-2016 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@deftypefn {Function File} {[@var{position_struct} @var{position_failed_cell} @var{portfolio_value} @var{portfolio_shock}] =} aggregate_positions (@var{position_struct}, @var{position_failed_cell}, @var{instrument_struct}, @var{index_struct}, @var{scennumber},  @var{scen_set}, @var{fund_currency}, @var{port_id}, @var{printflag})
+
+Aggregate position and portfolio base, stress and MC scenarios shocks.
+Instrument MC values are aggregated and converted to fund currency based
+on position information (quantity and position ID referencing instrument ID).@*
+Return total portfolio base, stress or MC values and position struct with new keys 
+\'basevalue\', \'stresstests\' or \'mc_scenarios\' according to provided scenario set.
+@*
+Input:
+@itemize @bullet
+@item @var{position_struct}: structure with position definitions (quantity and ID)
+@item @var{position_failed_cell}: failing position ids are stored in this cell
+@item @var{instrument_struct}: structure with instrument objects
+@item @var{index_struct}: structure with FX objects
+@item @var{scennumber}: number of stress or MC scenarios
+@item @var{scen_set}: Scenario set used for aggregation (e.g. base, stress, 250d or 1d) 
+@item @var{fund_currency}: FX conversion of instrument values into fund currency
+@item @var{port_id}: Portfolio ID
+@item @var{printflag}: Boolean flag: true = print information about aggregation to stdout
+@end itemize
+@seealso{aggregate_position_base}
+@end deftypefn
 
 @node 	any2str
 @section 	any2str
@@ -1351,61 +1488,9 @@ See also: \args\.
   \fi
 @end tex
 
-@deftypefn {Function File} { @var{object} =} Instrument (@var{name}, @var{id}, @var{description}, @var{type}, @var{currency}, @var{base_value}, @var{asset_class}, @var{valuation_date})
-Instrument Superclass Inputs:
-@itemize @bullet
-@item @var{name} (string): Name of object
-@item @var{id} (string): Id of object
-@item @var{description} (string): Description of object
-@item @var{type} (string): instrument type in list [cash, bond, debt, forward, 
-option, sensitivity, synthetic]
-@item @var{currency} (string): ISO code of currency
-@item @var{base_value} (float): Actual base (spot) value of object
-@item @var{asset_class} (sring): Instrument asset class
-@item @var{valuation_date} (datenum): serial day number from Jan 1, 0000 
-defined as day 1. 
-@end itemize
-@*
-The constructor of the instrument class constructs an object with the 
-following properties and inherits them to all sub classes: @*
-@itemize @bullet
-@item name: Name of object
-@item id: Id of object
-@item description: Description of object
-@item value_base: Actual base (spot) value of object
-@item currency: ISO code of currency
-@item asset_class: Instrument asset class
-@item type: Type of Instrument class (Bond,Forward,...) 
-@item valuation_date: date format DD-MMM-YYYY 
-@item value_stress: Vector with values under stress scenarios
-@item value_mc: Matrix with values under MC scenarios (values per timestep 
-per column)
-@item timestep_mc: MC timestep per column (cell string)
-@end itemize
-
-@var{value} = Instrument.getValue (@var{base}, @var{stress}, @var{mc_timestep})
-Superclass Method getValue 
-@*
-Return the scenario (shock) value for an instrument object. Specify the 
-desired return values with a property parameter.
-If the second argument abs is set, the absolut scenario value is calculated 
-from scenario shocks and the risk factor start value.
-@*
-Timestep properties:
-@itemize @bullet
-@item base: return base value
-@item stress: return stress values
-@item 1d: return MC timestep
-@end itemize
-@*
-@var{boolean} = Instrument.isProp (@var{property}) 
-Instrument Method isProp
-@*
-Query all properties from the Instrument Superclass and sub classes and 
-returns 1 in case of a valid property.
-@*
-@*
-@seealso{Instrument}
+@deftypefn {Function File} { @var{} =} doc_instrument ()
+This script contains all integration test cases for Octarisk's instruments.
+This script if part of the integration test suite.
 @end deftypefn
 
 @node 	doc_riskfactor
