@@ -8,7 +8,7 @@
 @c                          HEADER
 @c --------------------------------------------------------------------------------------------------------------------
 
-@set VERSION 0.3.5
+@set VERSION 0.4.0
 
 @c Command C:\Program Files (x86)\texinfo\bin>makeinfo --plaintext doc_octarisk.texi
 
@@ -621,34 +621,36 @@ The columns of the stress test file consists of following entries:
 @item @var{HeaderSTRESSTESTS}: indicates stress tests
 @item @var{idCHAR}: Unique ID of the stresstest.
 @item @var{nameCHAR}: Name of the stresstest, used in reporting.
-@item @var{risktypeCHAR}: Pipe | separated IDs of risk types OR risk factors. Each risktype is treated as a regular expression applied to all risk factor IDs. Therefore it is e.g. possible to shock all high yield spread curves, regardless of their currency: @i{RF_SPREAD_.*_HY} or all EUR curves, regardless of rating: @i{IR_EUR} in the particular scenario. If a whole risk factor ID is given (e.g. RF_FX_EURUSD or RF_IR_EUR_5Y), only the single risk factors are shocked.
-@item @var{shiftvalueCHAR}: The value of the applied shocks. Relative shocks are given in decimals (e.g. -0.5 for a -50% down shock). Absolute shocks to interest rate nodes
-are given in basis points (e.g. 100 means a 100bp upshock).
-@item @var{shifttypeCHAR}: Integer 0 or 1 defining the shock type. 1 means relative shock (multiplied by risk factor base value), 0 means absolute shock (added to risk factor base value). Inside one stress test all curves nodes requires to have the same shift type.
+@item @var{objectCHAR}: Object ID which will be shocked (curve, index, surface, not a risk factor)
+@item @var{objecttypeCHAR}: type of object to be shocked (e.g. curve or index)
+@item @var{shocktypeCHAR}: type of shock (e.g. absolute or relative shock or specific value used in stress scenario)
+@item @var{termCHAR}: term of curve be shocked (several terms are separated by pipes)
+@item @var{axis_xCHAR}: x coordinate of object (e.g. tenor of IR volatility cube)
+@item @var{axis_yCHAR}: y coordinate of object (e.g. term of IR volatility cube)
+@item @var{axis_zCHAR}: z coordinate of object (e.g. moneyness of IR volatility cube)
+@item @var{method_interpolationCHAR}: interpolation method of shocks (only applicable to curves and surface objects)
+@item @var{shockvalueCHAR}: shock value applied to objects (several shocks to all terms are separated by pipes)
 @end itemize
 
-An example for possible stress test definitions are given. E.g. the asian currency crisis stress test applies a relative down shock of 50% to all Emerging market equity risk factors and shocks all exchange rates (relative to EUR) by 10%: @*
+An example for possible stress test definitions are given:@*
 @fonttextsize 10
 @example
 @group
 #Stresstests Specifications
-HeaderSTRESSTESTS,idCHAR,nameCHAR,risktypeCHAR,shiftvalueCHAR,shifttypeCHAR
-Item,IR_100bpDOWN,IR - 100bp,RF_IR,-100,0
-Item,IR_100bpUP,IR + 100bp,RF_IR,100,0
-Item,SPREAD_100bpDOWN,Spread - 100bp,RF_SPREAD,-100,0
-Item,SPREAD_100bpUP,Spread + 100bp,RF_SPREAD,100,0
-Item,EQ_30DOWN,Equity - 3000bp,RF_EQ,-0.3,1
-Item,EQ_30UP,Equity + 3000bp,RF_EQ,0.3,1
-Item,VOLA_100UP,VOLA + 10000bp,RF_VOLA,1,1
-Item,RE_30DOWN,Real Estate - 3000bp,RF_RE,-0.3,1
-Item,RE_30UP,Real Estate + 3000bp,RF_RE,0.3,1
-Item,COM_30DOWN,Commodity - 3000bp,RF_COM,-0.3,1
-Item,COM_30UP,Commodity + 3000bp,RF_COM,0.3,1
-Item,EUR_USD_FX_30DOWN,FX - 3000bp,RF_FX,-0.3,1
-Item,EUR_USD_FX_30UP,FX + 3000bp,RF_FX,0.3,1
-Item,Terror2001-9-11,Terror 2001-9-11,RF_EQ|RF_RE|RF_VOLA_EQ,-0.15|-0.15|0.3,1|1|1
-Item,DotCom2000,DotCom bubble 2000,RF_EQ|RF_VOLA_EQ|RF_SPREAD,-0.35|0.5|150,1|1|0
-Item,AsianCurrCrisis1997,Asian Currency Crisis 1997,RF_EQ_EM|RF_FX,-0.5|-0.1,1|1
+HeaderSTRESSTESTS,idCHAR,nameCHAR,objectCHAR,objecttypeCHAR,shocktypeCHAR, ...
+  ... termCHAR,axis_xCHAR,axis_yCHAR,axis_zCHAR,method_interpolationCHAR,shockvalueCHAR
+Item,STRESS01,IR-100bp,IR_EUR,curve,absolute,365,,,,linear,-0.01
+Item,STRESS01,IR-100bp,IR_USD,curve,absolute,365,,,,linear,-0.01
+Item,STRESS02,IR+100bp,IR_EUR,curve,absolute,365,,,,linear,+0.01
+Item,STRESS02,IR+100bp,IR_USD,curve,absolute,365,,,,linear,+0.01
+Item,STRESS03,SPREAD-100bp,SPREAD_EUR_FIN_A,curve,absolute,365,,,,linear,-0.01
+Item,STRESS04,SPREAD+100bp,SPREAD_EUR_FIN_A,curve,absolute,365,,,,linear,+0.01
+Item,STRESS05,INFL-100bp,INFL_EXP_CURVE,curve,absolute,365,,,,linear,-0.01
+Item,STRESS06,INFL+100bp,INFL_EXP_CURVE,curve,absolute,365,,,,linear,+0.01
+Item,STRESS07,EQ-30Pct,EQ_DE,index,relative,,,,,linear,0.7
+Item,STRESS08,EQ+30Pc,EQ_DE,index,relative,,,,,linear,1.3
+Item,STRESS09,ASIANFLU,VOLA_IR_EUR_0.0002,surface,value,,365|3650,365|3650,,,0.015|0.025;0.01|0.03
+Item,STRESS10,IR_EURTwistPos,IR_EUR,curve,absolute,365|3650|7300,,,,linear,-0.01|0.01|0.03
 @end group
 @end example
 @fonttextsize 11

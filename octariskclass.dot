@@ -57,6 +57,9 @@ digraph G {
 			currency : string \l 
 			description : string \l 
 			id : string \l 
+			increments : cell \l 
+			index_function : string \l 
+			index_parameter : numeric \l 
 			name : string \l 
 			scenario_mc : numeric \l 
 			scenario_stress : numeric \l 
@@ -69,6 +72,7 @@ digraph G {
 			Index \l 
 			get \l 
 			getValue \l 
+			isProp \l 
 			set \l 
 		}"
 	]
@@ -109,6 +113,7 @@ digraph G {
 			Matrix \l 
 			get \l 
 			getValue \l 
+			isProp \l 
 			set \l 
 		}"
 	]
@@ -123,6 +128,7 @@ digraph G {
 			Methods \l 
 			Parameter \l 
 			get \l 
+			isProp \l 
 			set \l 
 		}"
 	]
@@ -155,6 +161,7 @@ digraph G {
 			Riskfactor \l 
 			get \l 
 			getValue \l 
+			isProp \l 
 			set \l 
 		}"
 	]
@@ -184,9 +191,11 @@ digraph G {
 			Methods \l 
 			Surface \l 
 			apply_rf_shocks \l 
+			apply_stress_shocks \l 
 			get \l 
 			getValue \l 
 			interpolate \l 
+			isProp \l 
 			set \l 
 		}"
 	]
