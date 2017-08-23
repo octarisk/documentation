@@ -7804,17 +7804,16 @@ and convert_curve_rates
 
 Input and output variables:
 @itemize @bullet
-@item @var{valuation_date}:  Structure with relevant information for 
-specification of the forward:@*
+@item @var{valuation_date}:  valuation date (preferred as datenum)@*
 @item @var{cashflow_dates}:  cashflow_dates is a 1xN vector with all 
 timesteps of the cash flow pattern
 @item @var{cashflow_values}: cashflow_values is a MxN matrix with cash flow 
 pattern.
 @item @var{spread_constant}: a constant spread added to the total yield 
 extracted from discount curve and spread curve (can be used to spread over yield)
-@item @var{discount_nodes}:  tmp_nodes is a 1xN vector with all timesteps of 
+@item @var{discount_nodes}:  discount_nodes is a 1xN vector with all timesteps of 
 the given curve
-@item @var{discount_rates}:  tmp_rates is a MxN matrix with discount curve 
+@item @var{discount_rates}:  discount_rates is a MxN matrix with discount curve 
 rates defined in columns. Each row contains a specific scenario with different 
 curve structure
 @item @var{basis}:   OPTIONAL: day-count convention of instrument (either 
@@ -9941,5 +9940,6 @@ Update all market data objects with scenario dependent risk factor and curve sho
 Return index struct and curve struct with scenario dependent absolute values. @*
 Calculate reciprocal FX conversion factors for all exchange rate market objects (e.g. FX_USDEUR = 1 ./ FX_USDEUR).
 During aggregation and instrument currency conversion the appropriate FX exchange rate is always chosen by FX_BasecurrencyForeigncurrency)
+Volatility surfaces and cube MC and stress shocks are generated in script load_volacubes.m
 @end deftypefn
 

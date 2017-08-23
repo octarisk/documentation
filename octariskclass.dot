@@ -294,6 +294,7 @@ digraph G {
 			stochastic_rf_type : string \l 
 			stochastic_riskfactor : string \l 
 			stochastic_surface : string \l 
+			stochastic_zero_base : bool \l 
 			strike_rate : numeric \l 
 			sub_type : string \l 
 			t_degree_freedom : numeric \l 
@@ -600,16 +601,27 @@ digraph G {
 			model : string \l 
 			name : string \l 
 			riskfactors : cell \l 
+			sensi_cross : numeric \l 
+			sensi_exponent : numeric \l 
+			sensi_prefactor : numeric \l 
 			sensitivities : numeric \l 
+			shock_type : cell \l 
 			sub_type : string \l 
 			timestep_mc : cell \l 
 			type : string \l 
+			underlyings : cell \l 
+			use_taylor_exp : bool \l 
+			use_value_base : bool \l 
 			value_base : numeric \l 
 			value_mc : numeric \l 
 			value_stress : numeric \l 
+			x_coord : numeric \l 
+			y_coord : numeric \l 
+			z_coord : numeric \l 
 			 | 
 			Methods \l 
 			Sensitivity \l 
+			calc_value \l 
 			get \l 
 			set \l 
 		}"
