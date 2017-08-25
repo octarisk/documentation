@@ -1,0 +1,30 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_Forward {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@Forward::Forward" -> "@Forward::calc_sensitivities"
+		"@Forward::Forward" -> "@Forward::calc_value"
+		"@Forward::Forward" -> "@Forward::get"
+		"@Forward::Forward" -> "@Forward::set"
+		label = "@Forward";
+	}
+"@Forward::Forward" 	 -> 	 "any2str"
+"@Forward::Forward" 	 -> 	 "get_basis"
+"@Forward::calc_sensitivities" 	 -> 	 "pricing_forward"
+"@Forward::calc_value" 	 -> 	 "pricing_forward"
+"@Forward::set" 	 -> 	 "any2str"
+"@Forward::set" 	 -> 	 "return_checked_input"
+}

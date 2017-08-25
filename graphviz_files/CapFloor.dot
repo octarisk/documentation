@@ -1,0 +1,36 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_CapFloor {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@CapFloor::CapFloor" -> "@CapFloor::calc_sensitivities"
+		"@CapFloor::CapFloor" -> "@CapFloor::calc_value"
+		"@CapFloor::CapFloor" -> "@CapFloor::calc_vola_spread"
+		"@CapFloor::CapFloor" -> "@CapFloor::get"
+		"@CapFloor::CapFloor" -> "@CapFloor::getCF"
+		"@CapFloor::CapFloor" -> "@CapFloor::rollout"
+		"@CapFloor::CapFloor" -> "@CapFloor::set"
+		label = "@CapFloor";
+	}
+"@CapFloor::CapFloor" 	 -> 	 "any2str"
+"@CapFloor::CapFloor" 	 -> 	 "get_basis"
+"@CapFloor::calc_sensitivities" 	 -> 	 "pricing_npv"
+"@CapFloor::calc_sensitivities" 	 -> 	 "rollout_structured_cashflows"
+"@CapFloor::calc_value" 	 -> 	 "pricing_npv"
+"@CapFloor::calc_vola_spread" 	 -> 	 "calibrate_generic"
+"@CapFloor::rollout" 	 -> 	 "rollout_structured_cashflows"
+"@CapFloor::set" 	 -> 	 "any2str"
+"@CapFloor::set" 	 -> 	 "return_checked_input"
+}

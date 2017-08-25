@@ -1,0 +1,28 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_Synthetic {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@Synthetic::Synthetic" -> "@Synthetic::calc_value"
+		"@Synthetic::Synthetic" -> "@Synthetic::get"
+		"@Synthetic::Synthetic" -> "@Synthetic::set"
+		label = "@Synthetic";
+	}
+"@Synthetic::Synthetic" 	 -> 	 "any2str"
+"@Synthetic::Synthetic" 	 -> 	 "get_basis"
+"@Synthetic::calc_value" 	 -> 	 "get_sub_object"
+"@Synthetic::set" 	 -> 	 "any2str"
+"@Synthetic::set" 	 -> 	 "return_checked_input"
+}

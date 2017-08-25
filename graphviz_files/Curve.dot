@@ -1,0 +1,34 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_Curve {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@Curve::Curve" -> "@Curve::apply_rf_shock"
+		"@Curve::Curve" -> "@Curve::get"
+		"@Curve::Curve" -> "@Curve::getRate"
+		"@Curve::Curve" -> "@Curve::getValue"
+		"@Curve::Curve" -> "@Curve::isProp"
+		"@Curve::Curve" -> "@Curve::set"
+		label = "@Curve";
+	}
+"@Curve::Curve" 	 -> 	 "any2str"
+"@Curve::Curve" 	 -> 	 "get_basis"
+"@Curve::Curve" 	 -> 	 "interpolate_curve"
+"@Curve::apply_rf_shock" 	 -> 	 "any2str"
+"@Curve::getRate" 	 -> 	 "interpolate_curve"
+"@Curve::getRate" 	 -> 	 "interpolate_curve_vectorized."
+"@Curve::set" 	 -> 	 "any2str"
+"@Curve::set" 	 -> 	 "return_checked_input"
+}
