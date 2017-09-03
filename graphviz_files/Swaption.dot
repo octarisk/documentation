@@ -22,8 +22,6 @@ digraph G {
 		"@Swaption::Swaption" -> "@Swaption::set"
 		label = "@Swaption";
 	}
-"@Swaption::Swaption" 	 -> 	 "any2str"
-"@Swaption::Swaption" 	 -> 	 "get_basis"
 "@Swaption::calc_greeks" 	 -> 	 "convert_curve_rates"
 "@Swaption::calc_greeks" 	 -> 	 "get_forward_rate"
 "@Swaption::calc_greeks" 	 -> 	 "interpolate_curve"
@@ -46,6 +44,5 @@ digraph G {
 "@Swaption::calc_vola_spread" 	 -> 	 "swaption_black76"
 "@Swaption::calc_vola_spread" 	 -> 	 "swaption_underlyings"
 "@Swaption::calc_vola_spread" 	 -> 	 "timefactor"
-"@Swaption::set" 	 -> 	 "any2str"
 "@Swaption::set" 	 -> 	 "return_checked_input"
 }

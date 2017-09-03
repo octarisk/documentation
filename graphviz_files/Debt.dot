@@ -20,7 +20,5 @@ digraph G {
 		"@Debt::Debt" -> "@Debt::set"
 		label = "@Debt";
 	}
-"@Debt::Debt" 	 -> 	 "any2str"
-"@Debt::set" 	 -> 	 "any2str"
 "@Debt::set" 	 -> 	 "return_checked_input"
 }

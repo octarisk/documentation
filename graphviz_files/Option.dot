@@ -24,8 +24,6 @@ digraph G {
 		"@Option::Option" -> "@Option::set"
 		label = "@Option";
 	}
-"@Option::Option" 	 -> 	 "any2str"
-"@Option::Option" 	 -> 	 "get_basis"
 "@Option::calc_greeks" 	 -> 	 "convert_curve_rates"
 "@Option::calc_greeks" 	 -> 	 "interpolate_curve"
 "@Option::calc_greeks" 	 -> 	 "option_asian_levy"
@@ -61,6 +59,5 @@ digraph G {
 "@Option::calc_vola_spread" 	 -> 	 "option_lookback"
 "@Option::calc_vola_spread" 	 -> 	 "option_willowtree"
 "@Option::calc_vola_spread" 	 -> 	 "timefactor"
-"@Option::set" 	 -> 	 "any2str"
 "@Option::set" 	 -> 	 "return_checked_input"
 }

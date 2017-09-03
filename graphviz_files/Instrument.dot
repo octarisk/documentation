@@ -20,7 +20,5 @@ digraph G {
 		"@Instrument::Instrument" -> "@Instrument::valuate"
 		label = "@Instrument";
 	}
-"@Instrument::Instrument" 	 -> 	 "any2str"
 "@Instrument::Instrument" 	 -> 	 "get_basis"
-"@Instrument::valuate" 	 -> 	 "instrument_valuation"
 }

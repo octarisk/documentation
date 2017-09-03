@@ -12,36 +12,44 @@ digraph G {
 	]
 	graph [splines=ortho];
 	rankdir=LR;
-"adapt_matlab" 	 -> 	 "any2str"
-"adapt_matlab" 	 -> 	 "fmincon"
-"adapt_matlab" 	 -> 	 "get_basis"
+"octarisk" 	 -> 	 "@Instrument::valuate" [weight=3.]
+"@Instrument::valuate" 	 -> 	 "instrument_valuation" [weight=3.]
+"octarisk"  [shape=octagon, style=filled, fillcolor=skyblue]
+"@Instrument::valuate"  [shape=hexagon, style=filled, fillcolor=lightsteelblue2]
+"instrument_valuation"  [shape=rectangle, style=filled, fillcolor=lightyellow2]
+subgraph cluster_legend {
+label="Legend";
+kc1[label="Function Name", shape=box];
+k1[shape=plaintext, style=solid, label="Octave function"] 
+kc2[label="Method Name", shape=box, style=filled, fillcolor=lightgrey];
+k2[shape=plaintext, style=solid, label="Method of Octarisk Class"] 
+kc3[label="Octarisk", shape=octagon, style=filled, fillcolor=skyblue];
+k3[shape=plaintext, style=solid, label="Main Script"]
+kc4[label="@Instrument::valuate", shape=hexagon, style=filled, fillcolor=lightsteelblue2];
+k4[shape=plaintext, style=solid, label="Main method of instrument super class"]
+kc5[label="instrument_valuation", shape=rectangle, style=filled, fillcolor=lightyellow2];
+k5[shape=plaintext, style=solid, label="Main script for instrument valuation"]
+{ rank=source;k1 k2 k3 k4 k5}
+}
 "adapt_matlab" 	 -> 	 "replacement_script"
-"aggregate_positions" 	 -> 	 "get_sub_object"
+ab" 	 -> 	 "get_basis"
+"adapt_matlab" 	 -> 	 "replacement_script"
 "calcConvexityAdjustment" 	 -> 	 "timefactor"
 "calibrate_evt_gpd" 	 -> 	 "fmincon"
 "calibrate_generic" 	 -> 	 "fmincon"
 "convert_curve_rates" 	 -> 	 "timefactor"
 "discount_factor" 	 -> 	 "get_basis"
 "discount_factor" 	 -> 	 "timefactor"
-"doc_instrument" 	 -> 	 "get_sub_object"
-"doc_instrument" 	 -> 	 "rollout_structured_cashflows"
-"doc_instrument" 	 -> 	 "unittests"
-"generate_willowtree" 	 -> 	 "option_willowtree"
-"getCapFloorRate" 	 -> 	 "swaption_bachelier"
-"getCapFloorRate" 	 -> 	 "swaption_black76"
 "getFlooredSpotByFlooringForwardCurve" 	 -> 	 "get_forward_rate"
 "getFlooredSpotByFlooringForwardCurve" 	 -> 	 "timefactor"
-"get_basis" 	 -> 	 "timefactor"
-"get_basket_volatility" 	 -> 	 "any2str"
-"get_basket_volatility" 	 -> 	 "get_sub_object"
 "get_basket_volatility" 	 -> 	 "timefactor"
-"get_basket_volatility" 	 -> 	 "optimize_basket_forwardprice."
+"get_basket_volatility" 	 -> 	 "optimize_basket_forwardprice"
 "get_bond_tf_rates" 	 -> 	 "convert_curve_rates"
 "get_bond_tf_rates" 	 -> 	 "discount_factor"
 "get_bond_tf_rates" 	 -> 	 "interpolate_curve"
 "get_bond_tf_rates" 	 -> 	 "pricing_npv"
 "get_bond_tf_rates" 	 -> 	 "timefactor"
-"get_bond_tf_rates" 	 -> 	 "interpolate_curve_vectorized."
+"get_bond_tf_rates" 	 -> 	 "interpolate_curve_vectorized"
 "get_cms_rate_hagan" 	 -> 	 "discount_factor"
 "get_cms_rate_hagan" 	 -> 	 "rollout_structured_cashflows"
 "get_cms_rate_hagan" 	 -> 	 "timefactor"
@@ -52,25 +60,12 @@ digraph G {
 "get_forward_rate" 	 -> 	 "convert_curve_rates"
 "get_forward_rate" 	 -> 	 "interpolate_curve"
 "get_forward_rate" 	 -> 	 "timefactor"
-"get_marginal_distr_pearson" 	 -> 	 "discount_factor"
-"get_sub_struct" 	 -> 	 "get_sub_object"
-"instrument_valuation" 	 -> 	 "any2str"
-"instrument_valuation" 	 -> 	 "get_basket_volatility"
-"instrument_valuation" 	 -> 	 "get_sub_object"
 "integrationtests" 	 -> 	 "doc_instrument"
 "integrationtests" 	 -> 	 "test_io"
-"integrationtests" 	 -> 	 "pricing_callable_bond_cpp."
-"load_correlation_matrix" 	 -> 	 "load_mktdata_objects"
+"integrationtests" 	 -> 	 "pricing_callable_bond_cpp"
 "load_matrix_objects" 	 -> 	 "load_correlation_matrix"
-"load_riskfactor_scenarios" 	 -> 	 "get_sub_object"
-"load_stresstests" 	 -> 	 "any2str"
-"load_stresstests" 	 -> 	 "get_sub_struct"
-"load_volacubes" 	 -> 	 "get_sub_object"
 "octarisk" 	 -> 	 "aggregate_positions"
-"octarisk" 	 -> 	 "any2str"
-"octarisk" 	 -> 	 "get_sub_object"
 "octarisk" 	 -> 	 "harrell_davis_weight"
-"octarisk" 	 -> 	 "instrument_valuation"
 "octarisk" 	 -> 	 "load_correlation_matrix"
 "octarisk" 	 -> 	 "load_instruments"
 "octarisk" 	 -> 	 "load_matrix_objects"
@@ -85,27 +80,12 @@ digraph G {
 "octarisk" 	 -> 	 "save_objects"
 "octarisk" 	 -> 	 "scenario_generation_MC"
 "octarisk" 	 -> 	 "update_mktdata_objects"
-"option_asian_levy" 	 -> 	 "option_asian_vorst90"
-"option_asian_levy" 	 -> 	 "option_bs"
-"option_asian_vorst90" 	 -> 	 "option_asian_levy"
 "option_asian_vorst90" 	 -> 	 "option_bs"
 "option_asian_vorst90" 	 -> 	 "timefactor"
-"option_barrier" 	 -> 	 "option_bs"
-"option_barrier" 	 -> 	 "option_willowtree"
-"option_barrier" 	 -> 	 "swaption_black76"
-"option_binary" 	 -> 	 "option_bs"
-"option_binary" 	 -> 	 "option_willowtree"
 "option_bjsten" 	 -> 	 "option_bs"
-"option_bjsten" 	 -> 	 "option_willowtree"
-"option_bond_hw" 	 -> 	 "pricing_callable_bond_cpp."
-"option_bs" 	 -> 	 "option_willowtree"
-"option_bs" 	 -> 	 "swaption_black76"
-"option_lookback" 	 -> 	 "option_binary"
-"option_lookback" 	 -> 	 "option_bs"
+"option_bond_hw" 	 -> 	 "pricing_callable_bond_cpp"
 "option_willowtree" 	 -> 	 "discount_factor"
 "option_willowtree" 	 -> 	 "generate_willowtree"
-"option_willowtree" 	 -> 	 "option_bs"
-"perform_rf_stat_tests" 	 -> 	 "get_sub_object"
 "pricing_forward" 	 -> 	 "convert_curve_rates"
 "pricing_forward" 	 -> 	 "discount_factor"
 "pricing_forward" 	 -> 	 "pricing_npv"
@@ -114,12 +94,9 @@ digraph G {
 "pricing_npv" 	 -> 	 "discount_factor"
 "pricing_npv" 	 -> 	 "interpolate_curve"
 "pricing_npv" 	 -> 	 "timefactor"
-"pricing_npv" 	 -> 	 "calculate_npv_cpp."
-"pricing_npv" 	 -> 	 "interpolate_curve_vectorized."
-"profiler_analysis" 	 -> 	 "any2str"
+"pricing_npv" 	 -> 	 "calculate_npv_cpp"
+"pricing_npv" 	 -> 	 "interpolate_curve_vectorized"
 "replacement_script" 	 -> 	 "adapt_matlab"
-"return_checked_input" 	 -> 	 "any2str"
-"rollout_structured_cashflows" 	 -> 	 "any2str"
 "rollout_structured_cashflows" 	 -> 	 "calcConvexityAdjustment"
 "rollout_structured_cashflows" 	 -> 	 "convert_curve_rates"
 "rollout_structured_cashflows" 	 -> 	 "discount_factor"
@@ -131,12 +108,6 @@ digraph G {
 "rollout_structured_cashflows" 	 -> 	 "timefactor"
 "scenario_generation_MC" 	 -> 	 "correct_correlation_matrix"
 "scenario_generation_MC" 	 -> 	 "get_marginal_distr_pearson"
-"struct2obj" 	 -> 	 "any2str"
-"swaption_bachelier" 	 -> 	 "option_bs"
-"swaption_black76" 	 -> 	 "swaption_bachelier"
-"swaption_underlyings" 	 -> 	 "swaption_bachelier"
-"swaption_underlyings" 	 -> 	 "swaption_black76"
-"test_io" 	 -> 	 "get_sub_object"
 "test_io" 	 -> 	 "load_correlation_matrix"
 "test_io" 	 -> 	 "load_instruments"
 "test_io" 	 -> 	 "load_mktdata_objects"
@@ -144,80 +115,21 @@ digraph G {
 "test_io" 	 -> 	 "load_riskfactors"
 "test_io" 	 -> 	 "load_stresstests"
 "test_io" 	 -> 	 "struct2obj"
-"test_oct_files" 	 -> 	 "calculate_npv_cpp."
-"timefactor" 	 -> 	 "any2str"
-"timefactor" 	 -> 	 "discount_factor"
 "timefactor" 	 -> 	 "get_basis"
-"unittests" 	 -> 	 "any2str"
-"unittests" 	 -> 	 "calcConvexityAdjustment"
-"unittests" 	 -> 	 "calibrate_evt_gpd"
-"unittests" 	 -> 	 "calibrate_generic"
-"unittests" 	 -> 	 "convert_curve_rates"
-"unittests" 	 -> 	 "discount_factor"
-"unittests" 	 -> 	 "generate_willowtree"
-"unittests" 	 -> 	 "getCapFloorRate"
-"unittests" 	 -> 	 "get_basis"
-"unittests" 	 -> 	 "get_cms_rate_hull"
-"unittests" 	 -> 	 "get_forward_rate"
-"unittests" 	 -> 	 "get_gpd_var"
-"unittests" 	 -> 	 "get_sub_object"
-"unittests" 	 -> 	 "get_sub_struct"
-"unittests" 	 -> 	 "harrell_davis_weight"
-"unittests" 	 -> 	 "interpolate_curve"
-"unittests" 	 -> 	 "option_asian_levy"
-"unittests" 	 -> 	 "option_asian_vorst90"
-"unittests" 	 -> 	 "option_barrier"
-"unittests" 	 -> 	 "option_binary"
-"unittests" 	 -> 	 "option_bjsten"
-"unittests" 	 -> 	 "option_bs"
-"unittests" 	 -> 	 "option_lookback"
-"unittests" 	 -> 	 "option_willowtree"
-"unittests" 	 -> 	 "pricing_npv"
-"unittests" 	 -> 	 "return_checked_input"
-"unittests" 	 -> 	 "rollout_structured_cashflows"
-"unittests" 	 -> 	 "scenario_generation_MC"
-"unittests" 	 -> 	 "struct2obj"
-"unittests" 	 -> 	 "swaption_bachelier"
-"unittests" 	 -> 	 "swaption_black76"
-"unittests" 	 -> 	 "timefactor"
 "unvech" 	 -> 	 "ind2sub_tril"
-"update_mktdata_objects" 	 -> 	 "any2str"
 "update_mktdata_objects" 	 -> 	 "convert_curve_rates"
-"update_mktdata_objects" 	 -> 	 "get_sub_object"
-"update_mktdata_objects" 	 -> 	 "get_sub_struct"
 "update_mktdata_objects" 	 -> 	 "interpolate_curve"
 "update_mktdata_objects" 	 -> 	 "load_volacubes"
-"calculate_npv_cpp." 	 -> 	 "interpolate_cubestruct."
-"interpolate_curve_vectorized." 	 -> 	 "interpolate_curve"
-"interpolate_curve_vectorized." 	 -> 	 "interpolate_cubestruct."
-"interpolate_curvestruct." 	 -> 	 "interpolate_curve"
-"interpolate_curvestruct." 	 -> 	 "interpolate_cubestruct."
-"interpolate_surfacestruct." 	 -> 	 "interpolate_cubestruct."
-"pricing_callable_bond_cpp." 	 -> 	 "option_bond_hw"
-"pricing_callable_bond_cpp." 	 -> 	 "timefactor"
-"@Instrument::Instrument" 	 -> 	 "any2str"
+"interpolate_curve_vectorized" 	 -> 	 "interpolate_curve"
+"interpolate_curvestruct" 	 -> 	 "interpolate_curve"
 "@Instrument::Instrument" 	 -> 	 "get_basis"
-"@Instrument::valuate" 	 -> 	 "instrument_valuation"
-"@Matrix::Matrix" 	 -> 	 "any2str"
-"@Matrix::getValue" 	 -> 	 "any2str"
-"@Matrix::set" 	 -> 	 "any2str"
 "@Matrix::set" 	 -> 	 "return_checked_input"
-"@Curve::Curve" 	 -> 	 "any2str"
-"@Curve::Curve" 	 -> 	 "get_basis"
-"@Curve::Curve" 	 -> 	 "interpolate_curve"
-"@Curve::apply_rf_shock" 	 -> 	 "any2str"
 "@Curve::getRate" 	 -> 	 "interpolate_curve"
-"@Curve::getRate" 	 -> 	 "interpolate_curve_vectorized."
-"@Curve::set" 	 -> 	 "any2str"
+"@Curve::getRate" 	 -> 	 "interpolate_curve_vectorized"
 "@Curve::set" 	 -> 	 "return_checked_input"
-"@Forward::Forward" 	 -> 	 "any2str"
-"@Forward::Forward" 	 -> 	 "get_basis"
 "@Forward::calc_sensitivities" 	 -> 	 "pricing_forward"
 "@Forward::calc_value" 	 -> 	 "pricing_forward"
-"@Forward::set" 	 -> 	 "any2str"
 "@Forward::set" 	 -> 	 "return_checked_input"
-"@Option::Option" 	 -> 	 "any2str"
-"@Option::Option" 	 -> 	 "get_basis"
 "@Option::calc_greeks" 	 -> 	 "convert_curve_rates"
 "@Option::calc_greeks" 	 -> 	 "interpolate_curve"
 "@Option::calc_greeks" 	 -> 	 "option_asian_levy"
@@ -253,44 +165,17 @@ digraph G {
 "@Option::calc_vola_spread" 	 -> 	 "option_lookback"
 "@Option::calc_vola_spread" 	 -> 	 "option_willowtree"
 "@Option::calc_vola_spread" 	 -> 	 "timefactor"
-"@Option::set" 	 -> 	 "any2str"
 "@Option::set" 	 -> 	 "return_checked_input"
-"@Cash::Cash" 	 -> 	 "any2str"
-"@Cash::set" 	 -> 	 "any2str"
 "@Cash::set" 	 -> 	 "return_checked_input"
-"@Debt::Debt" 	 -> 	 "any2str"
-"@Debt::set" 	 -> 	 "any2str"
 "@Debt::set" 	 -> 	 "return_checked_input"
-"@Sensitivity::Sensitivity" 	 -> 	 "any2str"
-"@Sensitivity::Sensitivity" 	 -> 	 "doc_instrument"
-"@Sensitivity::calc_value" 	 -> 	 "get_sub_object"
-"@Sensitivity::set" 	 -> 	 "any2str"
 "@Sensitivity::set" 	 -> 	 "return_checked_input"
-"@Riskfactor::Riskfactor" 	 -> 	 "any2str"
-"@Riskfactor::Riskfactor" 	 -> 	 "doc_riskfactor"
-"@Riskfactor::Riskfactor" 	 -> 	 "get_basis"
-"@Riskfactor::set" 	 -> 	 "any2str"
 "@Riskfactor::set" 	 -> 	 "return_checked_input"
-"@Index::Index" 	 -> 	 "any2str"
-"@Index::Index" 	 -> 	 "get_basis"
 "@Index::set" 	 -> 	 "return_checked_input"
-"@Synthetic::Synthetic" 	 -> 	 "any2str"
-"@Synthetic::Synthetic" 	 -> 	 "get_basis"
-"@Synthetic::calc_value" 	 -> 	 "get_sub_object"
-"@Synthetic::set" 	 -> 	 "any2str"
 "@Synthetic::set" 	 -> 	 "return_checked_input"
-"@Surface::Surface" 	 -> 	 "any2str"
-"@Surface::Surface" 	 -> 	 "get_basis"
-"@Surface::apply_rf_shocks" 	 -> 	 "get_sub_object"
-"@Surface::apply_stress_shocks" 	 -> 	 "any2str"
-"@Surface::apply_stress_shocks" 	 -> 	 "get_sub_struct"
-"@Surface::getValue" 	 -> 	 "any2str"
-"@Surface::getValue" 	 -> 	 "interpolate_cubestruct."
-"@Surface::getValue" 	 -> 	 "interpolate_surfacestruct."
+"@Surface::getValue" 	 -> 	 "interpolate_cubestruct"
+"@Surface::getValue" 	 -> 	 "interpolate_surfacestruct"
 "@Surface::interpolate" 	 -> 	 "interpolate_curve"
 "@Surface::set" 	 -> 	 "return_checked_input"
-"@Swaption::Swaption" 	 -> 	 "any2str"
-"@Swaption::Swaption" 	 -> 	 "get_basis"
 "@Swaption::calc_greeks" 	 -> 	 "convert_curve_rates"
 "@Swaption::calc_greeks" 	 -> 	 "get_forward_rate"
 "@Swaption::calc_greeks" 	 -> 	 "interpolate_curve"
@@ -313,40 +198,112 @@ digraph G {
 "@Swaption::calc_vola_spread" 	 -> 	 "swaption_black76"
 "@Swaption::calc_vola_spread" 	 -> 	 "swaption_underlyings"
 "@Swaption::calc_vola_spread" 	 -> 	 "timefactor"
-"@Swaption::set" 	 -> 	 "any2str"
 "@Swaption::set" 	 -> 	 "return_checked_input"
-"@Stochastic::Stochastic" 	 -> 	 "any2str"
-"@Stochastic::set" 	 -> 	 "any2str"
 "@Stochastic::set" 	 -> 	 "return_checked_input"
-"@CapFloor::CapFloor" 	 -> 	 "any2str"
-"@CapFloor::CapFloor" 	 -> 	 "get_basis"
 "@CapFloor::calc_sensitivities" 	 -> 	 "pricing_npv"
 "@CapFloor::calc_sensitivities" 	 -> 	 "rollout_structured_cashflows"
 "@CapFloor::calc_value" 	 -> 	 "pricing_npv"
 "@CapFloor::calc_vola_spread" 	 -> 	 "calibrate_generic"
 "@CapFloor::rollout" 	 -> 	 "rollout_structured_cashflows"
-"@CapFloor::set" 	 -> 	 "any2str"
 "@CapFloor::set" 	 -> 	 "return_checked_input"
-"@Bond::Bond" 	 -> 	 "any2str"
-"@Bond::Bond" 	 -> 	 "get_basis"
 "@Bond::calc_key_rates" 	 -> 	 "convert_curve_rates"
 "@Bond::calc_key_rates" 	 -> 	 "interpolate_curve"
 "@Bond::calc_key_rates" 	 -> 	 "pricing_npv"
 "@Bond::calc_sensitivities" 	 -> 	 "pricing_npv"
 "@Bond::calc_sensitivities" 	 -> 	 "rollout_structured_cashflows"
-"@Bond::calc_spread_over_yield" 	 -> 	 "any2str"
 "@Bond::calc_spread_over_yield" 	 -> 	 "calibrate_generic"
 "@Bond::calc_spread_over_yield" 	 -> 	 "convert_curve_rates"
 "@Bond::calc_spread_over_yield" 	 -> 	 "discount_factor"
 "@Bond::calc_spread_over_yield" 	 -> 	 "get_bond_tf_rates"
 "@Bond::calc_spread_over_yield" 	 -> 	 "option_bond_hw"
 "@Bond::calc_spread_over_yield" 	 -> 	 "pricing_npv"
-"@Bond::calc_value" 	 -> 	 "any2str"
 "@Bond::calc_value" 	 -> 	 "option_bond_hw"
 "@Bond::calc_value" 	 -> 	 "pricing_npv"
 "@Bond::calc_yield_to_mat" 	 -> 	 "calibrate_generic"
 "@Bond::calc_yield_to_mat" 	 -> 	 "discount_factor"
 "@Bond::rollout" 	 -> 	 "rollout_structured_cashflows"
-"@Bond::set" 	 -> 	 "any2str"
 "@Bond::set" 	 -> 	 "return_checked_input"
+"instrument_valuation" 	 -> 	 "get_basket_volatility"
+"instrument_valuation" 	 -> 	 "@Forward::calc_value"
+"instrument_valuation" 	 -> 	 "@Forward::get"
+"instrument_valuation" 	 -> 	 "@Option::calc_greeks"
+"instrument_valuation" 	 -> 	 "@Option::calc_greeks_basket_beisser"
+"instrument_valuation" 	 -> 	 "@Option::calc_value"
+"instrument_valuation" 	 -> 	 "@Option::calc_value_basket_beisser"
+"instrument_valuation" 	 -> 	 "@Option::calc_vola_spread"
+"instrument_valuation" 	 -> 	 "@Option::get"
+"instrument_valuation" 	 -> 	 "@Cash::calc_value"
+"instrument_valuation" 	 -> 	 "@Debt::calc_value"
+"instrument_valuation" 	 -> 	 "@Debt::get"
+"instrument_valuation" 	 -> 	 "@Sensitivity::calc_value"
+"instrument_valuation" 	 -> 	 "@Synthetic::calc_value"
+"instrument_valuation" 	 -> 	 "@Swaption::calc_value"
+"instrument_valuation" 	 -> 	 "@Swaption::calc_vola_spread"
+"instrument_valuation" 	 -> 	 "@Swaption::get"
+"instrument_valuation" 	 -> 	 "@Stochastic::calc_value"
+"instrument_valuation" 	 -> 	 "@CapFloor::calc_sensitivities"
+"instrument_valuation" 	 -> 	 "@CapFloor::calc_value"
+"instrument_valuation" 	 -> 	 "@CapFloor::calc_vola_spread"
+"instrument_valuation" 	 -> 	 "@CapFloor::get"
+"instrument_valuation" 	 -> 	 "@CapFloor::rollout"
+"instrument_valuation" 	 -> 	 "@Bond::calc_key_rates"
+"instrument_valuation" 	 -> 	 "@Bond::calc_sensitivities"
+"instrument_valuation" 	 -> 	 "@Bond::calc_spread_over_yield"
+"instrument_valuation" 	 -> 	 "@Bond::get"
+"instrument_valuation" 	 -> 	 "@Bond::rollout"
+"instrument_valuation" 	 -> 	 "@Bond::set"
+"@Bond::calc_key_rates"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Bond::calc_sensitivities"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Bond::calc_spread_over_yield"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Bond::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Bond::calc_yield_to_mat"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Bond::get"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Bond::rollout"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Bond::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@CapFloor::calc_sensitivities"  [shape=box, style=filled, fillcolor=lightgrey]
+"@CapFloor::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@CapFloor::calc_vola_spread"  [shape=box, style=filled, fillcolor=lightgrey]
+"@CapFloor::get"  [shape=box, style=filled, fillcolor=lightgrey]
+"@CapFloor::rollout"  [shape=box, style=filled, fillcolor=lightgrey]
+"@CapFloor::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Cash::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Cash::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Curve::getRate"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Curve::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Debt::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Debt::get"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Debt::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Forward::calc_sensitivities"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Forward::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Forward::get"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Forward::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Index::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Instrument::Instrument"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Matrix::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Option::calc_greeks"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Option::calc_greeks_basket_beisser"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Option::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Option::calc_value_basket_beisser"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Option::calc_vola_spread"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Option::get"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Option::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Riskfactor::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Sensitivity::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Sensitivity::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Stochastic::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Stochastic::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Surface::getValue"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Surface::interpolate"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Surface::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Swaption::calc_greeks"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Swaption::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Swaption::calc_vola_spread"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Swaption::get"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Swaption::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Synthetic::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Synthetic::set"  [shape=box, style=filled, fillcolor=lightgrey]
+// title
+labelloc="t";
+fontsize = 30
+label="Octarisk  0.4.0 Function and Method Hierarchy";
 }

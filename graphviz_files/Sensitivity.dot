@@ -20,9 +20,5 @@ digraph G {
 		"@Sensitivity::Sensitivity" -> "@Sensitivity::set"
 		label = "@Sensitivity";
 	}
-"@Sensitivity::Sensitivity" 	 -> 	 "any2str"
-"@Sensitivity::Sensitivity" 	 -> 	 "doc_instrument"
-"@Sensitivity::calc_value" 	 -> 	 "get_sub_object"
-"@Sensitivity::set" 	 -> 	 "any2str"
 "@Sensitivity::set" 	 -> 	 "return_checked_input"
 }

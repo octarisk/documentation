@@ -24,14 +24,8 @@ digraph G {
 		"@Surface::Surface" -> "@Surface::set"
 		label = "@Surface";
 	}
-"@Surface::Surface" 	 -> 	 "any2str"
-"@Surface::Surface" 	 -> 	 "get_basis"
-"@Surface::apply_rf_shocks" 	 -> 	 "get_sub_object"
-"@Surface::apply_stress_shocks" 	 -> 	 "any2str"
-"@Surface::apply_stress_shocks" 	 -> 	 "get_sub_struct"
-"@Surface::getValue" 	 -> 	 "any2str"
-"@Surface::getValue" 	 -> 	 "interpolate_cubestruct."
-"@Surface::getValue" 	 -> 	 "interpolate_surfacestruct."
+"@Surface::getValue" 	 -> 	 "interpolate_cubestruct"
+"@Surface::getValue" 	 -> 	 "interpolate_surfacestruct"
 "@Surface::interpolate" 	 -> 	 "interpolate_curve"
 "@Surface::set" 	 -> 	 "return_checked_input"
 }

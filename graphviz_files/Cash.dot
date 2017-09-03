@@ -20,7 +20,5 @@ digraph G {
 		"@Cash::Cash" -> "@Cash::set"
 		label = "@Cash";
 	}
-"@Cash::Cash" 	 -> 	 "any2str"
-"@Cash::set" 	 -> 	 "any2str"
 "@Cash::set" 	 -> 	 "return_checked_input"
 }

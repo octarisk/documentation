@@ -20,7 +20,5 @@ digraph G {
 		"@Stochastic::Stochastic" -> "@Stochastic::set"
 		label = "@Stochastic";
 	}
-"@Stochastic::Stochastic" 	 -> 	 "any2str"
-"@Stochastic::set" 	 -> 	 "any2str"
 "@Stochastic::set" 	 -> 	 "return_checked_input"
 }

@@ -21,10 +21,7 @@ digraph G {
 		"@Forward::Forward" -> "@Forward::set"
 		label = "@Forward";
 	}
-"@Forward::Forward" 	 -> 	 "any2str"
-"@Forward::Forward" 	 -> 	 "get_basis"
 "@Forward::calc_sensitivities" 	 -> 	 "pricing_forward"
 "@Forward::calc_value" 	 -> 	 "pricing_forward"
-"@Forward::set" 	 -> 	 "any2str"
 "@Forward::set" 	 -> 	 "return_checked_input"
 }

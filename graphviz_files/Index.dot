@@ -21,7 +21,5 @@ digraph G {
 		"@Index::Index" -> "@Index::set"
 		label = "@Index";
 	}
-"@Index::Index" 	 -> 	 "any2str"
-"@Index::Index" 	 -> 	 "get_basis"
 "@Index::set" 	 -> 	 "return_checked_input"
 }

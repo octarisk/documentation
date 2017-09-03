@@ -21,9 +21,5 @@ digraph G {
 		"@Riskfactor::Riskfactor" -> "@Riskfactor::set"
 		label = "@Riskfactor";
 	}
-"@Riskfactor::Riskfactor" 	 -> 	 "any2str"
-"@Riskfactor::Riskfactor" 	 -> 	 "doc_riskfactor"
-"@Riskfactor::Riskfactor" 	 -> 	 "get_basis"
-"@Riskfactor::set" 	 -> 	 "any2str"
 "@Riskfactor::set" 	 -> 	 "return_checked_input"
 }

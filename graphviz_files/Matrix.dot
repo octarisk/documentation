@@ -21,8 +21,5 @@ digraph G {
 		"@Matrix::Matrix" -> "@Matrix::set"
 		label = "@Matrix";
 	}
-"@Matrix::Matrix" 	 -> 	 "any2str"
-"@Matrix::getValue" 	 -> 	 "any2str"
-"@Matrix::set" 	 -> 	 "any2str"
 "@Matrix::set" 	 -> 	 "return_checked_input"
 }

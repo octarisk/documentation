@@ -20,9 +20,5 @@ digraph G {
 		"@Synthetic::Synthetic" -> "@Synthetic::set"
 		label = "@Synthetic";
 	}
-"@Synthetic::Synthetic" 	 -> 	 "any2str"
-"@Synthetic::Synthetic" 	 -> 	 "get_basis"
-"@Synthetic::calc_value" 	 -> 	 "get_sub_object"
-"@Synthetic::set" 	 -> 	 "any2str"
 "@Synthetic::set" 	 -> 	 "return_checked_input"
 }
