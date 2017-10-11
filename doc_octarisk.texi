@@ -406,21 +406,22 @@ All calculation steps and the input and output files will be described in detail
 
 @node Implementation concept, Implementation workflow, Developer guide, Developer guide
 @section Implementation concept
-A lightweight implementation concept was chosen for @sc{octarisk}. One script is responsible for the complete work flow from input file parsing until aggregation and report printing. This script calls subfunctions to parse input data and construct objects, generate scenario dependent input values and call appropriate pricing functions.
+A lightweight implementation concept was chosen for @sc{octarisk}. One script is responsible for the complete work flow from input file parsing to aggregation and reporting. This script calls subfunctions to parse input data and construct objects, generate scenario dependent input values and call appropriate pricing functions.
 
 @subsection Process overview
 The following process summarizes the complete work flow:
-@center @image{octarisk_process,15cm}
-Input files (@xref{Input files}) are parsed into structures matrizes and objects.After parsing of these input files, Monte-Carlo and
+@center @image{octarisk_process,21cm}
+Input files (@xref{Input files}) are parsed into structures, matrizes and objects. After parsing of these input files, Monte-Carlo and
 stress test scenarios are generated taking into account the correlation matrix and marginal risk factor distributions as well as
-custom stress test scenario configurations. The scenario dependent shocks (delta values) are then stored for each risk factor object. After the scenario generation the scenario shocks are applied to all market data objects (mainly indizes, curves and exchange rates) which have attached risk factors. Scenario dependent values for each market data object are calculated by taken into account the scenario dependent shock, the market data base value and the risk factor stochastic model.
-Now, the instrument pricing is ready to start. For each instrument object the product type dependent calculation rule is triggered. If the sensitivity approach is chosen, scenario shocks (delta values) are applied to the instrument base value. In case of a full valuation approach, the instrument is priced with appropriate pricing engines taking into account all required market objects. A mark-to-market procedure is applied, which results in equal theoretical and market base values (by setting an appropriate spread over yield or volatility spread).
+custom stress test scenario configurations. The scenario dependent shocks are then stored for each risk factor object. The scenario shocks are then applied to all market data objects (mainly indizes, curves and exchange rates) which have attached risk factors. Scenario dependent values for each market data object are calculated by taken into account the scenario dependent shock, the market data base value and the risk factor stochastic model.
+In a next step instrument pricing takes place. For each instrument object the product type dependent calculation rule is triggered. If the sensitivity approach is chosen, scenario shocks (delta values) are applied to the instrument base value. 
+In case of a full valuation approach, the instrument is priced with specified pricing engines taking into account all scenario dependent market object values. A mark-to-market procedure is applied, which results in equal theoretical and market base values (by setting an appropriate spread over yield or volatility spread).
 After all instruments have been priced, the aggregation starts for all portfolios and their positions. Final results are printed in graphical and text based reports reflecting the market risk measures.
 
 @subsection Class diagram
 @cindex  Class diagram
 @sc{octarisk} was set up in an object oriented programming style for all objects like instruments, risk factors, curves, indizes and surfaces.
-Inside the methods of the aforementioned classes, pricing or interpolation functions are called. Please note the class diagram needs to be updated and shows status of release version 0.3.0.
+Inside the methods of the aforementioned classes, pricing or interpolation functions are called.
 The following class diagram gives an overview of all classes:
 
 @image{octariskclass,21cm}
