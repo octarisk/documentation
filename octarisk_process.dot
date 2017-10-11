@@ -1,92 +1,141 @@
 digraph G {
-    label ="OCTARISK process"
-    riskfactors_input   -> riskfactors_object[label="",weight="0.2"];
-    stresstests_input   -> stresstests_object[label="",weight="0.2"];
-    positions_input   -> positions_object[label="",weight="0.2"];
-    positions_object   -> aggregation[label="",weight="0.2"];
-    mktdata_input -> mktdata_object[label="",weight="0.2"];
-    riskfactors_input   -> MC_scen_spec[label="",weight="0.2"];
-
-    stresstests_object   -> stresstest_scen_spec[label="",weight="0.2"];
-    MC_scen_spec         -> riskfactors_object[label="",weight="1"];
-    stresstest_scen_spec -> riskfactors_object[label="",weight="1"];
-
-    correlations_input        -> correlations_object [label="",weight="0.2"];
-    correlations_object   -> MC_scen_spec[label="",weight="0.2"];
-    instruments_input   -> instruments_object[label="",weight="0.2"];
-
-    riskfactors_object   -> sensi_approach[label="scenario delta",weight="0.2"];
-    riskfactors_object   -> mktdata_object[label="",weight="1"];
-    mktdata_object   -> full_valuation[label="scenario value",weight="1"];
-    #mktdata_object   -> aggregation[label="",weight="0.2"];
+    #ranksep=.75; size = "7.5,7.5";
+	
+	#fontname = "Bitstream Vera Sans"
+	#fontsize = 8
+	#node [
+	#	#fontname = "Bitstream Vera Sans"
+	#	#fontsize = 8
+	#	shape = "record"
+	#]
+	#edge [
+	#	fontname = "Bitstream Vera Sans"
+	#	fontsize = 8
+	#]
+	#graph [splines=ortho];
+	rankdir=LR;
+	
+	
+	# input files and data
+	input_files [label="Input files \nprocessing", shape="plaintext"]
+	scenario_objects [label="Scenario generation", shape="plaintext"]
+	input_objects [label="Generating \ninput objects ", shape="plaintext"]
+	valuation_objects [label="Generating \nvaluation objects", shape="plaintext"]
+	pricing_process [label="Instrument pricing & \nsubsequent Aggregation", shape="plaintext"]
+	output_objects [label="Generating \noutput objects", shape="plaintext"]
+	input_files -> input_objects -> scenario_objects ->  valuation_objects -> pricing_process -> output_objects;
+	{ rank = same; pricing_process; full_valuation; aggregation_engine;}
+	
+	vola_input [label="Volatility data input", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    mktdata_input [label="Market data input", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    riskfactors_input [label="Riskfactor \nspecifications", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    instruments_input [label="Instrument \nspecifications", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    positions_input [label="Positions and Portfolio \nspecifications", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    stresstests_input [label="Stress test \nspecifications", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+    correlations_input [label="Correlation \nspecifications", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+	parameter_input [label="Parameter \nspecifications", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+	matrix_input [label="Matrix \nspecifications", shape="rectangle", style="filled", color="black", fillcolor="grey"]
+	#pricing_engines [label="Pricing engines", shape="ellipse", style="filled", color="black", fillcolor="lightblue"] 
+	{ rank = same; input_files; vola_input; mktdata_input; riskfactors_input; correlations_input; instruments_input; stresstests_input; positions_input; parameter_input; parameter_input; matrix_input; }
+	# generating input objects
+	
+	mktdata_objects [label="Market objects \n(Index,Curves,Surfaces)", shape="rectangle", style="filled", color="black", fillcolor="white"]
+    riskfactors_objects [label="Riskfactor \nobjects", shape="rectangle", style="filled", color="black", fillcolor="whitesmoke"]
+    instruments_objects [label="Instrument \nobjects", shape="rectangle", style="filled", color="black", fillcolor="whitesmoke"]
+    positions_objects [label="Position \nobjects", shape="rectangle", style="filled", color="black", fillcolor="white"]
+    stresstests_objects [label="Stresstest \nobjects", shape="rectangle", style="filled", color="black", fillcolor="white"]
+    correlations_objects [label="Correlation \nmatrix", shape="rectangle", style="filled", color="black", fillcolor="white"]
+	matrix_objects [label="Matrix \nobjects", shape="rectangle", style="filled", color="black", fillcolor="whitesmoke"]
+	para_objects [label="Parameter \nobject", shape="rectangle", style="filled", color="black", fillcolor="whitesmoke"]
+	{ rank = same; input_objects; stresstests_objects; correlations_objects; mktdata_objects; instruments_objects; positions_objects;   matrix_objects; para_objects;}
+	{ rank = same; scenario_objects;   riskfactors_objects; }
+	# final valuation objects
+	
+	index_objects [label="Index \nobjects", shape="rectangle", style="filled", color="black", fillcolor="whitesmoke"]
+	surface_objects [label="Surface \nobjects", shape="rectangle", style="filled", color="black", fillcolor="whitesmoke"]
+	curve_objects [label="Curve \nobjects", shape="rectangle", style="filled", color="black", fillcolor="whitesmoke"]
+	instrument_file [label="Instrument output file", shape="note", style="filled", color="black", fillcolor="lightgrey"]
+	{ rank = same; valuation_objects index_objects; surface_objects; curve_objects;}
+	
+	
+	# box definitions
     
-    vola_input -> mktdata_object[label="",weight="0.2"];
-    instruments_object -> aggregation[label="",weight="1"];
-
-#    curve_gen           -> instrument_valuation[label="",weight="0.2"];
-    
-    
-    #time_horizon_1D     -> portfolio_aggregation[label="",weight="0.2"];
-    #time_horizon_250D   -> portfolio_aggregation[label="",weight="0.2"];
-    #stresstests_scenarios -> portfolio_aggregation[label="",weight="0.2"];
-#    instrument_valuation -> portfolio_aggregation[label="",weight="0.2"];
-#    portfolio_aggregation -> portfolio_aggregation[label="for all portfolios",weight="0.2"];
-
-    aggregation -> graphical_report[label="",weight="0.2"];
-    aggregation -> text_report[label="",weight="0.2"];
-    
-# box definitions
-
-   subgraph cluster17
-   {
-	   label="Instrument Pricing"
+	#subgraph cluster1
+    #{
+	   #label="Loading and processing input data"
+	   #node [style="filled",color="black", fillcolor="white"];
+	   #style=filled;
+	   #color=lightgrey;
+ 	   mktdata_input -> mktdata_objects;
+	   riskfactors_input -> riskfactors_objects;
+	   instruments_input -> instruments_objects;
+	   positions_input -> positions_objects;
+	   stresstests_input -> stresstests_objects;
+	   correlations_input -> correlations_objects;
+	   matrix_input -> matrix_objects;
+	   #pricing_engines -> instruments_objects;
+	   
+	   parameter_input -> para_objects;
+	   vola_input -> surface_objects;
+	   mktdata_objects -> curve_objects;
+	   mktdata_objects -> index_objects;
+	   mktdata_objects -> surface_objects;
+	   
+ 	   riskfactors_objects -> curve_objects;
+	   riskfactors_objects -> index_objects;
+	   riskfactors_objects -> surface_objects;
+	   stresstests_objects -> surface_objects; 
+	   instruments_objects -> instrument_file [label="Export all instrument \nvalues and properties"];
+    #}
+	
+	subgraph cluster2
+    {
+	   label="Scenario generation"
 	   node [style="filled",color="black", fillcolor="white"];
-	   style=filled;
-	   color=lightgrey;
-	   instruments_object;
-	   full_valuation;
-       sensi_approach;
-       full_valuation -> instruments_object [label="",weight="0.2"];
-       sensi_approach -> instruments_object[label="",weight="0.2"];
-	   full_valuation [label="Full valuation",style="filled",color="black", fillcolor="papayawhip"] ;	
-       sensi_approach [label="Sensitivity Approach",style="filled",color="black", fillcolor="papayawhip"] ;  
-       pricing_engines -> full_valuation [label="",weight="0.2"];
-       pricing_engines [label="Pricing Engines", shape="ellipse", style="filled", color="black", fillcolor="white"] 		
-   }
-
-    MC_scen_spec [label="Monte-Carlo \nScenario Specification", shape="rectangle", style="filled", color="black", fillcolor="seagreen1"]
-    
-    stresstest_scen_spec [label="Stress Test \nScenario Specification", shape="rectangle", style="filled", color="black", fillcolor="seagreen2"]
-
-    #curve_gen [label="Curve generation", shape="rectangle", style="filled", color="black", fillcolor="seagreen3"]
-    #instrument_valuation [label="Instrument Valuation", shape="rectangle", style="filled", color="black", fillcolor="mistyrose"]
-    aggregation [label="Aggregation", shape="rectangle", style="filled", color="black", fillcolor="bisque"]
-    graphical_report [label="Graphical Overview", shape="note", style="filled", color="black", fillcolor="cornsilk"]
-    text_report [label="Text Report", shape="note", style="filled", color="black", fillcolor="cornsilk"]
-
-    mktdata_object [label="Market Objects \n(Index,Curves,Surfaces)", shape="rectangle", style="filled", color="black", fillcolor="mediumorchid1"]
-    riskfactors_object [label="Riskfactor \nObjects", shape="rectangle", style="filled", color="black", fillcolor="orange"]
-    instruments_object [label="Instrument  \nObjects", shape="rectangle", style="filled", color="black", fillcolor="goldenrod"]
-    positions_object [label="Position \nStruct", shape="rectangle", style="filled", color="black", fillcolor="white"]
-    stresstests_object [label="Stresstest \nStruct", shape="rectangle", style="filled", color="black", fillcolor="white"]
-    correlations_object [label="Correlations \nMatrix", shape="rectangle", style="filled", color="black", fillcolor="white"]
-
-    vola_input [label="vol_index/ir", shape="rectangle", style="filled", color="black", fillcolor="grey"]
-    mktdata_input [label="mktdata.csv", shape="rectangle", style="filled", color="black", fillcolor="grey"]
-    riskfactors_input [label="riskfactors.csv", shape="rectangle", style="filled", color="black", fillcolor="grey"]
-    instruments_input [label="instruments.csv", shape="rectangle", style="filled", color="black", fillcolor="grey"]
-    positions_input [label="positions.csv", shape="rectangle", style="filled", color="black", fillcolor="grey"]
-    stresstests_input [label="stresstest.csv", shape="rectangle", style="filled", color="black", fillcolor="grey"]
-    correlations_input [label="correlations.dat", shape="rectangle", style="filled", color="black", fillcolor="grey"]
-
-    #financial_models [label="Financial Models", shape="ellipse", style="filled", color="black", fillcolor="white"]
-    
-    #stochastic_processes [label="Stochastic Processes", shape="ellipse", style="filled", color="black", fillcolor="white"]
-
-    #stochastic_processes -> financial_models [label="",weight="0.2"];
-    #riskfactors -> financial_models [label="",weight="0.2"];
-    #financial_models -> MC_scen_gen [label="",weight="0.2"];
-
-    
+	   #style=filled;
+	   #color=green;
+ 	   correlations_objects -> riskfactors_objects;
+	   stresstests_objects -> riskfactors_objects;
+	   riskfactors_objects -> riskfactors_objects [label="Scenario generation",style=bold];
+	   para_objects -> riskfactors_objects;
+    }
+	
+    subgraph cluster4
+    {
+	   label="Instrument pricing"
+	   node [style="filled",color="black", fillcolor="white"];
+	   #style=filled;
+	   #color=lightblue;
+	   curve_objects -> full_valuation;
+	   index_objects -> full_valuation;
+	   surface_objects -> full_valuation;
+	   matrix_objects -> full_valuation;
+	   riskfactors_objects -> full_valuation;
+	   para_objects -> full_valuation;
+	   
+       full_valuation -> instruments_objects [label="Update with \nscenario values",style=bold, style=dotted];
+	   instruments_objects -> full_valuation [label=""];
+	   full_valuation [label="Pricing engine",style="filled",color="black", fillcolor="grey"] ;	
+	   
+    }
+	
+	subgraph cluster5
+    {
+	   label="Aggregation"
+	   node [style="filled",color="black", fillcolor="white"];
+	   instruments_objects -> aggregation_engine;
+	   positions_objects -> aggregation_engine;
+	   aggregation_engine -> graphical_report;
+	   aggregation_engine -> text_report;
+	   
+	   aggregation_engine [label="Aggregation engine", style="filled", color="black", fillcolor="grey"]
+       graphical_report [label="Graphical reports", shape="note", style="filled", color="black", fillcolor="lightgrey"]
+       text_report [label="Text reports", shape="note", style="filled", color="black", fillcolor="lightgrey"]
+    }
+	{ rank = same; output_objects; graphical_report; text_report; instrument_file;}
+// title
+labelloc="t";
+fontsize = 20
+label ="Octarisk 0.4.0 data flow" 
 }
 
