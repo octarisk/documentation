@@ -160,6 +160,10 @@ per column)
 @end itemize
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Instrument,15cm}
+
 @node 	Matrix.help
 @section 	Matrix.help
 @cindex 	 Function 	Matrix.help
@@ -336,6 +340,10 @@ corr_A_C = m.getValue('INDEX_A','INDEX_C')
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Matrix,15cm}
+
 @node 	Curve.help
 @section 	Curve.help
 @cindex 	 Function 	Curve.help
@@ -581,6 +589,10 @@ c_rates_250d = c.getValue('250d')
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Curve,15cm}
+
 @node 	Forward.help
 @section 	Forward.help
 @cindex 	 Function 	Forward.help
@@ -808,6 +820,10 @@ f.getValue('base')
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Forward,15cm}
+
 @node 	Option.help
 @section 	Option.help
 @cindex 	 Function 	Option.help
@@ -1068,6 +1084,10 @@ o.getValue('base')
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Option,15cm}
+
 @node 	Cash.help
 @section 	Cash.help
 @cindex 	 Function 	Cash.help
@@ -1246,6 +1266,10 @@ value_stress = c.getValue('stress');
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Cash,15cm}
+
 @node 	Debt.help
 @section 	Debt.help
 @cindex 	 Function 	Debt.help
@@ -1443,6 +1467,10 @@ d.getValue('stress')
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Debt,15cm}
+
 @node 	Sensitivity.help
 @section 	Sensitivity.help
 @cindex 	 Function 	Sensitivity.help
@@ -1744,6 +1772,10 @@ s.getValue('stress')
 Stress results are [118;88].
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Sensitivity,15cm}
+
 @node 	Riskfactor.help
 @section 	Riskfactor.help
 @cindex 	 Function 	Riskfactor.help
@@ -1962,6 +1994,10 @@ r = r.set('id','RF_EUR-SWAP_3Y','name','RF_EUR-SWAP_3Y', ...
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Riskfactor,15cm}
+
 @node 	Index.help
 @section 	Index.help
 @cindex 	 Function 	Index.help
@@ -2161,6 +2197,10 @@ fx = fx.set('id','FX_EURUSD','value_base',1.1,  ...
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Index,15cm}
+
 @node 	Synthetic.help
 @section 	Synthetic.help
 @cindex 	 Function 	Synthetic.help
@@ -2376,6 +2416,10 @@ s.getValue('base')
 @end group
 @end example
 @end deftypefn
+Dependencies of class:
+
+ @image{Synthetic,15cm}
+
 @node 	Surface.help
 @section 	Surface.help
 @cindex 	 Function 	Surface.help
@@ -2591,6 +2635,10 @@ stress_value = v.getValue('stress',365,0.9)
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Surface,15cm}
+
 @node 	Swaption.help
 @section 	Swaption.help
 @cindex 	 Function 	Swaption.help
@@ -2845,6 +2893,10 @@ s.getValue('base')
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Swaption,15cm}
+
 @node 	Stochastic.help
 @section 	Stochastic.help
 @cindex 	 Function 	Stochastic.help
@@ -3044,6 +3096,10 @@ stress_value = s.getValue('stress')
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Stochastic,15cm}
+
 @node 	CapFloor.help
 @section 	CapFloor.help
 @cindex 	 Function 	CapFloor.help
@@ -3262,6 +3318,10 @@ vola_spread = cap.vola_spread
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{CapFloor,15cm}
+
 @node 	Bond.help
 @section 	Bond.help
 @cindex 	 Function 	Bond.help
@@ -3454,6 +3514,7 @@ During instrument valuation and aggregation, FX conversion takes place if corres
 @item @var{value_mc}: Line vector with instrument scenario values.
 MC values for several @var{timestep_mc} are stored in columns.
 @item @var{timestep_mc}: String Cell array with MC timesteps. If new timesteps are set, values are automatically appended.
+@end itemize
 
 For illustration see the following example:
 A 9 month floating rate note instrument will be calibrated and priced.
@@ -3489,3 +3550,7 @@ b.get('eff_duration')
 @end example
 
 @end deftypefn
+Dependencies of class:
+
+ @image{Bond,15cm}
+

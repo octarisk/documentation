@@ -92,6 +92,7 @@ digraph G {
 			 | 
 			Methods \l 
 			Instrument \l 
+			del_scen_data \l 
 			getValue \l 
 			isProp \l 
 			valuate \l 
