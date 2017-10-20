@@ -15,6 +15,7 @@ digraph G {
 	subgraph class_Instrument {
 		style=filled;
 		node [style=filled,color=lightgrey];
+		"@Instrument::Instrument" -> "@Instrument::del_scen_data"
 		"@Instrument::Instrument" -> "@Instrument::getValue"
 		"@Instrument::Instrument" -> "@Instrument::isProp"
 		"@Instrument::Instrument" -> "@Instrument::valuate"

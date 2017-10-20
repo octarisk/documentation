@@ -31,8 +31,8 @@ kc5[label="instrument_valuation", shape=rectangle, style=filled, fillcolor=light
 k5[shape=plaintext, style=solid, label="Main script for instrument valuation"]
 { rank=source;k1 k2 k3 k4 k5}
 }
-"adapt_matlab" 	 -> 	 "replacement_script"
-ab" 	 -> 	 "get_basis"
+"adapt_matlab" 	 -> 	 "fmincon"
+"adapt_matlab" 	 -> 	 "get_basis"
 "adapt_matlab" 	 -> 	 "replacement_script"
 "calcConvexityAdjustment" 	 -> 	 "timefactor"
 "calibrate_evt_gpd" 	 -> 	 "fmincon"
@@ -72,6 +72,7 @@ ab" 	 -> 	 "get_basis"
 "octarisk" 	 -> 	 "load_mktdata_objects"
 "octarisk" 	 -> 	 "load_positions"
 "octarisk" 	 -> 	 "load_riskfactor_scenarios"
+"octarisk" 	 -> 	 "load_riskfactor_stresses"
 "octarisk" 	 -> 	 "load_riskfactors"
 "octarisk" 	 -> 	 "load_stresstests"
 "octarisk" 	 -> 	 "load_volacubes"
@@ -80,6 +81,7 @@ ab" 	 -> 	 "get_basis"
 "octarisk" 	 -> 	 "save_objects"
 "octarisk" 	 -> 	 "scenario_generation_MC"
 "octarisk" 	 -> 	 "update_mktdata_objects"
+"octarisk_gui" 	 -> 	 "aggregate_positions"
 "option_asian_vorst90" 	 -> 	 "option_bs"
 "option_asian_vorst90" 	 -> 	 "timefactor"
 "option_bjsten" 	 -> 	 "option_bs"
@@ -237,6 +239,7 @@ ab" 	 -> 	 "get_basis"
 "instrument_valuation" 	 -> 	 "@Debt::get"
 "instrument_valuation" 	 -> 	 "@Sensitivity::calc_value"
 "instrument_valuation" 	 -> 	 "@Synthetic::calc_value"
+"instrument_valuation" 	 -> 	 "@Synthetic::get"
 "instrument_valuation" 	 -> 	 "@Swaption::calc_value"
 "instrument_valuation" 	 -> 	 "@Swaption::calc_vola_spread"
 "instrument_valuation" 	 -> 	 "@Swaption::get"
@@ -301,6 +304,7 @@ ab" 	 -> 	 "get_basis"
 "@Swaption::get"  [shape=box, style=filled, fillcolor=lightgrey]
 "@Swaption::set"  [shape=box, style=filled, fillcolor=lightgrey]
 "@Synthetic::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Synthetic::get"  [shape=box, style=filled, fillcolor=lightgrey]
 "@Synthetic::set"  [shape=box, style=filled, fillcolor=lightgrey]
 // title
 labelloc="t";

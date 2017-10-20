@@ -8,7 +8,7 @@
 @c                          HEADER
 @c --------------------------------------------------------------------------------------------------------------------
 
-@set VERSION 0.4.0
+@set VERSION 0.4.1
 
 @c Command C:\Program Files (x86)\texinfo\bin>makeinfo --plaintext doc_octarisk.texi
 
@@ -51,7 +51,7 @@ This manual is for the market risk measurement project @sc{octarisk} (version @v
 @c --------------------------------------------------------------------------------------------------------------------
 @menu
 * Introduction::                General motivation and introduction.
-* User guide::                  Chapter with details about scenario generation, financial instrument valuation and portfolio aggregation.
+* User guide::                  Chapter with details about GUI, scenario generation, financial instrument valuation and portfolio aggregation.
 * Developer guide::             Chapter with the implementation and definition of input and output files
 * Input files::                  Definition of input files
 * Output files::                 Definition of output files
@@ -127,6 +127,7 @@ The next chapter contains the background and details needed for running the mark
 * Instrument valuation::        Valuation of financial instruments
 * Aggregation::                 Aggregation of instrument data to fund level
 * Reporting::                   Reporting market risk
+* Graphical user interface::	Graphical user interface explained
 @end menu
 
 @chapter User guide
@@ -372,12 +373,7 @@ After the valuation of all instruments in each scenario, one has to aggregate al
 Therefore all fund position values are derived by multiplying the position size with the instrument value in each scenario.
 The resulting sorted fund profit and loss distribution is then used to calculate the value-at-risk at fund level.@*
 If less than 50001 MC scenarios are used in @sc{octarisk}, the VAR is smoothened by a Harrell-Davis estimator (@xref{harrell_davis_weight} for details). A weighted average of the scenarios around the confidence interval scenarios is calculated. The HD VAR shall reduce the Monte-Carlo error.
-
-@c Up to further implementation:@*
-@c @itemize @bullet
-@c @item VAR aggregation per risk type
-@c @item calculation and aggregation of other risk measures (delta, gamma) etc.
-@c @end itemize
+Aggregation keys (e.g. currency, ID, asset class) can be freely specified to get a full portfolio risk drill down.
 
 @node Reporting, Developer guide, Aggregation, User guide
 @section Reporting
@@ -388,10 +384,26 @@ and undiversified (correlation set to 1) VAR and ES on fund level.
 Moreover, stress test results per fund, profit and loss distributions and histograms on both the one day and 250 day time horizon are generated (@xref{Output files} for examples)
 
 
+@node Graphical user interface, Developer guide, Reporting, User guide
+@section Graphical user interface
+@cindex Graphical user interface
+Octarisk's graphical user interface (GUI) allows for full user interaction. Based on an existing session,
+where instruments, market data, risk factors, portfolios and stress tests are defined, instrument properties
+can be changed and portfolio contributions can be altered. Moreover, a full insight into single instruments is 
+possible, where e.g. sensitivities like key rate durations or option's Greeks can be investigated.
+It is also possible to extract scenario values. Once instrument attributes or position sizes are modified,
+a full valuation of the selected instruments and a reaggregation of the total portfolio takes place
+to examine impacts on all risk figures. It is also possible to add instruments as new positions to the selected portfolio.
+In this case, the new position has a position size of zero. For removing positions, simply set the size to zero.
+The following image gives an overview of the GUI and highlights all interaction possibilities:
+@center @image{octarisk_gui_explained,21cm}
+
+
+
 @c --------------------------------------------------------------------------------------------------------------------
 @c                          IMPLEMENTATION
 @c --------------------------------------------------------------------------------------------------------------------
-@node Developer guide, Implementation concept, Reporting, Top
+@node Developer guide, Implementation concept, Graphical user interface, Top
 @menu
 * Implementation concept::       Describing the implementation concept.
 * Implementation workflow::      Describing the implementation work flow
@@ -407,6 +419,10 @@ All calculation steps and the input and output files will be described in detail
 @node Implementation concept, Implementation workflow, Developer guide, Developer guide
 @section Implementation concept
 A lightweight implementation concept was chosen for @sc{octarisk}. One script is responsible for the complete work flow from input file parsing to aggregation and reporting. This script calls subfunctions to parse input data and construct objects, generate scenario dependent input values and call appropriate pricing functions.
+To assist developers, script are introduced for automatic generation of class diagrams (function print_class2dot) and function dependencies (get_dependencies).
+Moreover, all function and class descriptions, which are contained in the source files, are automatically extracted and appended to this document (see functions get_documentation and get_documentation_classes for details).
+A command line help for all functions (help functionname) and classes (Classname.help) is possible.
+To get performance insights, use the profiler (function profiler_analysis) to conveniently show detailled information.
 
 @subsection Process overview
 The following process summarizes the complete work flow:
