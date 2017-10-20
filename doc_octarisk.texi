@@ -396,7 +396,7 @@ a full valuation of the selected instruments and a reaggregation of the total po
 to examine impacts on all risk figures. It is also possible to add instruments as new positions to the selected portfolio.
 In this case, the new position has a position size of zero. For removing positions, simply set the size to zero.
 The following image gives an overview of the GUI and highlights all interaction possibilities:
-@center @image{octarisk_gui_explained,21cm}
+@center @image{octarisk_gui_explained,16cm}
 
 
 
@@ -426,7 +426,7 @@ To get performance insights, use the profiler (function profiler_analysis) to co
 
 @subsection Process overview
 The following process summarizes the complete work flow:
-@center @image{octarisk_process,21cm}
+@center @image{octarisk_process,16cm}
 Input files (@xref{Input files}) are parsed into structures, matrizes and objects. After parsing of these input files, Monte-Carlo and
 stress test scenarios are generated taking into account the correlation matrix and marginal risk factor distributions as well as
 custom stress test scenario configurations. The scenario dependent shocks are then stored for each risk factor object. The scenario shocks are then applied to all market data objects (mainly indizes, curves and exchange rates) which have attached risk factors. Scenario dependent values for each market data object are calculated by taken into account the scenario dependent shock, the market data base value and the risk factor stochastic model.
@@ -440,7 +440,7 @@ After all instruments have been priced, the aggregation starts for all portfolio
 Inside the methods of the aforementioned classes, pricing or interpolation functions are called.
 The following class diagram gives an overview of all classes:
 
-@image{octariskclass,21cm}
+@image{octariskclass,16cm}
 
 See the class documentation in the next chapter for further information.
 
