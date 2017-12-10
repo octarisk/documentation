@@ -8,7 +8,7 @@
 @c                          HEADER
 @c --------------------------------------------------------------------------------------------------------------------
 
-@set VERSION 0.4.1
+@set VERSION 0.4.2
 
 @c Command C:\Program Files (x86)\texinfo\bin>makeinfo --plaintext doc_octarisk.texi
 
@@ -101,7 +101,7 @@ The @sc{octarisk} quantifying market risk projects features
 
 @section Prerequisites
 @cindex Prerequisites
-The only requirement is @uref{https://www.gnu.org/software/octave/, GNU Octave} (tested for versions > 4.0) with installed financial and statistical package and hardware with minimum of 5Gb of memory.
+The only requirement is @uref{https://www.gnu.org/software/octave/, GNU Octave} (tested for versions > 4.0) with installed financial package and hardware with minimum of 4Gb of memory.
 Calculation time decreases significantly while using optimized linear algebra packages of @uref{http://www.openblas.net/openblas, OpenBLAS} and @uref{http://www.netlib.org/lapack/, LAPACK} (or comparable).
 For automatic processing of the input data (e.g. to get actual market data from Quandl or Yahoo finance), to make the parameter estimation
 as well as process the report files, some programming language like Perl, Python and a running LaTeX environment are recommended, but not required.
@@ -147,11 +147,13 @@ A basic approach fitting most portfolios of private investors, not too broad, no
 @item @var{COM}: Commodity risk. This is a rather broad type of risk, often correlated to other risk types (e.g. equity). Commodity risk tries to capture the
 movement of spot and future / forward commodity prices, as well as commodity linked equities.
 @item @var{IR}: Interest rate risk is related to the movement of interest rate values. This is the most important type of risk for cash flow bearing instruments. 
+@item @var{SPREAD}: Spread risk is related to the movement of spread rates. This is the second most important type of risk for cash flow bearing instruments.
+@item @var{INFLATION}: Inflation risk is related to the not anticipated changes in inflation rates, e.g. changes in the inflation expectation curve. This risk type affects inflation linked instruments only.
 @item @var{RE}: Real estate risk, where typically it will be distinguished between movements of market values of REITs (Real Estate Investment Trusts) and housing prices. This risk type can also be broken down into sub-categories like different countries, regions or other categories (e.g. developed markets, emerging markets).
 @item @var{VOLA}: Implied volatility risk, e.g. the anticipated future movement of implied volatility of equity instruments or swaps.
 @item @var{ALT}: Alternative market risk, used as a container for every other type of risk not already captured  (e.g. Bitcoins, infrastructure)
 @end itemize
-The @sc{octarisk} projects focuses on these seven risk types. For each risk type, appropriate risk factors can be chosen. One risk factor is a typical
+The @sc{octarisk} projects focuses on these risk types. For each risk type, appropriate risk factors can be chosen. One risk factor is a typical
 representative of a particular risk type. Most often, several risk factors are needed to describe the granular behavior of a market risk type, e.g. it is necessary to
 describe the specific characteristics of countries, regions or currencies. For example, two risk factors can be used to describe the international equity market movements:
 Developed markets and emerging market. If desired, developed market can be further split into North America, Europe and Asia to describe risk diversification effects between 
@@ -258,7 +260,7 @@ completely describe the financial markets, giving rise to model error (both in p
 
 @subsection Monte-Carlo Simulation
 @cindex Parameter Monte-Carlo Simulation
-A Monte-Carlo approach is chosen to generate the risk factor shocks in all scenarios. Therefore a risk factor correlation matrix (e.g. estimated from historical time series) and additional parameters describing statistical distributions can be used to generate random numbers, which are utilized as input parameters to stochastic models.
+A Monte-Carlo approach is chosen to generate the risk factor shocks in all scenarios. Therefore a risk factor correlation matrix (e.g. estimated from historical time series) and additional parameters describing statistical distributions can be used to generate random numbers, which are utilized as input parameters to stochastic models and finally lead to correlated risk factor shocks with the desired properties.
 
 In order to account for non-normal distributions and higher order correlation effects in the Monte-Carlo simulation, a copula approach is chosen to generate dependent, correlated random numbers.
 In a first step, the input correlation matrix is used to generate normally distributed, correlated random numbers with zero drift and unit variance. In a next step, either a Gaussian copula or a student-t copula is utilized to transform the normally distributed random variables to uniformly distributed random variables, while either the linear correlation dependence (for Gaussian copulas) or additionally the non-linear dependence structures (for student-t copulas) is preserved.
@@ -362,7 +364,7 @@ Credit spreads are modeled as separate risk factors, thus capturing credit sprea
 The Bond instrument class covers the full spectrum of plain vanilla bond instruments: fixed rate bonds, floating rate notes, fixed and floating swap legs, fixed rate amortizing bonds, mortage backed securities with prepayments, floating swap legs based on CMS rates, and many more. 
 During pricing, at first the cash flows are rolled out. The forward rates for calculation of floating payments are scenario dependent. After the rollout is done, a spread over yield is calibrated in order to match the market price with the theoretical value. For calculation of the net present value of the bonds, a discount curve can be set. If the curves have attached risk factors, the pricing will be fully scenario dependent. CMS floating swaps can also have special cash flowst based on averages or capitalized CMS rates. Moreover, convexity adjustment (according to Hull or Hagan) can be taken into account.
 
-Moreover, bonds with embedded call or put options can be modelled. Therefore a trinomial Hull-White tree is used to price these embedded European or American options. See (@xref{option_bond_hw} for further details.
+Moreover, bonds with embedded call or put options can be modelled. Therefore a trinomial Hull-White tree is used to price these embedded European or American bond options. See (@xref{option_bond_hw} for further details.
 
 @subsubsection Cap and floor instrument pricing
 @cindex  Pricing, Cap and Floor instruments
@@ -382,7 +384,7 @@ In order to pre-calculate cash flow values and instrument prices in other risk s
 After the valuation of all instruments in each scenario, one has to aggregate all parameters of instruments contained in a fund.
 Therefore all fund position values are derived by multiplying the position size with the instrument value in each scenario.
 The resulting sorted fund profit and loss distribution is then used to calculate the value-at-risk at fund level.@*
-If less than 50001 MC scenarios are used in @sc{octarisk}, the VAR is smoothened by a Harrell-Davis estimator (@xref{harrell_davis_weight} for details). A weighted average of the scenarios around the confidence interval scenarios is calculated. The HD VAR shall reduce the Monte-Carlo error.
+If less than 50001 MC scenarios are used in @sc{octarisk}, it is recommended to smooth the VAR by a Harrell-Davis estimator (@xref{harrell_davis_weight} for details). A weighted average of the scenarios around the confidence interval scenarios is calculated. The HD VAR shall reduce the Monte-Carlo error.
 Aggregation keys (e.g. currency, ID, asset class) can be freely specified to get a full portfolio risk drill down.
 
 @node Reporting, Developer guide, Aggregation, User guide
@@ -460,17 +462,18 @@ See the class documentation in the next chapter for further information.
 @subsection Overview
 The following enumeration gives an overview of the main script @i{octarisk.m} (@xref{octarisk} for details):
 @enumerate
-@item DEFINITION OF VARIABLES
+@item DEFINITION OF VARIABLES 
     @enumerate
-        @item general variables
-        @item VAR specific variables
+        @item Parse parameter file
+        @item read in general variables
+        @item read in VAR specific variables
     @end enumerate
 
 @item INPUT
     @enumerate
         @item Processing Instruments data
         @item Processing Riskfactor data
-        @item Processing Positions data
+        @item Processing Positions and Portfolio data
         @item Processing Stresstest data
         @item Processing Market data
     @end enumerate

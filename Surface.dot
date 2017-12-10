@@ -1,0 +1,31 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_Surface {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@Surface::Surface" -> "@Surface::apply_rf_shocks"
+		"@Surface::Surface" -> "@Surface::apply_stress_shocks"
+		"@Surface::Surface" -> "@Surface::get"
+		"@Surface::Surface" -> "@Surface::getValue"
+		"@Surface::Surface" -> "@Surface::interpolate"
+		"@Surface::Surface" -> "@Surface::isProp"
+		"@Surface::Surface" -> "@Surface::set"
+		label = "@Surface";
+	}
+"@Surface::getValue" 	 -> 	 "interpolate_cubestruct"
+"@Surface::getValue" 	 -> 	 "interpolate_surfacestruct"
+"@Surface::interpolate" 	 -> 	 "interpolate_curve"
+"@Surface::set" 	 -> 	 "return_checked_input"
+}

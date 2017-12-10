@@ -1,0 +1,24 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_Sensitivity {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@Sensitivity::Sensitivity" -> "@Sensitivity::calc_value"
+		"@Sensitivity::Sensitivity" -> "@Sensitivity::get"
+		"@Sensitivity::Sensitivity" -> "@Sensitivity::set"
+		label = "@Sensitivity";
+	}
+"@Sensitivity::set" 	 -> 	 "return_checked_input"
+}

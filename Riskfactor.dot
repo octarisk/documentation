@@ -1,0 +1,25 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_Riskfactor {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@Riskfactor::Riskfactor" -> "@Riskfactor::get"
+		"@Riskfactor::Riskfactor" -> "@Riskfactor::getValue"
+		"@Riskfactor::Riskfactor" -> "@Riskfactor::isProp"
+		"@Riskfactor::Riskfactor" -> "@Riskfactor::set"
+		label = "@Riskfactor";
+	}
+"@Riskfactor::set" 	 -> 	 "return_checked_input"
+}

@@ -1,0 +1,48 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_Swaption {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@Swaption::Swaption" -> "@Swaption::calc_greeks"
+		"@Swaption::Swaption" -> "@Swaption::calc_value"
+		"@Swaption::Swaption" -> "@Swaption::calc_vola_spread"
+		"@Swaption::Swaption" -> "@Swaption::get"
+		"@Swaption::Swaption" -> "@Swaption::set"
+		label = "@Swaption";
+	}
+"@Swaption::calc_greeks" 	 -> 	 "convert_curve_rates"
+"@Swaption::calc_greeks" 	 -> 	 "get_forward_rate"
+"@Swaption::calc_greeks" 	 -> 	 "interpolate_curve"
+"@Swaption::calc_greeks" 	 -> 	 "swaption_bachelier"
+"@Swaption::calc_greeks" 	 -> 	 "swaption_black76"
+"@Swaption::calc_greeks" 	 -> 	 "swaption_underlyings"
+"@Swaption::calc_greeks" 	 -> 	 "timefactor"
+"@Swaption::calc_value" 	 -> 	 "convert_curve_rates"
+"@Swaption::calc_value" 	 -> 	 "get_forward_rate"
+"@Swaption::calc_value" 	 -> 	 "interpolate_curve"
+"@Swaption::calc_value" 	 -> 	 "swaption_bachelier"
+"@Swaption::calc_value" 	 -> 	 "swaption_black76"
+"@Swaption::calc_value" 	 -> 	 "swaption_underlyings"
+"@Swaption::calc_value" 	 -> 	 "timefactor"
+"@Swaption::calc_vola_spread" 	 -> 	 "calibrate_generic"
+"@Swaption::calc_vola_spread" 	 -> 	 "convert_curve_rates"
+"@Swaption::calc_vola_spread" 	 -> 	 "get_forward_rate"
+"@Swaption::calc_vola_spread" 	 -> 	 "interpolate_curve"
+"@Swaption::calc_vola_spread" 	 -> 	 "swaption_bachelier"
+"@Swaption::calc_vola_spread" 	 -> 	 "swaption_black76"
+"@Swaption::calc_vola_spread" 	 -> 	 "swaption_underlyings"
+"@Swaption::calc_vola_spread" 	 -> 	 "timefactor"
+"@Swaption::set" 	 -> 	 "return_checked_input"
+}

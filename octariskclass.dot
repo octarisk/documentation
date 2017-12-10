@@ -121,10 +121,64 @@ digraph G {
 	Parameter [ 
 		label = "{ Parameter | 
 			Properties \l 
+			aggregation_flag : numeric \l 
+			aggregation_key : cell \l 
+			archive_flag : numeric \l 
+			base_currency : string \l 
+			copulatype : string \l 
 			description : string \l 
+			filename_sobol_direction_number : string \l 
+			first_eval : numeric \l 
+			folder_archive : string \l 
+			folder_input : string \l 
+			folder_mktdata : string \l 
+			folder_output : string \l 
+			folder_output_instruments : string \l 
+			folder_output_mktdata : string \l 
+			folder_output_positions : string \l 
+			folder_output_reports : string \l 
+			folder_output_riskfactors : string \l 
+			folder_output_stresstests : string \l 
+			folder_static : string \l 
+			hd_limit : numeric \l 
 			id : string \l 
+			input_filename_corr_matrix : string \l 
+			input_filename_instruments : string \l 
+			input_filename_matrix : string \l 
+			input_filename_mktdata : string \l 
+			input_filename_positions : string \l 
+			input_filename_riskfactors : string \l 
+			input_filename_seed : string \l 
+			input_filename_stresstests : string \l 
+			input_filename_surf_stoch : string \l 
+			input_filename_vola_index : string \l 
+			input_filename_vola_ir : string \l 
+			mc : numeric \l 
+			mc_scen_analysis : numeric \l 
+			mc_timesteps : cell \l 
 			name : string \l 
+			no_stresstests : numeric \l 
+			nu : numeric \l 
+			path_archive : string \l 
+			path_input : string \l 
+			path_mktdata : string \l 
+			path_reports : string \l 
+			path_sobol_direction_number : string \l 
+			path_static : string \l 
+			path_working_folder : string \l 
+			plotting : numeric \l 
+			quantile : numeric \l 
+			rnd_number_gen : string \l 
+			runcode : string \l 
+			saving : numeric \l 
+			scen_number : numeric \l 
+			scenario_set : cell \l 
+			sobol_seed : numeric \l 
+			stable_seed : numeric \l 
+			timestamp : string \l 
 			type : string \l 
+			use_sobol : bool \l 
+			valuation_date : numeric \l 
 			 | 
 			Methods \l 
 			Parameter \l 
@@ -212,6 +266,9 @@ digraph G {
 			business_day_rule : numeric \l 
 			calibration_flag : numeric \l 
 			call_schedule : string \l 
+			cds_initial_premium : numeric \l 
+			cds_receive_protection : bool \l 
+			cds_use_initial_premium : bool \l 
 			cf_dates : numeric \l 
 			cf_values : numeric \l 
 			cf_values_mc : numeric \l 
@@ -232,6 +289,7 @@ digraph G {
 			coupon_rate : numeric \l 
 			cpi_historical_curve : string \l 
 			cpi_index : string \l 
+			credit_state : string \l 
 			currency : string \l 
 			day_count_convention : string \l 
 			description : string \l 
@@ -248,6 +306,7 @@ digraph G {
 			fva_type : string \l 
 			fwd_sliding_term : numeric \l 
 			fwd_term : numeric \l 
+			hazard_curve : string \l 
 			id : string \l 
 			in_arrears : bool \l 
 			infl_exp_curve : string \l 
@@ -265,6 +324,7 @@ digraph G {
 			last_reset_rate : numeric \l 
 			long_first_period : numeric \l 
 			long_last_period : numeric \l 
+			loss_given_default : numeric \l 
 			mac_duration : numeric \l 
 			maturity_date : string \l 
 			mod_duration : numeric \l 
@@ -285,6 +345,7 @@ digraph G {
 			put_schedule : string \l 
 			pv01 : numeric \l 
 			rate_composition : string \l 
+			reference_asset : string \l 
 			reference_curve : string \l 
 			sigma : numeric \l 
 			soy : numeric \l 

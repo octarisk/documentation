@@ -1,0 +1,25 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_Index {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@Index::Index" -> "@Index::get"
+		"@Index::Index" -> "@Index::getValue"
+		"@Index::Index" -> "@Index::isProp"
+		"@Index::Index" -> "@Index::set"
+		label = "@Index";
+	}
+"@Index::set" 	 -> 	 "return_checked_input"
+}

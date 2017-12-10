@@ -19,7 +19,7 @@
 @node 	Instrument.help
 @section 	Instrument.help
 @cindex 	 Function 	Instrument.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -167,7 +167,7 @@ Dependencies of class:
 @node 	Matrix.help
 @section 	Matrix.help
 @cindex 	 Function 	Matrix.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -347,7 +347,7 @@ Dependencies of class:
 @node 	Curve.help
 @section 	Curve.help
 @cindex 	 Function 	Curve.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -471,6 +471,7 @@ This class contains all attributes and methods related to the following Curve ty
 @item Prepayment Curve: specify prepayment rates per node (e.g. PSA curves).
 @item Call Schedule: curve used for Bonds with embedded call options
 @item Put Schedule: curve used for Bonds with embedded put options
+@item Hazard Curve: curve used for CDS. Gives default probability per cf date
 @item Historical Curve: curve with historical rates of index levels. Used for inflation linked or averaging instruments
 @item Inflation Expectation Curve: specify inflation expectation rates used for inflation linked instrument pricing
 @item Shock Curve: specify absolute or relative shocks per node, which can then be applied to other Curve types.
@@ -596,7 +597,7 @@ Dependencies of class:
 @node 	Forward.help
 @section 	Forward.help
 @cindex 	 Function 	Forward.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -827,7 +828,7 @@ Dependencies of class:
 @node 	Option.help
 @section 	Option.help
 @cindex 	 Function 	Option.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -946,8 +947,8 @@ are introduced:
 @itemize @bullet
 @item OPT_EUR_C: European Call option priced by Black-Scholes model.
 @item OPT_EUR_P: European Put option priced by Black-Scholes model.
-@item OPT_AM_C: American Call option priced by Willow tree model or Bjerksund-Stensland approximation.
-@item OPT_AM_P: European Put option priced by Willow tree model or Bjerksund-Stensland approximation.
+@item OPT_AM_C: American Call option priced by Willow tree model, CRR binomial tree or Bjerksund-Stensland approximation.
+@item OPT_AM_P: European Put option priced by Willow tree model, CRR binomial tree or Bjerksund-Stensland approximation.
 @item OPT_BAR_C: European Barrier Call option. Can have all combinations of out or in and up or down barrier types. Priced with Merton, Reiner, Rubinstein model.
 @item OPT_BAR_P: European Barrier Put option. Same restrictions as Barrier Call options.
 @item OPT_ASN_C: European Asian Call option. Average rate only. The following compounding types can be used:
@@ -1091,7 +1092,7 @@ Dependencies of class:
 @node 	Cash.help
 @section 	Cash.help
 @cindex 	 Function 	Cash.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1273,7 +1274,7 @@ Dependencies of class:
 @node 	Debt.help
 @section 	Debt.help
 @cindex 	 Function 	Debt.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1474,7 +1475,7 @@ Dependencies of class:
 @node 	Sensitivity.help
 @section 	Sensitivity.help
 @cindex 	 Function 	Sensitivity.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -1779,7 +1780,7 @@ Dependencies of class:
 @node 	Riskfactor.help
 @section 	Riskfactor.help
 @cindex 	 Function 	Riskfactor.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2001,7 +2002,7 @@ Dependencies of class:
 @node 	Index.help
 @section 	Index.help
 @cindex 	 Function 	Index.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2204,7 +2205,7 @@ Dependencies of class:
 @node 	Synthetic.help
 @section 	Synthetic.help
 @cindex 	 Function 	Synthetic.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2423,7 +2424,7 @@ Dependencies of class:
 @node 	Surface.help
 @section 	Surface.help
 @cindex 	 Function 	Surface.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2642,7 +2643,7 @@ Dependencies of class:
 @node 	Swaption.help
 @section 	Swaption.help
 @cindex 	 Function 	Swaption.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -2900,7 +2901,7 @@ Dependencies of class:
 @node 	Stochastic.help
 @section 	Stochastic.help
 @cindex 	 Function 	Stochastic.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -3103,7 +3104,7 @@ Dependencies of class:
 @node 	CapFloor.help
 @section 	CapFloor.help
 @cindex 	 Function 	CapFloor.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -3325,7 +3326,7 @@ Dependencies of class:
 @node 	Bond.help
 @section 	Bond.help
 @cindex 	 Function 	Bond.help
-@c Copyright (C) 2012-2016 John W. Eaton
+@c Copyright (C) 2012-2017 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -3447,6 +3448,7 @@ discounted to calculate the Bond value. All bonds can have embedded options
 @item FRN: Floating Rate Note: Calculate CF Values based on forward rates of a given reference curve.
 @item ZCB: Zero Coupon Bond
 @item ILB: Inflation Linked Bond
+@item CDS: Credit Default Swaps
 @item CASHFLOW: Cash flow instruments. Custom cash flow dates and values are discounted.
 @item SWAP_FIXED: Swap fixed leg
 @item SWAP_FLOATING: Swap floating leg
@@ -3478,6 +3480,7 @@ Calculate the net present value of cash flows of Bonds (including pricing of emb
 @item obj.rollout(@var{scenario},@var{valuation_date}, @var{psa_curve}, @var{psa_factor_surface}, @var{ir_shock_curve}): used for FAB with prepayments
 @item obj.rollout(@var{scenario},@var{valuation_date}, @var{inflation_expectation_curve}, @var{historical_rates}, @var{consumer_price_index}): used for ILB
 @item obj.rollout(@var{scenario},@var{valuation_date}, @var{riskfactor}, @var{cashflow_surface}): used for Stochastic CF instruments
+@item obj.rollout(@var{scenario},@var{valuation_date}, @var{hazard_curve}, @var{reference_asset},@var{reference_curve}): used for CDS
 Cash flow rollout for Bonds
 
 @item obj.calc_sensitivities(@var{valuation_date},@var{discount_curve}, @var{reference_curve})

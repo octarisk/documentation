@@ -1,0 +1,24 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_Debt {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@Debt::Debt" -> "@Debt::calc_value"
+		"@Debt::Debt" -> "@Debt::get"
+		"@Debt::Debt" -> "@Debt::set"
+		label = "@Debt";
+	}
+"@Debt::set" 	 -> 	 "return_checked_input"
+}
