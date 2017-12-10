@@ -178,6 +178,15 @@ A scenario is a specific set of shocks to risk factors. Typically, the direction
 is dependent on the stochastic properties of the risk factors (e.g. volatility or mean reversion parameters).
 Although these properties can be also chosen customary, for evaluating risk measures like value-at-risk these parameters are typically extracted from past, real market movements.
 
+@subsection Random number generation
+@cindex Random number generation
+During MC scenario generation, uniform distributed random numbers are used to generate either normal distributed or t-distributed numbers for risk factor shocks.
+Octave's built in pseudo-random number generator (Mersenne-Twister) is used for default. It is possible to specify a custom and / or stable seed in order to
+always get the same results (useful in regression testing).
+Moreover, @sc{octarisk} allows to use Sobol quasi-random numbers for scenario generation. A manual seed and custom directoin numbers can be specified.
+Statistical tests (e.g. Jarque-Berra tests and distribution moment calculations) may be performed on the qualities 
+of drawn random numbers to match the specified statistical properties.
+
 @subsection Stochastic models
 @cindex Stochastic models, Theory of
 In order to describe movements of risk factors in time, a connection has to be made between statistical behavior of real time series and stochastic processes for modeling synthetic time series.
@@ -350,7 +359,8 @@ Credit spreads are modeled as separate risk factors, thus capturing credit sprea
 
 @subsubsection Bond instrument pricing
 @cindex  Pricing, Bond instruments
-The Bond instrument class covers the full spectrum of plain vanilla bond instruments: fixed rate bonds, floating rate notes, fixed and floating swap legs, fixed rate amortizing bonds, mortage backed securities with prepayments, floating swap legs based on CMS rates. During pricing, at first the cash flows are rolled out. The forward rates for calculation of floating payments are scenario dependent. After the rollout is done, a spread over yield is calibrated in order to match the market price with the theoretical value. For calculation of the net present value of the bonds, a discount curve can be set. If the curves have attached risk factors, the pricing will be fully scenario dependent. CMS floating swaps can also have special cash flowst based on averages or capitalized CMS rates. Moreover, convexity adjustment (according to Hull or Hagan) can be taken into account.
+The Bond instrument class covers the full spectrum of plain vanilla bond instruments: fixed rate bonds, floating rate notes, fixed and floating swap legs, fixed rate amortizing bonds, mortage backed securities with prepayments, floating swap legs based on CMS rates, and many more. 
+During pricing, at first the cash flows are rolled out. The forward rates for calculation of floating payments are scenario dependent. After the rollout is done, a spread over yield is calibrated in order to match the market price with the theoretical value. For calculation of the net present value of the bonds, a discount curve can be set. If the curves have attached risk factors, the pricing will be fully scenario dependent. CMS floating swaps can also have special cash flowst based on averages or capitalized CMS rates. Moreover, convexity adjustment (according to Hull or Hagan) can be taken into account.
 
 Moreover, bonds with embedded call or put options can be modelled. Therefore a trinomial Hull-White tree is used to price these embedded European or American options. See (@xref{option_bond_hw} for further details.
 
