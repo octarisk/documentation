@@ -25,5 +25,6 @@ digraph G {
 	}
 "@Curve::getRate" 	 -> 	 "interpolate_curve"
 "@Curve::getRate" 	 -> 	 "interpolate_curve_vectorized"
+"@Curve::getRate" 	 -> 	 "interpolate_curve_vectorized_mc"
 "@Curve::set" 	 -> 	 "return_checked_input"
 }

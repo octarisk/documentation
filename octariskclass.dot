@@ -278,8 +278,10 @@ digraph G {
 			cms_convex_model : string \l 
 			cms_model : string \l 
 			cms_sliding_term : numeric \l 
+			cms_sliding_term_unit : string \l 
 			cms_spread : numeric \l 
 			cms_term : numeric \l 
+			cms_term_unit : string \l 
 			compounding_freq : numeric \l 
 			compounding_type : string \l 
 			convex_adj : bool \l 
@@ -361,6 +363,7 @@ digraph G {
 			sub_type : string \l 
 			t_degree_freedom : numeric \l 
 			term : numeric \l 
+			term_unit : string \l 
 			timestep_mc : cell \l 
 			timestep_mc_cf : cell \l 
 			treenodes : numeric \l 
@@ -408,8 +411,10 @@ digraph G {
 			cms_convex_model : string \l 
 			cms_model : string \l 
 			cms_sliding_term : numeric \l 
+			cms_sliding_term_unit : string \l 
 			cms_spread : numeric \l 
 			cms_term : numeric \l 
+			cms_term_unit : string \l 
 			compounding_freq : numeric \l 
 			compounding_type : string \l 
 			convex_adj : bool \l 
@@ -454,6 +459,7 @@ digraph G {
 			strike : numeric \l 
 			sub_type : string \l 
 			term : numeric \l 
+			term_unit : string \l 
 			theta : numeric \l 
 			timestep_mc : cell \l 
 			timestep_mc_cf : cell \l 

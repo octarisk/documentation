@@ -8,14 +8,14 @@
 @c                          HEADER
 @c --------------------------------------------------------------------------------------------------------------------
 
-@set VERSION 0.4.2
+@set VERSION 0.4.3
 
 @c Command C:\Program Files (x86)\texinfo\bin>makeinfo --plaintext doc_octarisk.texi
 
 @copying
 This is the documentation for the market risk measurement project @sc{octarisk} version @value{VERSION}.
 
-Copyright @copyright{} 2017 Stefan Schloegl
+Copyright @copyright{} 2018 Stefan Schloegl
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
