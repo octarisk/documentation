@@ -8,14 +8,14 @@
 @c                          HEADER
 @c --------------------------------------------------------------------------------------------------------------------
 
-@set VERSION 0.4.3
+@set VERSION 0.5.0
 
 @c Command C:\Program Files (x86)\texinfo\bin>makeinfo --plaintext doc_octarisk.texi
 
 @copying
 This is the documentation for the market risk measurement project @sc{octarisk} version @value{VERSION}.
 
-Copyright @copyright{} 2018 Stefan Schloegl
+Copyright @copyright{} 2019 Stefan Schloegl
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -645,7 +645,7 @@ Item,Cash Account EUR,CASH_EUR,1,CASH,EUR Cash Account,EUR,cash
 @subsection Stress tests   
 @cindex Input, Stress test file
 The stress test input file contains the definition of all stress test. Each stress test describes the behavior of one or more risk factor in a particular scenario.
-The risk factor shock values are directly applied to all risk factor IDs which are selected through the regular expression.@*      
+The risk factor shock values are directly applied to all risk factor IDs which have to be fully given (no regular expressions allowed).@*      
 The columns of the stress test file consists of following entries:
 @itemize @bullet
 @item @var{HeaderSTRESSTESTS}: indicates stress tests
@@ -882,6 +882,9 @@ The blue line indicates the VAR scenario number, where 99.9% of all profits and 
 Moreover, stress test results are plotted in a bar chart, indicating the relative profit or loss of the fund in each stress test scenario:@*
 @image{stresstest_results,12cm}@*
 
+@subsection Solvency II regulatory reporting
+Octarisk can be used to perform asset data Solvency II regulatory reporting required for asset manager reporting to (re-)insurance companies. 
+The solvency2_reporting script performs a full valuation of a portfolio and exports position attributes according to the Tripartite v4.0 industry standard.
 
 @c --------------------------------------------------------------------------------------------------------------------
 @c                          OCTAVE OCTARISK CLASS DEFINITIONS

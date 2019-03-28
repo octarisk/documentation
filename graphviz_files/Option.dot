@@ -34,6 +34,7 @@ digraph G {
 "@Option::calc_greeks" 	 -> 	 "option_bs"
 "@Option::calc_greeks" 	 -> 	 "option_lookback"
 "@Option::calc_greeks" 	 -> 	 "timefactor"
+"@Option::calc_greeks" 	 -> 	 "pricing_option_cpp"
 "@Option::calc_greeks_basket_beisser" 	 -> 	 "timefactor"
 "@Option::calc_value" 	 -> 	 "convert_curve_rates"
 "@Option::calc_value" 	 -> 	 "interpolate_curve"
@@ -46,6 +47,7 @@ digraph G {
 "@Option::calc_value" 	 -> 	 "option_lookback"
 "@Option::calc_value" 	 -> 	 "option_willowtree"
 "@Option::calc_value" 	 -> 	 "timefactor"
+"@Option::calc_value" 	 -> 	 "pricing_option_cpp"
 "@Option::calc_value_basket_beisser" 	 -> 	 "timefactor"
 "@Option::calc_vola_spread" 	 -> 	 "calibrate_generic"
 "@Option::calc_vola_spread" 	 -> 	 "convert_curve_rates"
@@ -59,5 +61,6 @@ digraph G {
 "@Option::calc_vola_spread" 	 -> 	 "option_lookback"
 "@Option::calc_vola_spread" 	 -> 	 "option_willowtree"
 "@Option::calc_vola_spread" 	 -> 	 "timefactor"
+"@Option::calc_vola_spread" 	 -> 	 "pricing_option_cpp"
 "@Option::set" 	 -> 	 "return_checked_input"
 }

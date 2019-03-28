@@ -23,6 +23,7 @@ digraph G {
 		label = "@Swaption";
 	}
 "@Swaption::calc_greeks" 	 -> 	 "convert_curve_rates"
+"@Swaption::calc_greeks" 	 -> 	 "discount_factor"
 "@Swaption::calc_greeks" 	 -> 	 "get_forward_rate"
 "@Swaption::calc_greeks" 	 -> 	 "interpolate_curve"
 "@Swaption::calc_greeks" 	 -> 	 "swaption_bachelier"
@@ -30,6 +31,7 @@ digraph G {
 "@Swaption::calc_greeks" 	 -> 	 "swaption_underlyings"
 "@Swaption::calc_greeks" 	 -> 	 "timefactor"
 "@Swaption::calc_value" 	 -> 	 "convert_curve_rates"
+"@Swaption::calc_value" 	 -> 	 "discount_factor"
 "@Swaption::calc_value" 	 -> 	 "get_forward_rate"
 "@Swaption::calc_value" 	 -> 	 "interpolate_curve"
 "@Swaption::calc_value" 	 -> 	 "swaption_bachelier"
@@ -38,6 +40,7 @@ digraph G {
 "@Swaption::calc_value" 	 -> 	 "timefactor"
 "@Swaption::calc_vola_spread" 	 -> 	 "calibrate_generic"
 "@Swaption::calc_vola_spread" 	 -> 	 "convert_curve_rates"
+"@Swaption::calc_vola_spread" 	 -> 	 "discount_factor"
 "@Swaption::calc_vola_spread" 	 -> 	 "get_forward_rate"
 "@Swaption::calc_vola_spread" 	 -> 	 "interpolate_curve"
 "@Swaption::calc_vola_spread" 	 -> 	 "swaption_bachelier"

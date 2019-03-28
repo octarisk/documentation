@@ -15,27 +15,28 @@
 * 	Stochastic.help::
 * 	CapFloor.help::
 * 	Bond.help::
+* 	Position.help::
 @end menu 
 @node 	Instrument.help
 @section 	Instrument.help
 @cindex 	 Function 	Instrument.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -128,6 +129,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} { @var{object} =} Instrument (@var{name}, @var{id}, @var{description}, @var{type}, @var{currency}, @var{base_value}, @var{asset_class})
 
 Superclass for all instrument objects.
@@ -167,23 +171,23 @@ Dependencies of class:
 @node 	Matrix.help
 @section 	Matrix.help
 @cindex 	 Function 	Matrix.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -276,6 +280,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Matrix(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Matrix()
 
@@ -347,23 +354,23 @@ Dependencies of class:
 @node 	Curve.help
 @section 	Curve.help
 @cindex 	 Function 	Curve.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -456,6 +463,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Curve(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Curve()
 
@@ -597,23 +607,23 @@ Dependencies of class:
 @node 	Forward.help
 @section 	Forward.help
 @cindex 	 Function 	Forward.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -706,6 +716,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Forward(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Forward()
 
@@ -828,23 +841,23 @@ Dependencies of class:
 @node 	Option.help
 @section 	Option.help
 @cindex 	 Function 	Option.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -937,6 +950,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Option(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Option()
 
@@ -1092,23 +1108,23 @@ Dependencies of class:
 @node 	Cash.help
 @section 	Cash.help
 @cindex 	 Function 	Cash.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -1201,6 +1217,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Cash(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Cash()
 
@@ -1274,23 +1293,23 @@ Dependencies of class:
 @node 	Debt.help
 @section 	Debt.help
 @cindex 	 Function 	Debt.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -1383,6 +1402,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Debt(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Debt()
 
@@ -1475,23 +1497,23 @@ Dependencies of class:
 @node 	Sensitivity.help
 @section 	Sensitivity.help
 @cindex 	 Function 	Sensitivity.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -1584,6 +1606,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Sensitivity(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Sensitivity()
 
@@ -1780,23 +1805,23 @@ Dependencies of class:
 @node 	Riskfactor.help
 @section 	Riskfactor.help
 @cindex 	 Function 	Riskfactor.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -1889,6 +1914,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Riskfactor(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Riskfactor()
 
@@ -2002,23 +2030,23 @@ Dependencies of class:
 @node 	Index.help
 @section 	Index.help
 @cindex 	 Function 	Index.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -2111,6 +2139,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Index(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Index()
 
@@ -2205,23 +2236,23 @@ Dependencies of class:
 @node 	Synthetic.help
 @section 	Synthetic.help
 @cindex 	 Function 	Synthetic.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -2314,6 +2345,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Synthetic(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Synthetic()
 
@@ -2424,23 +2458,23 @@ Dependencies of class:
 @node 	Surface.help
 @section 	Surface.help
 @cindex 	 Function 	Surface.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -2533,6 +2567,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Surface(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Surface()
 
@@ -2644,23 +2681,23 @@ Dependencies of class:
 @node 	Swaption.help
 @section 	Swaption.help
 @cindex 	 Function 	Swaption.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -2753,6 +2790,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Swaption(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Swaption()
 
@@ -2902,23 +2942,23 @@ Dependencies of class:
 @node 	Stochastic.help
 @section 	Stochastic.help
 @cindex 	 Function 	Stochastic.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -3011,6 +3051,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Stochastic(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Stochastic()
 
@@ -3105,23 +3148,23 @@ Dependencies of class:
 @node 	CapFloor.help
 @section 	CapFloor.help
 @cindex 	 Function 	CapFloor.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -3214,6 +3257,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = CapFloor(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = CapFloor()
 
@@ -3327,23 +3373,23 @@ Dependencies of class:
 @node 	Bond.help
 @section 	Bond.help
 @cindex 	 Function 	Bond.help
-@c Copyright (C) 2012-2017 John W. Eaton
+@c Copyright (C) 2012-2018 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
-@c Octave is free software; you can redistribute it and/or modify it
-@c under the terms of the GNU General Public License as published by the
-@c Free Software Foundation; either version 3 of the License, or (at
-@c your option) any later version.
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
 @c
-@c Octave is distributed in the hope that it will be useful, but WITHOUT
-@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-@c FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-@c for more details.
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
 @c
 @c You should have received a copy of the GNU General Public License
 @c along with Octave; see the file COPYING.  If not, see
-@c <http://www.gnu.org/licenses/>.
+@c <https://www.gnu.org/licenses/>.
 
 @c The following macro marks words that aspell should ignore during
 @c spellchecking.  Within Texinfo it has no effect as it merely replaces
@@ -3436,6 +3482,9 @@ See also: \args\.
     \global\urefurlonlylinktrue
   \fi
 @end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
 @deftypefn{Octarisk Class} {@var{object}} = Bond(@var{id})
 @deftypefnx{Octarisk Class} {@var{object}} = Bond()
 
@@ -3557,4 +3606,133 @@ b.get('eff_duration')
 Dependencies of class:
 
  @image{Bond,15cm}
+
+@node 	Position.help
+@section 	Position.help
+@cindex 	 Function 	Position.help
+@c Copyright (C) 2012-2018 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <https://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
+@deftypefn{Octarisk Class} { @var{object} =} Position (@var{id})
+
+Position and Portfolio class.
+
+@itemize @bullet
+@item @var{id} (string): id of object
+@end itemize
+@*
+
+@end deftypefn
+Dependencies of class:
+
+ @image{Position,15cm}
 

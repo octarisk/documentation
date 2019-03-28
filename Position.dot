@@ -1,0 +1,31 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_Position {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@Position::Position" -> "@Position::aggregate"
+		"@Position::Position" -> "@Position::calc_risk"
+		"@Position::Position" -> "@Position::get"
+		"@Position::Position" -> "@Position::getValue"
+		"@Position::Position" -> "@Position::isProp"
+		"@Position::Position" -> "@Position::print_report"
+		"@Position::Position" -> "@Position::set"
+		label = "@Position";
+	}
+"@Position::aggregate" 	 -> 	 "get_FX_rate"
+"@Position::calc_risk" 	 -> 	 "get_FX_rate"
+"@Position::calc_risk" 	 -> 	 "get_quantile_estimator"
+"@Position::set" 	 -> 	 "return_checked_input"
+}
