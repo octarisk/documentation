@@ -870,6 +870,101 @@ digraph G {
 			set \l 
 		}"
 ]	
+	Retail [ 
+		label = "{ Retail | 
+			Properties \l 
+			accrued_interest : numeric \l 
+			asset_class : string \l 
+			basis : numeric \l 
+			bonus_value_current : numeric \l 
+			bonus_value_redemption : numeric \l 
+			business_day_direction : numeric \l 
+			business_day_rule : numeric \l 
+			calibration_flag : numeric \l 
+			cf_dates : numeric \l 
+			cf_values : numeric \l 
+			cf_values_mc : numeric \l 
+			cf_values_stress : numeric \l 
+			compounding_freq : numeric \l 
+			compounding_type : string \l 
+			convexity : numeric \l 
+			coupon_generation_method : string \l 
+			coupon_rate : numeric \l 
+			currency : string \l 
+			day_count_convention : string \l 
+			description : string \l 
+			discount_curve : string \l 
+			dollar_convexity : numeric \l 
+			dollar_duration : numeric \l 
+			dv01 : numeric \l 
+			eff_convexity : numeric \l 
+			eff_duration : numeric \l 
+			embedded_option_value : numeric \l 
+			enable_business_day_rule : numeric \l 
+			exposure_base : numeric \l 
+			exposure_mc : numeric \l 
+			exposure_stress : numeric \l 
+			extra_payment_dates : string \l 
+			extra_payment_values : numeric \l 
+			id : string \l 
+			in_arrears : bool \l 
+			ir_shock : numeric \l 
+			issue_date : string \l 
+			key_rate_eff_convex : numeric \l 
+			key_rate_eff_dur : numeric \l 
+			key_rate_mon_convex : numeric \l 
+			key_rate_mon_dur : numeric \l 
+			key_rate_shock : numeric \l 
+			key_rate_width : numeric \l 
+			key_term : numeric \l 
+			last_coupon_date : numeric \l 
+			long_first_period : numeric \l 
+			long_last_period : numeric \l 
+			mac_duration : numeric \l 
+			maturity_date : string \l 
+			mod_duration : numeric \l 
+			name : string \l 
+			notice_period : numeric \l 
+			notice_period_unit : string \l 
+			notional : numeric \l 
+			notional_at_end : numeric \l 
+			notional_at_start : numeric \l 
+			prorated : bool \l 
+			protection_scheme_limit : numeric \l 
+			pv01 : numeric \l 
+			redemption_dates : string \l 
+			redemption_values : numeric \l 
+			reference_curve : string \l 
+			savings_change_dates : string \l 
+			savings_change_values : numeric \l 
+			savings_enddate : string \l 
+			savings_rate : numeric \l 
+			savings_startdate : string \l 
+			soy : numeric \l 
+			spread : numeric \l 
+			spread_duration : numeric \l 
+			sub_type : string \l 
+			term : numeric \l 
+			term_unit : string \l 
+			timestep_mc : cell \l 
+			timestep_mc_cf : cell \l 
+			type : string \l 
+			value_base : numeric \l 
+			value_mc : numeric \l 
+			value_stress : numeric \l 
+			ytm : numeric \l 
+			 | 
+			Methods \l 
+			Retail \l 
+			calc_key_rates \l 
+			calc_sensitivities \l 
+			calc_value \l 
+			get \l 
+			getCF \l 
+			rollout \l 
+			set \l 
+		}"
+]	
 	Sensitivity [ 
 		label = "{ Sensitivity | 
 			Properties \l 
@@ -1052,6 +1147,7 @@ Instrument -> Cash
 Instrument -> Debt 
 Instrument -> Forward 
 Instrument -> Option 
+Instrument -> Retail 
 Instrument -> Sensitivity 
 Instrument -> Stochastic 
 Instrument -> Swaption 

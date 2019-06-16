@@ -1,0 +1,34 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+	]
+	graph [splines=ortho];
+	rankdir=LR;
+	subgraph class_Retail {
+		style=filled;
+		node [style=filled,color=lightgrey];
+		"@Retail::Retail" -> "@Retail::calc_key_rates"
+		"@Retail::Retail" -> "@Retail::calc_sensitivities"
+		"@Retail::Retail" -> "@Retail::calc_value"
+		"@Retail::Retail" -> "@Retail::get"
+		"@Retail::Retail" -> "@Retail::getCF"
+		"@Retail::Retail" -> "@Retail::rollout"
+		"@Retail::Retail" -> "@Retail::set"
+		label = "@Retail";
+	}
+"@Retail::calc_key_rates" 	 -> 	 "convert_curve_rates"
+"@Retail::calc_key_rates" 	 -> 	 "interpolate_curve"
+"@Retail::calc_value" 	 -> 	 "calibrate_generic"
+"@Retail::calc_value" 	 -> 	 "discount_factor"
+"@Retail::calc_value" 	 -> 	 "pricing_npv"
+"@Retail::rollout" 	 -> 	 "rollout_retail_cashflows"
+"@Retail::set" 	 -> 	 "return_checked_input"
+}

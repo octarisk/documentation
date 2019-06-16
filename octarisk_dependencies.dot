@@ -111,6 +111,10 @@ k5[shape=plaintext, style=solid, label="Main script for instrument valuation"]
 "pricing_npv" 	 -> 	 "calculate_npv_cpp"
 "pricing_npv" 	 -> 	 "interpolate_curve_vectorized"
 "replacement_script" 	 -> 	 "adapt_matlab"
+"rollout_retail_cashflows" 	 -> 	 "addtodatefinancial"
+"rollout_retail_cashflows" 	 -> 	 "discount_factor"
+"rollout_retail_cashflows" 	 -> 	 "interpolate_curve"
+"rollout_retail_cashflows" 	 -> 	 "rollout_structured_cashflows"
 "rollout_structured_cashflows" 	 -> 	 "addtodatefinancial"
 "rollout_structured_cashflows" 	 -> 	 "calcConvexityAdjustment"
 "rollout_structured_cashflows" 	 -> 	 "convert_curve_rates"
@@ -131,6 +135,7 @@ k5[shape=plaintext, style=solid, label="Main script for instrument valuation"]
 "test_io" 	 -> 	 "load_riskfactors"
 "test_io" 	 -> 	 "load_stresstests"
 "test_io" 	 -> 	 "struct2obj"
+"testriskfree" 	 -> 	 "doc_instrument"
 "timefactor" 	 -> 	 "get_basis"
 "unvech" 	 -> 	 "ind2sub_tril"
 "update_mktdata_objects" 	 -> 	 "convert_curve_rates"
@@ -253,6 +258,13 @@ k5[shape=plaintext, style=solid, label="Main script for instrument valuation"]
 "@Position::calc_risk" 	 -> 	 "get_FX_rate"
 "@Position::calc_risk" 	 -> 	 "get_quantile_estimator"
 "@Position::set" 	 -> 	 "return_checked_input"
+"@Retail::calc_key_rates" 	 -> 	 "convert_curve_rates"
+"@Retail::calc_key_rates" 	 -> 	 "interpolate_curve"
+"@Retail::calc_value" 	 -> 	 "calibrate_generic"
+"@Retail::calc_value" 	 -> 	 "discount_factor"
+"@Retail::calc_value" 	 -> 	 "pricing_npv"
+"@Retail::rollout" 	 -> 	 "rollout_retail_cashflows"
+"@Retail::set" 	 -> 	 "return_checked_input"
 "instrument_valuation" 	 -> 	 "get_basket_volatility"
 "instrument_valuation" 	 -> 	 "@Forward::calc_sensitivities"
 "instrument_valuation" 	 -> 	 "@Forward::calc_value"
@@ -323,6 +335,10 @@ k5[shape=plaintext, style=solid, label="Main script for instrument valuation"]
 "@Position::aggregate"  [shape=box, style=filled, fillcolor=lightgrey]
 "@Position::calc_risk"  [shape=box, style=filled, fillcolor=lightgrey]
 "@Position::set"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Retail::calc_key_rates"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Retail::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Retail::rollout"  [shape=box, style=filled, fillcolor=lightgrey]
+"@Retail::set"  [shape=box, style=filled, fillcolor=lightgrey]
 "@Riskfactor::set"  [shape=box, style=filled, fillcolor=lightgrey]
 "@Sensitivity::calc_value"  [shape=box, style=filled, fillcolor=lightgrey]
 "@Sensitivity::set"  [shape=box, style=filled, fillcolor=lightgrey]

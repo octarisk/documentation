@@ -16,6 +16,7 @@
 * 	CapFloor.help::
 * 	Bond.help::
 * 	Position.help::
+* 	Retail.help::
 @end menu 
 @node 	Instrument.help
 @section 	Instrument.help
@@ -3735,4 +3736,219 @@ Position and Portfolio class.
 Dependencies of class:
 
  @image{Position,15cm}
+
+@node 	Retail.help
+@section 	Retail.help
+@cindex 	 Function 	Retail.help
+@c Copyright (C) 2012-2018 John W. Eaton
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but
+@c WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING.  If not, see
+@c <https://www.gnu.org/licenses/>.
+
+@c The following macro marks words that aspell should ignore during
+@c spellchecking.  Within Texinfo it has no effect as it merely replaces
+@c the macro call with the argument itself.
+
+@macro nospell {arg}
+\arg\
+@end macro
+
+@c The following macro works around the Info/plain text expansion of @code{XXX}
+@c which is `XXX'.  This looks particularly bad when the macro body is
+@c single or double-quoted text, such as a property value `"position"'
+@ifinfo
+@macro qcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro qcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c The following macro is used for the on-line help system, but we don't
+@c want lots of `See also: foo, bar, and baz' strings cluttering the
+@c printed manual (that information should be in the supporting text for
+@c each group of functions and variables).
+@c
+@c Implementation Note:
+@c For TeX, @vskip produces a nice separation.
+@c For Texinfo, '@sp 1' should work, but in practice produces ugly results
+@c for HTML.  We use a simple blank line to produce the correct behavior.
+
+@macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
+
+@end ifnottex
+@ifnotinfo
+@noindent
+@strong{See also:} \args\.
+@end ifnotinfo
+@ifinfo
+@noindent
+See also: \args\.
+@end ifinfo
+@end macro
+
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro tcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro tcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
+@c FIXME: someday, when Texinfo 5.X is standard, we might replace this with
+@c @backslashchar, which is a new addition to Texinfo.
+
+@macro xbackslashchar
+\\
+@end macro
+
+@c These may be useful for all, not just for octave.texi.
+@tex
+  \ifx\rgbDarkRed\thisisundefined
+    \def\rgbDarkRed{0.50 0.09 0.12}
+  \fi
+  \ifx\linkcolor\thisisundefined
+    \relax
+  \else
+    \global\def\linkcolor{\rgbDarkRed}
+  \fi
+  \ifx\urlcolor\thisisundefined
+    \relax
+  \else
+    \global\def\urlcolor{\rgbDarkRed}
+  \fi
+  \ifx\urefurlonlylinktrue\thisisundefined
+    \relax
+  \else
+    \global\urefurlonlylinktrue
+  \fi
+@end tex
+
+@c Make the apostrophe in code examples cut-and-paste friendly.
+@codequoteundirected on
+@deftypefn{Octarisk Class} {@var{object}} = Retail(@var{id})
+@deftypefnx{Octarisk Class} {@var{object}} = Retail()
+
+Class for setting up various Retail objects like saving plans with bonus or
+defined contribution pension plans.
+Cash flows are generated specific for each Retail sub type and subsequently
+discounted to calculate the Retail value.
+
+@itemize @bullet
+@item DCP: Defined contribution savings plan with guaranteed value at maturity and surrender value.
+@item SAVPLAN: Savings plan with optional bonus at maturity.
+@end itemize
+
+In the following, all methods and attributes are explained and a code example is given.
+
+Methods for Retail object @var{obj}:
+@itemize @bullet
+@item Retail(@var{id}) or Retail(): Constructor of a Bond object. @var{id} is optional and specifies id and name of new object.
+
+@item obj.set(@var{attribute},@var{value}): Setter method. Provide pairs of attributes and values. Values are checked for format and constraints.
+
+@item obj.get(@var{attribute}): Getter method. Query the value of specified attribute.
+
+@item obj.calc_value(@var{valuation_date},@var{scenario}, @var{discount_curve})
+Calculate the net present value of cash flows of Bonds (including pricing of embedded options)
+
+@item obj.rollout(@var{scenario}, @var{valuation_date}): used for SAVPLAN and DCP without redemption
+@item obj.rollout(@var{scenario}, @var{valuation_date}, @var{discount_curve}): used for DCP with redemption
+
+@item obj.calc_sensitivities(@var{valuation_date},@var{discount_curve})
+Calculate numerical sensitivities for the given Retail instrument.
+
+@item obj.calc_key_rates(@var{valuation_date},@var{discount_curve})
+Calculate key rate sensitivities for the given Retail instrument.
+
+@item obj.getValue(@var{scenario}): Return Retail value for given @var{scenario}.
+Method inherited from Superclass @var{Instrument}
+
+@item Retail.help(@var{format},@var{returnflag}): show this message. Format can be [plain text, html or texinfo].
+If empty, defaults to plain text. Returnflag is boolean: True returns 
+documentation string, false (default) returns empty string. [static method]
+@end itemize
+
+Attributes of Retail objects:
+@itemize @bullet
+@item @var{id}: Instrument id. Has to be unique identifier. (Default: empty string)
+@item @var{name}: Instrument name. (Default: empty string)
+@item @var{description}: Instrument description. (Default: empty string)
+@item @var{value_base}: Base value of instrument of type real numeric. (Default: 0.0)
+@item @var{currency}: Currency of instrument of type string. (Default: 'EUR')
+During instrument valuation and aggregation, FX conversion takes place if corresponding FX rate is available.
+@item @var{asset_class}: Asset class of instrument. (Default: 'derivative')
+@item @var{type}: Type of instrument, specific for class. Set to 'Bond'.
+@item @var{value_stress}: Line vector with instrument stress scenario values.
+@item @var{value_mc}: Line vector with instrument scenario values.
+MC values for several @var{timestep_mc} are stored in columns.
+@item @var{timestep_mc}: String Cell array with MC timesteps. If new timesteps are set, values are automatically appended.
+@end itemize
+
+For illustration see the following example:
+A monthly savings plan with extra payments and bonus at maturity is valuated.
+The resulting base value (52803.383344) and effective duration (4.9362)is retrieved:
+@example
+@group
+
+disp('Pricing Savings Plan');
+rates_base = [0.0056,0.02456];
+rates_stress = rates_base + [-0.05;-0.03;0.0;0.03;0.05];
+valuation_date = '31-May-2019';
+r = Retail();
+r = r.set('Name','Test_SAVPLAN','sub_type','SAVPLAN', ...
+'coupon_rate',0.0155,'coupon_generation_method', ...
+'backward','term',1,'term_unit','months');
+r = r.set('maturity_date','05-May-2024','compounding_type', ...
+'simple','savings_rate',500);
+r = r.set('savings_startdate','05-May-2014', ...
+'savings_enddate','05-May-2021');
+r = r.set('extra_payment_values',[17500], ...
+'extra_payment_dates',cellstr('17-May-2019'), ...
+'bonus_value_current',0.5,'bonus_value_redemption',0.15);
+r = r.set('notice_period',3,'notice_period_unit','months');
+r = r.rollout('base',valuation_date);
+r = r.rollout('stress',valuation_date);
+c = Curve();
+c = c.set('id','IR_EUR','nodes',[365,7300]);
+c = c.set('rates_base',rates_base,'rates_stress',rates_stress);
+c = c.set('method_interpolation','linear');
+r = r.calc_value(valuation_date,'base',c);
+r = r.calc_value(valuation_date,'stress',c);
+r = r.calc_sensitivities(valuation_date,c);
+r = r.calc_key_rates(valuation_date,c);
+r
+@end group
+@end example
+
+@end deftypefn
+Dependencies of class:
+
+ @image{Retail,15cm}
 

@@ -8,7 +8,7 @@
 @c                          HEADER
 @c --------------------------------------------------------------------------------------------------------------------
 
-@set VERSION 0.5.0
+@set VERSION 0.5.1
 
 @c Command C:\Program Files (x86)\texinfo\bin>makeinfo --plaintext doc_octarisk.texi
 
@@ -377,6 +377,10 @@ In order to model a fixed share combination of instruments, the synthetic class 
 @subsection Stochastic instruments
 @cindex Stochastic instruments
 In order to pre-calculate cash flow values and instrument prices in other risk systems, the stochastic instrument class was introduced. Based on modelled risk factor values (e.g. correlated uniformly or normal distributed random variables), random numbers are used to determine quantile numbers and then draw cash flows or values from special curves or surfaces. These objects are used as storage containers for quantile dependent values.
+
+@subsection Retail instruments
+@cindex Retail instruments
+Retail instruments are sold to customers in the private banking and insurance market. Typically, no second market exists for such products, making an theoretical valuation necessary. Typically, savings products and defined contribution plans have some put option behavior and can therefore be redeemed by the customer (often times to pre-agreed values and times) Moreover, savings rates can be adjusted at any point in time or extra payments could be made. Octarisk's Retail class reflects such optionalities and allows for efficient calculation of interest and spread risk as well as sensitivities for such products allowing for a full risk assessment of all financial products in a private investors portfolio.
 
 @node Aggregation, Reporting, Instrument valuation, User guide
 @section Aggregation
