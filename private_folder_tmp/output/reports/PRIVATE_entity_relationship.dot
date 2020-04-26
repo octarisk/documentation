@@ -1,0 +1,57 @@
+digraph G {
+	fontname = "Bitstream Vera Sans"
+	fontsize = 5
+	node [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 5
+		shape = "record"
+	]
+	edge [
+		fontname = "Bitstream Vera Sans"
+		fontsize = 4
+		arrowsize=0.25
+		color="black"
+	]
+		overlap=scalexy;
+		splines=true;
+		a[label = "" image="legend_arrows.png" imagescale=true fixedsize=true imagepos=mc shape="rectangle" width=1.5 height=0.5];
+		r[label = "" image="legend_rating.png" imagescale=true fixedsize=true imagepos=mc shape="rectangle" width=0.166 height=1 color=white];
+		"Commerzbank" [label="Commerzbank" margin=0 fontcolor=black fontsize=5 width=0.74 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=5 ];
+		"BNP Paribas" [label="BNP Paribas" margin=0 fontcolor=black fontsize=5 width=0.86 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=6 ];
+		"Barclays Bank" [label="Barclays Bank" margin=0 fontcolor=black fontsize=5 width=0.48 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=5 ];
+		"Luxemburg" [label="Luxemburg" margin=0 fontcolor=black fontsize=5 width=0.48 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=8 ];
+		"Societe General" [label="Societe General" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=6 ];
+		"comdirect Bank" [label="comdirect Bank" margin=0 fontcolor=black fontsize=5 width=0.41 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=5 ];
+		"France" [label="France" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=5 ];
+		"BlackRock" [label="BlackRock" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=7 ];
+		"Unicredit" [label="Unicredit" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=5 ];
+		"State Street" [label="State Street" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=8 ];
+		"Ireland" [label="Ireland" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=6 ];
+		"Wallet" [label="Wallet" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=5 ];
+		"Physical" [label="Physical" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=5 ];
+		"US" [label="US" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=7 ];
+		"Allianz" [label="Allianz" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=7 ];
+		"Equatex" [label="Equatex" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=5 ];
+		"Germany" [label="Germany" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=8 ];
+		"Pensionskasse der Deutschen Wirtschaft" [label="Pensionskasse der Deutschen Wirtschaft" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=5 ];
+		"Deutsche Beamtenkasse" [label="Deutsche Beamtenkasse" margin=0 fontcolor=black fontsize=5 width=0.40 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=5 ];
+		"Deutsche Kreditbank" [label="Deutsche Kreditbank" margin=0 fontcolor=black fontsize=5 width=0.41 shape=circle style=filled fixedsize=shape colorscheme=rdylgn8 fillcolor=5 ];
+		"BNP Paribas"->"Commerzbank" [colorscheme=greys9 color =9];
+		"Commerzbank"->"Barclays Bank" [colorscheme=greys9 color =8];
+		"Commerzbank"->"Commerzbank" [colorscheme=greys9 color =7];
+		"Commerzbank"->"BNP Paribas"  [colorscheme=greys9 color =6];
+		"BNP Paribas"->"Luxemburg" [colorscheme=greys9 color =5];
+		"comdirect Bank"->"Societe General" [colorscheme=greys9 color =9];
+		"Societe General"->"Societe General" [colorscheme=greys9 color =8];
+		"Societe General"->"BNP Paribas" [colorscheme=greys9 color =7];
+		"Societe General"->"Societe General"  [colorscheme=greys9 color =6];
+		"Societe General"->"France" [colorscheme=greys9 color =5];
+		"BNP Paribas"->"BlackRock" [colorscheme=greys9 color =9];
+		"BlackRock"->"Unicredit" [colorscheme=greys9 color =7];
+		"BlackRock"->"State Street"  [colorscheme=greys9 color =6];
+		"State Street"->"Ireland" [colorscheme=greys9 color =5];
+		"BNP Paribas"->"US" [colorscheme=greys9 color =9];
+		"Equatex"->"Allianz" [colorscheme=greys9 color =9];
+		"Allianz"->"Allianz"  [colorscheme=greys9 color =6];
+		"Allianz"->"Germany" [colorscheme=greys9 color =5];
+}

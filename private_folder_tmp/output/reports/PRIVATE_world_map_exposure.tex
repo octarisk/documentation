@@ -1,0 +1,19 @@
+\tikzset{set state val/.style args={#1/#2}{#1={fill=octariskblue!#2}}};
+\tikzset{set state val/.list={US/96.3231,GB/46.7405,FR/43.955,CH/42.2593,DE/100,NL/34.9031,ES/34.1292,SE/34.8239,IT/33.4835,DK/32.3024,BE/30.9987,JP/49.1178,AU/39.1456,HK/37.7366,SG/32.3833,NZ/27.2504,CA/31.0272}};
+\tikzset{set state val/.style args={#1/#2}{#1={fill=octariskgreen!#2}}};
+\tikzset{set state val/.list={CN/100,KR/69.9892,TW/69.3491,IN/64.0728,BR/61.6706,ZA/55.6469,RU/51.0301,TH/47.8007,MX/45.5206,ID/44.4809}};
+\definecolor{customgrey}{RGB}{204, 204, 204}
+\node[draw,align=left] at (13.5,-8.78) {\textcolor{octariskblue}{$\blacksquare$} Developed Markets 87\%  \textcolor{octariskgreen}{$\blacksquare$} Emerging Markets 10\%  \textcolor{customgrey}{$\blacksquare$} Other  2\%};
+\definecolor{orbluecustom1}{RGB}{ 22, 115, 195}
+\definecolor{orbluecustom2}{RGB}{ 31, 120, 197}
+\definecolor{orbluecustom3}{RGB}{141, 186, 226}
+\definecolor{orbluecustom4}{RGB}{146, 190, 227}
+\definecolor{orbluecustom5}{RGB}{153, 193, 229}
+\node[draw,align=left] at (2.0,-7.73) {Exposure \& Risk \\ \textcolor{orbluecustom1}{$\blacksquare$} DE 37\% low\\ \textcolor{orbluecustom2}{$\blacksquare$} US 33\% low\\ \textcolor{orbluecustom3}{$\blacksquare$} JP  4\% low\\ \textcolor{orbluecustom4}{$\blacksquare$} GB  3\% low\\ \textcolor{orbluecustom5}{$\blacksquare$} FR  2\% low};
+\definecolor{orgreencustom1}{RGB}{145, 209,  34}
+\definecolor{orgreencustom2}{RGB}{149, 211,  42}
+\definecolor{orgreencustom3}{RGB}{201, 232, 146}
+\definecolor{orgreencustom4}{RGB}{204, 233, 152}
+\definecolor{orgreencustom5}{RGB}{207, 235, 158}
+\node[draw,align=left] at (4.9,-7.73) {Exposure \& Risk \\ \textcolor{orgreencustom1}{$\blacksquare$} CN  4\% medium\\ \textcolor{orgreencustom2}{$\blacksquare$} KR  1\% very low\\ \textcolor{orgreencustom3}{$\blacksquare$} TW  1\% medium\\ \textcolor{orgreencustom4}{$\blacksquare$} IN  1\% high\\ \textcolor{orgreencustom5}{$\blacksquare$} BR  1\% medium};
+\WORLD[every state={draw=white, thick, fill=black!20}]

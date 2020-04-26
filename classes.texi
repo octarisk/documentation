@@ -1719,6 +1719,8 @@ Notion (GBM) or Brownian Notion (BM). (Default: 'GBM')
 @item @var{shock_type}: cell array of shock types for each underlying [value, relative, absolute]
 @item @var{sensi_prefactor}: vector with prefactors (a in a*x^b)
 @item @var{sensi_exponent}: vector with exponents (b in a*x^b)
+@item @var{div_yield}: forecast dividend yield
+@item @var{div_month}: dividend paymend month
 @item @var{sensi_cross}: vector with cross terms [0 = single; 1,2,3, ... link cross terms]
 @item @var{use_value_base}: boolean flag: use value_base for base valuation. Scenario shocks are added to base value (default: false)
 @item @var{use_taylor_exp}: boolean flag: if true, treat polynomial value as Taylor expansion(default: false)
@@ -3856,13 +3858,15 @@ See also: \args\.
 @deftypefnx{Octarisk Class} {@var{object}} = Retail()
 
 Class for setting up various Retail objects like saving plans with bonus or
-defined contribution pension plans.
+defined contribution pension plans and retirement expenses.
 Cash flows are generated specific for each Retail sub type and subsequently
 discounted to calculate the Retail value.
 
 @itemize @bullet
 @item DCP: Defined contribution savings plan with guaranteed value at maturity and surrender value.
 @item SAVPLAN: Savings plan with optional bonus at maturity.
+@item RETEXP: Modelling retirement expenses depending on survival rates and inflation expectation rates.
+@item GOVPEN: Modelling government pensions depending on survival rates and inflation expectation rates.
 @end itemize
 
 In the following, all methods and attributes are explained and a code example is given.
@@ -3880,6 +3884,7 @@ Calculate the net present value of cash flows of Bonds (including pricing of emb
 
 @item obj.rollout(@var{scenario}, @var{valuation_date}): used for SAVPLAN and DCP without redemption
 @item obj.rollout(@var{scenario}, @var{valuation_date}, @var{discount_curve}): used for DCP with redemption
+@item obj.rollout(@var{scenario}, @var{valuation_date}, @var{inflation_exp_curve}, @var{longevity_table}): used for retirement expenses and government pensions
 
 @item obj.calc_sensitivities(@var{valuation_date},@var{discount_curve})
 Calculate numerical sensitivities for the given Retail instrument.

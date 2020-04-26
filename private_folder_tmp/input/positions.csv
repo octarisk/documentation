@@ -1,0 +1,27 @@
+HeaderPORTFOLIO,idCHAR,nameCHAR,descriptionCHAR,currencyCHAR,aa_target_idCHAR,aa_target_valuesCHAR,hist_report_datesCHAR,hist_base_valuesCHAR,hist_var_absCHAR,hist_cashflowCHAR,current_cashflowNMBR,srri_targetNMBR,equity_target_region_idCHAR,equity_target_region_valuesCHAR,min_req_cashNMBR,dtlNMBR
+Item,EVA,EVA,Portfolio,EUR,Equity|Fixed Income|Real Estate|Alternative|Commodity|Cash,0.75|0.0|0.00|0.00|0.05|0.20,30-Jun-2019|31-Jul-2019|31-Aug-2019|30-Sep-2019|31-Oct-2019|30-Nov-2019|31-Dec-2019|31-Jan-2020,27000|26053|26333|26610.9162|26768|27163|27644.0765|27605,1200|1217|1295|1374.8012|1440|1531|1625.335|1664,0|0|0|0|0|0|0|0,0.0000,5,Europe|NorthAmerica|Pacific|EmergingMarkets,0.15|0.5|0.10|0.25,5000.0000,0.0000
+Item,PRIVATE,PRIVATE,Stefan and Katrin,EUR,Equity|Fixed Income|Real Estate|Alternative|Commodity|Cash,0.45|0.25|0.09|0.02|0.09|0.1,31-May-2019|30-Jun-2019|31-Jul-2019|31-Aug-2019|30-Sep-2019|31-Oct-2019|30-Nov-2019|31-Dec-2019|31-Jan-2020,410000|437000|453606|461242|464919.7773|475774|487529|486150.8574|493940,21365|22738|23626|23046|24097.4394|24523|24520|25093.9145|25963,8035|7880|9293|7880|7880|7880|7880|7880|7880,7880.0000,4,Europe|NorthAmerica|Pacific|EmergingMarkets,0.28|0.30|0.12|0.3,40000.0000,-9878.3896
+HeaderPOSITION,port_idCHAR,idCHAR,quantityNMBR,custodian_bankCHAR,tax_rateNMBR
+Item,PRIVATE,ETF060,746.0000,BNP Paribas,0.2640
+Item,PRIVATE,ETF012,198.0000,BNP Paribas,0.2640
+Item,PRIVATE,ETF114,449.0000,BNP Paribas,0.2640
+Item,PRIVATE,LYX0BX,0.0000,comdirect Bank,0.2640
+Item,PRIVATE,LYX0AG,0.0000,comdirect Bank,0.2640
+Item,PRIVATE,A0LGQL,1532.0000,BNP Paribas,0.2640
+Item,PRIVATE,BTCOIN,1.9800,Wallet,0.0000
+Item,PRIVATE,GOLDPHYS,32.3110,Physical,0.0000
+Item,PRIVATE,SILVERPHYS,56.1500,Physical,0.0000
+Item,PRIVATE,ETF127,1389.0000,BNP Paribas,0.2640
+Item,PRIVATE,A188AL,30.0000,BNP Paribas,0.2640
+Item,PRIVATE,840400,53.2800,Equatex,0.2640
+Item,PRIVATE,PKDW,1,Pensionskasse der Deutschen Wirtschaft,0.0000
+Item,PRIVATE,DEBEKA_BSV,1,Deutsche Beamtenkasse,0.0000
+Item,PRIVATE,DKB_SPARPLAN,1,Deutsche Kreditbank,0.0000
+Item,PRIVATE,ALLIANZ_PEN,1,Allianz,0.0000
+Item,EVA,CASH_EUR,9103.1104,comdirect Bank,0.0000
+Item,EVA,ETF110,45.9090,comdirect Bank,0.0000
+Item,EVA,ETF127,18.3480,comdirect Bank,0.0000
+Item,EVA,GOLDPHYS,1.0000,Physical,0.0000
+Item,EVA,LYX0AG,49.4220,comdirect Bank,0.0000
+Item,EVA,LYX0BX,301.5300,comdirect Bank,0.0000
+Item,PRIVATE,CASH_EUR,59343.1797,comdirect Bank,0.0000

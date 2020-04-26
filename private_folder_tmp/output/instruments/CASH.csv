@@ -1,0 +1,4 @@
+CASH,nameCHAR,idCHAR,value_baseNMBR,typeCHAR,descriptionCHAR,currencyCHAR,asset_classCHAR,rating_valuesCHAR,country_idCHAR,country_valuesCHAR,liquidity_classCHAR
+Item,Cash Account CHF,CASH_CHF,1.0000,CASH,CHF Cash Account,CHF,Cash,1|0|0,CH,1.0,high
+Item,Cash Account EUR,CASH_EUR,1.0000,CASH,EUR Cash Account,EUR,Cash,1|0|0,DE,1.0,high
+

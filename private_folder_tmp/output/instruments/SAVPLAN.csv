@@ -1,0 +1,6 @@
+SAVPLAN,nameCHAR,idCHAR,typeCHAR,descriptionCHAR,currencyCHAR,discount_curveCHAR,coupon_rateNMBR,coupon_generation_methodCHAR,termNMBR,term_unitCHAR,maturity_dateDATE,compounding_typeCHAR,savings_rateNMBR,savings_startdateDATE,savings_enddateDATE,extra_payment_valuesCHAR,extra_payment_datesCHAR,bonus_value_currentNMBR,bonus_value_redemptionNMBR,notice_periodNMBR,notice_period_unitCHAR,asset_classCHAR,rating_valuesCHAR,country_idCHAR,country_valuesCHAR,esg_scoreNMBR,liquidity_classCHAR
+Item,BSV,BSV,SAVPLAN,,EUR,IR_EUR,0.026702,backward,1,months,31-Jul-2023,simple,86.0000,01-Jan-2018,01-Jul-2023,12664,01-Jan-2018,0.0000,0.0000,3.0000,months,Fixed Income,1|0|0,DE,1.0,7.3500,low
+Item,DEBEKA_BSV,DEBEKA_BSV,SAVPLAN,,EUR,IR_EUR,0.026702,backward,1,months,31-Jul-2023,simple,43.0000,01-Jan-2018,01-Jul-2023,6332.62,01-Jan-2018,0.0000,0.0000,3.0000,months,Fixed Income,1|0|0,DE,1.0,7.3500,low
+Item,DKB_SPARPLAN,DKB_SPARPLAN,SAVPLAN,,EUR,IR_EUR,0.015500,backward,1,months,05-May-2024,simple,500.0000,05-May-2014,05-May-2021,17500,17-May-2019,0.1500,0.1500,3.0000,months,Fixed Income,1|0|0,DE,1.0,7.3500,mid
+Item,SPARPLAN,SPARPLAN,SAVPLAN,,EUR,IR_EUR,0.015500,backward,1,months,05-May-2024,simple,1000.0000,05-May-2014,05-May-2021,35000,17-May-2019,0.1500,0.1500,3.0000,months,Fixed Income,1|0|0,DE,1.0,7.3500,mid
+
