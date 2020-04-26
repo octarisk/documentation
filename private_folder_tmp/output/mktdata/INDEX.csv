@@ -1,4 +1,0 @@
-INDEX,idCHAR,nameCHAR,typeCHAR,currencyCHAR,descriptionCHAR,value_baseNMBR
-Item,COM_GOLD,Gold,Commodity Index,USD,Gold 1 Ounce USD,1409.0000
-Item,EQ_DE,DAX30,Equity Index,EUR,DAX Equity Index German Blue Chips,12398.0000
-

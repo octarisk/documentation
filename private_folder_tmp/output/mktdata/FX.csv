@@ -1,5 +1,0 @@
-FX,idCHAR,nameCHAR,typeCHAR,currencyCHAR,descriptionCHAR,value_baseNMBR
-Item,FX_EURCAD,EUR_CAD,Exchange Rate,EUR,EUR CAD Exchange rate,1.4957
-Item,FX_EURCHF,EUR_CHF,Exchange Rate,EUR,EUR CHF Exchange rate,1.0614
-Item,FX_EURUSD,EUR_USD,Exchange Rate,EUR,EUR USD Exchange rate,1.0977
-

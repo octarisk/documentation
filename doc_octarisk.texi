@@ -8,14 +8,14 @@
 @c                          HEADER
 @c --------------------------------------------------------------------------------------------------------------------
 
-@set VERSION 0.6.0
+@set VERSION 0.5.1
 
 @c Command C:\Program Files (x86)\texinfo\bin>makeinfo --plaintext doc_octarisk.texi
 
 @copying
 This is the documentation for the market risk measurement project @sc{octarisk} version @value{VERSION}.
 
-Copyright @copyright{} 2015,2016,2017,2018,2019,2020 Stefan Schloegl
+Copyright @copyright{} 2019 Stefan Schloegl
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -51,7 +51,7 @@ This manual is for the market risk measurement project @sc{octarisk} (version @v
 @c --------------------------------------------------------------------------------------------------------------------
 @menu
 * Introduction::                General motivation and introduction.
-* User guide::                  Chapter with details about GUI, scenario generation, financial instrument valuation, portfolio aggregation and reporting.
+* User guide::                  Chapter with details about GUI, scenario generation, financial instrument valuation and portfolio aggregation.
 * Developer guide::             Chapter with the implementation and definition of input and output files
 * Input files::                  Definition of input files
 * Output files::                 Definition of output files
@@ -121,7 +121,6 @@ The next chapter contains the background and details needed for running the mark
 @c --------------------------------------------------------------------------------------------------------------------
 @node User guide, Introducing market risk, Introduction, Top
 @menu
-* Risk management in practice:: Basics of risk management
 * Introducing market risk::     Basics of market risk
 * Market risk measures::        Fundamentals of market risk measures
 * Scenario generation::         Introduction to stochastic models and Monte-Carlo Simulation
@@ -136,72 +135,7 @@ The next chapter contains the background and details needed for running the mark
 This chapter gives a general introduction to market risk and how the market risk is captured by @sc{octarisk}.
 Thereby the following convention is made: market movement means the movement around the mean value or, in other words, the possible deviation from the expected value as time passes. Stronger movement around the expected value means more risk and results in a higher standard deviation, the most important statistic parameter for capturing market risk.
 
-@c ---------------------------------------------
-@node Risk management in practice, Introducing market risk, User guide, User guide
-@section Risk management in practice
-@cindex Risk management, Introduction
-Risk management is both art and science. The science part can be seen as quantitative risk measurement, selection of stochastic models and pricing functions, as well as setting up scenario generation and aggregation. Risk measurement follows a straigthforward approach and is only constraint by operational questions, e.g. requirement and test management, computational limitations, reporting timelines and maintenance effort. Calculation automation and calculation performance are two of the key design principles of @sc{octarisk}. The dependencies between the modules and configuration capabilities are covered in @xref{Developer guide} description of all classes and functions.@*
-The art part covers more the qualitative aspects of risk management, e.g. how can risk assessment contribute to reaching investment goals, which types of risk should be selected, which risk types can be neglected (known unknowns), where are blind spots (unknown unknowns) and what is the remaining model risk. Risk management can be both highly specific to the investment business (e.g. internal models) as well as more or less standardized (e.g. Solvency II Standard Model) to allow for easy regulatory comparison between companies. In the following some ideas on individual risk management are given and a road map for running an appropriate risk model is outlined.
-
-@subsection What is the investment objective?
-Before one should think about risk management, a clear investment objective or goal has to be specified. These goals could be (early) retirement, buying a house in some years, repaying debt or even just accumulating as much wealth as possible. Even unspecific goals are better than no goals at all. Once the goal and responsibilities are set, the following aspects should be covered in an written investment policy statement (IPS):
-@itemize @bullet
-@item @var{Return}: The minimum required return for reaching the investment goal under given time and liquidity constraints should be assessed in the very beginning, since it is the basis for the following investment process.
-@item @var{Risk}: Both ability and willingness to take risk has to be taken into account. The more conservative of these two limits the overall risk appetite, which itself limits the potential portfolio return. If the risk appetite is not compatible to reaching the investment objective under given time constraints, some parameter have to be relaxed.
-@item @var{Time}: The investment horizon is one of the main constraints for reaching the overall investment goal and directly affects possible strategic and tactical asset allocation possibilities.
-@item @var{Tax constraints}: Individual tax constraints should be taken into account, although tax considerations should @strong{never} dictate the asset allocation.
-@item @var{Liquidity constraints}: Personal liquidity preferences (e.g. cash inflow or outflow are known or unknown points in time) will directly influence the cash portion of the asset allocation.
-@item @var{Legal constraints}: Further legal constraints should be checked and taken into account after consulting legal experts.
-@item @var{Unique contraints}: Further individual constraints (e.g. donating money) should be assessed in any case.
-@end itemize
-These points are valid both for individual persons as well as for institutions or trusts. Only after thourough specification of an IPS it makes sense to think about risk management.
-
-@subsection Which purpose has risk management?
-In the light of the IPS, risk management is a steering tool for reaching the investment goals. Ideally, risk management is part of the continuous feedback loop between risk assessment, interpretation and analysis and adjusting the asset allocation or adjusting the investment goal. Possible purposes could be risk assessment of speculative investments, e.g. equity option short selling. Here risk management serves as input for limit setting and will directly trigger investment actions (e.g. derisking or allowing for further short selling). Another purpose is asset-liability management (ALM), where the asset allocation should closely match the risk profile of the liabilities to reach immunization (e.g. against inflation and interest rate risk for a retirement portfolio). The most basic purpose could be yearly risk assessment of aggregated risk figures of the asset portfolio (e.g. VaR or expected shortfall) and comparing to the risk appetite set in the IPS. Depending on the outcome, adjustments in asset allocation could be triggered. If no liability positions are involved, the time period between risk assessment could be significantly lowered towards once a year.
-
-@subsection Which risks to cover?
-Once the purpose of risk management was clarified, all possible risk types should be evaluated and the most specific for the portfolio should be selected. For a pure long only equity portfolio based on index funds there is no need to cover interest rate or inflation risk, while concentration risk (counterparty risk, issues risk) could be worth analyzing. For an ALM portfolio interest rate and inflation risk will be the most prominent risk types. Assessing more risk types leads to increased maintenance effort (e.g. calibration) and complexity to analyse risk contributions.
-
-@subsection Which risks not to cover?
-The number is risk types covered is both dependent on the underlying asset and liability risk profile and only limited by available maintenance effort. If risks diversify away or have only minimal impact, they could be left out.
-
-@subsection Where are the blind spots?
-New risks could emerge at any point in time (e.g. political, climate or risk or country specific risks). Maybe it is worth analysing global risk and wealth reports (e.g. from McKinsey or World Economic Forum), which most often include assessment of severity and probability of different risks. 
-
-@subsection How to calibrate the model?
-Full internal model calibration based on historic time series or personal expert judgement vs. taking expert judgement (e.g. standard deviation and correlation) from Solvency II Standard Formula.
-
-@subsection Further thoughts
-Risk management is requiring a holistic view or the whole personal situation beyond investing in the stock market. One should think about the worst possible scenario which would lead to undesired outcome (reverse stress testing), e.g. liquidty needs rise dramatically (relative persons require help during crisis, one is stuck in foreigh country during Covid-19 crisis and cannot fly back), stock, commodity and bitcoin markets fall dramatically in weeks (contagion effect - everything devaluates), and internet banking is not reachable due to lock downs and power outages. Do you have enough money, gold and food to live appropriately? Assessing these kind of scenarios does not require to take precautionary measures - but thinking about it can help to comfortably an dactively decide to do nothing against it. @*
-Proper presentation of results can be helpful to educate clients or family members and provide arguments for taking / not taking certain actions and increases condfidence. @sc{octarisk} assists in this part with providing high quality graphics. @*
-One should specify certain points in time when to review the approach (e.g. on a yearly basis after consulting the newest global risk report).
-
-@subsection Roadmap and Example
-
-A full working example of a long only equity, real estate, gold and bond portfolio incl. savings and pension plans can be found under @sc{working_folder}. The calibration was performed with shocks and correlations according to Solvency II Standard Formula. The reporting output contains LaTeX tables with key figures and graphics highlighting the risk profile of the portfolio.
-
-The following steps could be performed to determine a proper risk model and to periodically reassess the assumptions:
-@multitable @columnfractions .2 .25 .25 .3
-@headitem Step                                    @tab Long Only                                               @tab ALM                                @tab Speculative
-@item     Risk types to cover quantitatively      @tab Depending on assets, e.g. Equiy, FX and Real Estate     @tab EQ, RE, IR, Inflation           @tab Option valuation requires EQ and EQ Vol
-
-@item     Risk types to consider qualitatively @tab Depending on assets, e.g. Equiy, FX and Real Estate        @tab EQ, RE, IR, Inflation              @tab Option valuation requires EQ and EQ Vol
-
-@item     Risk figures to assess @tab Stress tests could be enough, VaR measures could further assist        @tab VaR / ES measures are recommended to capture complex IR and Inflation dependencies              @tab VaR / ES and stress tests incl. qualitative considerations about liquidity, concentration and counterparty risk would be required
-
-@item     Calibration @tab If only stress testing (e.g. EQ -50%) is required, a spread sheet calculation would be enough. No calibration requirements.        @tab Risk factor shocks calibration (both standard deviation and correlation) could be taken from Solvency II Standard Formula (e.g. even taking symmetric equity adjustment into account), in addition inflation risk shall be calibrated by historic inflation expectation curves. Correlations set by expert judgement.              @tab Full internal model calibration is required, to select risk factors for equity and equity vol. A full through-the-cycle calibration of shock sizes and correlation should be performed on historic time series (e.g. starting before the financial crisis and covering Covid-19 scenario). Moreover severe historic stresses should be evaluated (e.g. Flash Crashs, Black Friday, 9/11 etc.)
-
-@item     Inverse stress testing: specify an upper barrier of loss where you would freak out and think about possible scenarios @tab Which stock market shock would lead to this really hurtful loss? @tab Which inflation expectation, political decisions of quantitative easing would lead to this loss?               @tab Increasing margins, liquidity drain for personal reasongs, stock market loss and equity volatility spike: which combination could lead to this loss?
-
-@item     Other risks @tab Concentration risk of the portfolio (all money at one internet bank - fraud / ransom / IT bugs)?        @tab Political risks (tax changes, inflation target changes), Country and political risks, local risks of e.g. own real estate required during retirement, health and longevity risks, government pension related risks             @tab Counterparty risk (stock exchange or issuer of warrants), margin calls, issues risk of broker, and model risk (e.g. pricing models of options adequate to capture real world risk profile?)
-
-@item Further risk indicators @tab Dependencies of counterparty (Swap party), issuer (of ETF), country (where custodian bank is) etc. to determine concentration risks, ESG score @tab Dividend / coupon payments  of portfolio (e.g. to cover monthly expenses) @tab  Qualitative assessment of calibration result and historic time series appropriateness (e.g. hourly trading vs. daily time series)
-@end multitable
-
-
-
-@c ---------------------------------------------
-@node Introducing market risk, Market risk measures, Risk management in practice, User guide
+@node Introducing market risk, Market risk measures, User guide, User guide
 @section Introducing market risk
 @cindex Market Risk, Introduction
 Typically, market risk can be divided into several sub types. Most of the splitting is obvious, but some of the more exotic risk types remain very broad.
@@ -460,52 +394,10 @@ Aggregation keys (e.g. currency, ID, asset class) can be freely specified to get
 @node Reporting, Developer guide, Aggregation, User guide
 @section Reporting
 @cindex Reporting
-Risk reporting has to be tailored to the investment objective and should ideally adress underlying risk types, give clear indication if and where action is required and should assist in monitoring and adjusting strategic and / or tactical asset allocation. Both quantitative and qualitative aspects could be taken up by proper risk reporting and allow for historic comparison and movement analysis. With @sc{octarisk} all these aspects of risk management can be covered in custom risk reports.
-@subsection Risk Report
-Some impressions of the reporting capabilities of @sc{octarisk} are shown:
-@*
-@image{key_figures,12cm}@*
-@*
-@image{kri,12cm}@*
-@*
-@image{portfolio_risk_distribution,12cm}@*
-@*
-@image{backtesting,12cm}@*
-@*
-@image{risk_classification,12cm}@*
-@*
-@image{saa,12cm}@*
-@*
-@image{stresstesting,12cm}@*
-@*
-@image{dividend_forecast,12cm}@*
-@*
-@image{assetclassdecomp,12cm}@*
-@*
-@image{riskiestpositions,12cm}@*
-@*
-@image{position_decomp,12cm}@*
-@*
-@image{whatif,12cm}@*
-@*
-@image{riskfactorquantile,12cm}@*
-@*
-@image{liquidity,12cm}@*
-@*
-@image{termstructure,12cm}@*
-@*
-@image{riskfactorshocks,12cm}@*
-@*
-@image{concentrationrisk,12cm}@*
-@*
-@image{worldmap,12cm}@*
-@*
-@image{disclaimer,12cm}@*
-
-
-@subsection Solvency II regulatory reporting
-Octarisk can be used to perform asset data Solvency II regulatory reporting required for asset manager reporting to (re-)insurance companies. 
-The solvency2_reporting script performs a full valuation of a portfolio and exports position attributes according to the Tripartite v4.0 industry standard.
+After the aggregation of instrument data to fund level, a risk report is generated.
+The report contains VAR on position level, the riskiest instruments and positions per fund, as well as the diversified (with observed correlation) 
+and undiversified (correlation set to 1) VAR and ES on fund level.
+Moreover, stress test results per fund, profit and loss distributions and histograms on both the one day and 250 day time horizon are generated (@xref{Output files} for examples)
 
 
 @node Graphical user interface, Developer guide, Reporting, User guide
@@ -952,11 +844,51 @@ RF_EQ_NA,RF_EQ_DE,0.81541365
 @end example
 @fonttextsize 11
 
-@node Input files, Output files, Implementation concept, Developer guide
+@node Output files, Octave Functions and Scripts, Input files, Developer guide
 @section Output files
-@cindex Output files
-Both graphical risk report data in PDF and PNG format as well as LaTeX tables with risk figures are exported to the reporting sub folder. From there
-further external report generation can take place on a custom basis.
+Overview of report summary and graphics.
+@subsection VAR Report
+For each fund, a VAR report is generated. The report shall give an overview of total risk measure, allow a break down to position level and
+estimate the diversification effect.
+An example for the report looks like:@*
+@example
+@group
+=== Value-At-Risk Report for Portfolio 1 ===
+VaR calculated 99pct Confidence Intervall: 
+Number of Monte Carlo Scenarios: 500000 
+Confidence Scenarionummer: 5000 
+Valuation Date: 09-Oct-2015 
+VaR on Positional Level: 
+|VaR 1D for Position   |iShares JPMorgan $ EM|A0RFFT| = | 618.16 EUR|
+|VaR 250D for Position |iShares JPMorgan $ EM|A0RFFT| = | 1755.21 EUR|
+...
+=== Total Portfolio VaR === 
+|Portfolio VaR   1D@@99Pct| 	 |    -1.32%|
+|Portfolio VaR   1D@@99Pct| 	 |  1779.97 EUR|
+|Portfolio VaR 250D@@99Pct| 	 |   -19.34%|
+|Portfolio VaR 250D@@99Pct| 	 | 25983.52 EUR|
+
+|Expected Shortfall 1D@@99Pct| 	 |    -1.51%|
+|Expected Shortfall 1D@@99Pct| 	 |  2027.10 EUR|
+|Expected Shortfall 250D@@99Pct| 	 |   -21.58%|
+|Expected Shortfall 250D@@99Pct| 	 | 28996.72 EUR|
+@end group
+@end example
+The unique field separator '|' allows efficient use of the data in LaTeX based report files.
+@subsection Overview images
+Additionally to the printed report, overview images of the profit and loss distribution, both sorted and histogram
+as well as the riskiest instruments and positions are plotted.@*
+@image{var_results,12cm} @*
+Portfolio Value-at-Risk at the 99.9% confidence level on 10 day time horizon. There are shown four different results: On the top left corner a histogram of the profit and loss distribution is presented for the whole portfolio. On the x-axis, the relative portfolio value is given.  
+On the top right corner the P'n'L distribution is shown as sorted absolute profits or losses for each of the MC scenarios. The red base line marks the base scenario.
+The blue line indicates the VAR scenario number, where 99.9% of all profits and losses are shown on the right side. Losses greater than the VAR occur in 0.1% of all cases. The two lower charts show the VAR contribution of the six riskiest positions (left chart) or instruments (right chart). The positional view is determined by weighing the instruments with their position size in the portfolio. 
+
+Moreover, stress test results are plotted in a bar chart, indicating the relative profit or loss of the fund in each stress test scenario:@*
+@image{stresstest_results,12cm}@*
+
+@subsection Solvency II regulatory reporting
+Octarisk can be used to perform asset data Solvency II regulatory reporting required for asset manager reporting to (re-)insurance companies. 
+The solvency2_reporting script performs a full valuation of a portfolio and exports position attributes according to the Tripartite v4.0 industry standard.
 
 @c --------------------------------------------------------------------------------------------------------------------
 @c                          OCTAVE OCTARISK CLASS DEFINITIONS

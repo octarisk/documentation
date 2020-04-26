@@ -81,32 +81,13 @@ digraph G {
 		label = "{ Instrument | 
 			Properties \l 
 			asset_class : string \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
-			fund_replication : string \l 
 			id : string \l 
-			issuer : string \l 
-			liquidity_class : string \l 
-			market_maker : string \l 
 			name : string \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
-			region_id : cell \l 
-			region_values : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			timestep_mc : cell \l 
 			type : string \l 
 			value_base : numeric \l 
@@ -148,7 +129,6 @@ digraph G {
 			aggregation_key : cell \l 
 			archive_flag : numeric \l 
 			base_currency : string \l 
-			calc_marg_incr_var : numeric \l 
 			calc_sm_scr : bool \l 
 			copulatype : string \l 
 			description : string \l 
@@ -167,11 +147,9 @@ digraph G {
 			folder_static : string \l 
 			frob_norm_limit : numeric \l 
 			id : string \l 
-			idx_figure : numeric \l 
 			input_filename_corr_matrix : string \l 
 			input_filename_instruments : string \l 
 			input_filename_matrix : string \l 
-			input_filename_mc_mapping : string \l 
 			input_filename_mktdata : string \l 
 			input_filename_positions : string \l 
 			input_filename_riskfactors : string \l 
@@ -182,8 +160,7 @@ digraph G {
 			input_filename_vola_ir : string \l 
 			mc : numeric \l 
 			mc_scen_analysis : numeric \l 
-			mc_timestep : string \l 
-			mc_timestep_days : numeric \l 
+			mc_timesteps : cell \l 
 			name : string \l 
 			no_stresstests : numeric \l 
 			nu : numeric \l 
@@ -206,7 +183,6 @@ digraph G {
 			scenario_set : cell \l 
 			sobol_seed : numeric \l 
 			stable_seed : numeric \l 
-			tax_rate : numeric \l 
 			timestamp : string \l 
 			type : string \l 
 			use_sobol : bool \l 
@@ -222,66 +198,27 @@ digraph G {
 	Position [ 
 		label = "{ Position | 
 			Properties \l 
-			aa_target_id : string \l 
-			aa_target_values : numeric \l 
-			aggr_key_struct : numeric \l 
-			aggr_key_struct_assets : numeric \l 
-			balance_sheet_item : string \l 
-			cf_dates : numeric \l 
-			cf_values : numeric \l 
-			cf_values_mc : numeric \l 
-			cf_values_stress : numeric \l 
-			country_id : cell \l 
-			country_values : numeric \l 
 			currency : string \l 
-			current_cashflow : numeric \l 
-			custodian_bank : string \l 
 			decomp_varhd : numeric \l 
 			description : string \l 
 			diversification_ratio : numeric \l 
-			dtl : numeric \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
-			equity_target_region_id : string \l 
-			equity_target_region_values : numeric \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
 			expshortfall_abs : numeric \l 
 			expshortfall_rel : numeric \l 
-			hist_base_values : numeric \l 
-			hist_cashflow : numeric \l 
-			hist_report_dates : string \l 
-			hist_var_abs : numeric \l 
 			id : string \l 
-			incr_var : numeric \l 
 			kurtosis_shock : numeric \l 
-			marg_var : numeric \l 
 			mean_shock : numeric \l 
-			min_req_cash : numeric \l 
 			name : string \l 
 			port_id : string \l 
-			position_failed_cell : cell \l 
 			positions : numeric \l 
 			quantity : numeric \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
-			region_id : cell \l 
-			region_values : numeric \l 
-			report_struct : numeric \l 
 			reporting_date : numeric \l 
 			scenario_numbers : numeric \l 
 			skewness_shock : numeric \l 
-			solvency_ratio : numeric \l 
-			srri_target : numeric \l 
 			std_shock : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
-			tax_benefit : numeric \l 
-			tax_rate : numeric \l 
 			timestep_mc : cell \l 
-			timestep_mc_cf : cell \l 
 			tpt_1 : string \l 
 			tpt_10 : numeric \l 
 			tpt_100 : numeric \l 
@@ -424,35 +361,20 @@ digraph G {
 			valuation_date : numeric \l 
 			value_base : numeric \l 
 			value_mc : numeric \l 
-			value_mc_at : numeric \l 
 			value_stress : numeric \l 
-			var50_abs : numeric \l 
-			var70_abs : numeric \l 
-			var84_abs : numeric \l 
-			var90_abs : numeric \l 
-			var95_abs : numeric \l 
-			var975_abs : numeric \l 
-			var9999_abs : numeric \l 
-			var999_abs : numeric \l 
-			var99_abs : numeric \l 
 			var_abs : numeric \l 
 			var_confidence : numeric \l 
 			var_positionsum : numeric \l 
 			varhd_abs : numeric \l 
-			varhd_abs_at : numeric \l 
 			varhd_rel : numeric \l 
-			varhd_rel_at : numeric \l 
 			 | 
 			Methods \l 
 			Position \l 
 			aggregate \l 
 			calc_risk \l 
-			del_scen_data \l 
 			get \l 
-			getCF \l 
 			getValue \l 
 			isProp \l 
-			plot \l 
 			print_report \l 
 			set \l 
 		}"
@@ -556,10 +478,6 @@ digraph G {
 			compounding_type : string \l 
 			convex_adj : bool \l 
 			convexity : numeric \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			coupon_generation_method : string \l 
 			coupon_prepay : string \l 
 			coupon_rate : numeric \l 
@@ -567,27 +485,21 @@ digraph G {
 			cpi_index : string \l 
 			credit_state : string \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			day_count_convention : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
 			discount_curve : string \l 
 			dollar_convexity : numeric \l 
 			dollar_duration : numeric \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
 			dv01 : numeric \l 
 			eff_convexity : numeric \l 
 			eff_duration : numeric \l 
 			embedded_option_flag : bool \l 
 			embedded_option_value : numeric \l 
 			enable_business_day_rule : numeric \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
 			fixed_annuity : numeric \l 
-			fund_replication : string \l 
 			fva_type : string \l 
 			fwd_sliding_term : numeric \l 
 			fwd_term : numeric \l 
@@ -598,7 +510,6 @@ digraph G {
 			infl_exp_lag : string \l 
 			ir_shock : numeric \l 
 			issue_date : string \l 
-			issuer : string \l 
 			key_rate_eff_convex : numeric \l 
 			key_rate_eff_dur : numeric \l 
 			key_rate_mon_convex : numeric \l 
@@ -608,12 +519,10 @@ digraph G {
 			key_term : numeric \l 
 			last_coupon_date : numeric \l 
 			last_reset_rate : numeric \l 
-			liquidity_class : string \l 
 			long_first_period : numeric \l 
 			long_last_period : numeric \l 
 			loss_given_default : numeric \l 
 			mac_duration : numeric \l 
-			market_maker : string \l 
 			maturity_date : string \l 
 			mod_duration : numeric \l 
 			name : string \l 
@@ -633,12 +542,8 @@ digraph G {
 			put_schedule : string \l 
 			pv01 : numeric \l 
 			rate_composition : string \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
 			reference_asset : string \l 
 			reference_curve : string \l 
-			region_id : cell \l 
-			region_values : numeric \l 
 			sigma : numeric \l 
 			soy : numeric \l 
 			spot_value : numeric \l 
@@ -650,8 +555,6 @@ digraph G {
 			stochastic_surface : string \l 
 			stochastic_zero_base : bool \l 
 			strike_rate : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			sub_type : string \l 
 			t_degree_freedom : numeric \l 
 			term : numeric \l 
@@ -711,46 +614,33 @@ digraph G {
 			compounding_type : string \l 
 			convex_adj : bool \l 
 			convexity : numeric \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			coupon_generation_method : string \l 
 			coupon_rate : numeric \l 
 			cpi_historical_curve : string \l 
 			cpi_index : string \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			day_count_convention : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
 			discount_curve : string \l 
 			dollar_convexity : numeric \l 
 			dollar_duration : numeric \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
 			dv01 : numeric \l 
 			eff_convexity : numeric \l 
 			eff_duration : numeric \l 
 			enable_business_day_rule : numeric \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
-			fund_replication : string \l 
 			id : string \l 
 			in_arrears : numeric \l 
 			infl_exp_curve : string \l 
 			infl_exp_lag : string \l 
 			ir_shock : numeric \l 
 			issue_date : string \l 
-			issuer : string \l 
 			last_reset_rate : numeric \l 
-			liquidity_class : string \l 
 			long_first_period : numeric \l 
 			long_last_period : numeric \l 
 			mac_duration : numeric \l 
-			market_maker : string \l 
 			maturity_date : string \l 
 			mod_duration : numeric \l 
 			model : string \l 
@@ -760,17 +650,11 @@ digraph G {
 			notional_at_start : numeric \l 
 			prorated : bool \l 
 			pv01 : numeric \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
 			reference_curve : string \l 
-			region_id : cell \l 
-			region_values : numeric \l 
 			soy : numeric \l 
 			spread : numeric \l 
 			spread_duration : numeric \l 
 			strike : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			sub_type : string \l 
 			term : numeric \l 
 			term_unit : string \l 
@@ -805,33 +689,14 @@ digraph G {
 			asset_class : string \l 
 			cf_dates : numeric \l 
 			cf_values : numeric \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
 			discount_curve : string \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
-			fund_replication : string \l 
 			id : string \l 
-			issuer : string \l 
-			liquidity_class : string \l 
-			market_maker : string \l 
 			name : string \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
-			region_id : cell \l 
-			region_values : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			sub_type : string \l 
 			timestep_mc : cell \l 
 			type : string \l 
@@ -853,34 +718,15 @@ digraph G {
 			cf_dates : numeric \l 
 			cf_values : numeric \l 
 			convexity : numeric \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
 			discount_curve : string \l 
 			duration : numeric \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
-			fund_replication : string \l 
 			id : string \l 
-			issuer : string \l 
-			liquidity_class : string \l 
-			market_maker : string \l 
 			name : string \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
-			region_id : cell \l 
-			region_values : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			sub_type : string \l 
 			term : numeric \l 
 			timestep_mc : cell \l 
@@ -908,45 +754,26 @@ digraph G {
 			compounding_freq : string \l 
 			compounding_type : string \l 
 			convenience_yield : numeric \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			day_count_convention : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
 			discount_curve : string \l 
 			dividend_yield : numeric \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
 			exposure_type : string \l 
 			foreign_curve : string \l 
-			fund_replication : string \l 
 			id : string \l 
 			issue_date : string \l 
-			issuer : string \l 
-			liquidity_class : string \l 
-			market_maker : string \l 
 			maturity_date : string \l 
 			multiplier : numeric \l 
 			name : string \l 
 			net_basis : numeric \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
-			region_id : cell \l 
-			region_values : numeric \l 
 			sii_equity_type : numeric \l 
 			spread : numeric \l 
 			storage_cost : numeric \l 
 			strike_price : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			sub_type : string \l 
 			theo_delta : numeric \l 
 			theo_domestic_rho : numeric \l 
@@ -989,30 +816,17 @@ digraph G {
 			cf_values : numeric \l 
 			compounding_freq : numeric \l 
 			compounding_type : string \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			day_count_convention : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
 			discount_curve : string \l 
 			div_yield : numeric \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
 			exposure_type : string \l 
-			fund_replication : string \l 
 			id : string \l 
-			issuer : string \l 
-			liquidity_class : string \l 
 			lookback_type : string \l 
-			market_maker : string \l 
 			maturity_date : string \l 
 			multiplier : numeric \l 
 			name : string \l 
@@ -1020,17 +834,11 @@ digraph G {
 			outorin : string \l 
 			payoff_strike : numeric \l 
 			pricing_function_american : string \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
 			rebate : numeric \l 
-			region_id : cell \l 
-			region_values : numeric \l 
 			sii_equity_type : numeric \l 
 			spot : numeric \l 
 			spread : numeric \l 
 			strike : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			sub_type : string \l 
 			theo_delta : numeric \l 
 			theo_gamma : numeric \l 
@@ -1080,42 +888,28 @@ digraph G {
 			compounding_freq : numeric \l 
 			compounding_type : string \l 
 			convexity : numeric \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			coupon_generation_method : string \l 
 			coupon_rate : numeric \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			day_count_convention : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
 			discount_curve : string \l 
 			dollar_convexity : numeric \l 
 			dollar_duration : numeric \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
 			dv01 : numeric \l 
 			eff_convexity : numeric \l 
 			eff_duration : numeric \l 
 			embedded_option_value : numeric \l 
 			enable_business_day_rule : numeric \l 
-			esg_score : numeric \l 
-			expense_dates : string \l 
-			expense_values : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
 			extra_payment_dates : string \l 
 			extra_payment_values : numeric \l 
-			fund_replication : string \l 
 			id : string \l 
 			in_arrears : bool \l 
-			infl_exp_curve : string \l 
 			ir_shock : numeric \l 
 			issue_date : string \l 
-			issuer : string \l 
 			key_rate_eff_convex : numeric \l 
 			key_rate_eff_dur : numeric \l 
 			key_rate_mon_convex : numeric \l 
@@ -1124,37 +918,23 @@ digraph G {
 			key_rate_width : numeric \l 
 			key_term : numeric \l 
 			last_coupon_date : numeric \l 
-			liquidity_class : string \l 
 			long_first_period : numeric \l 
 			long_last_period : numeric \l 
-			longevity_table : string \l 
-			longevity_table_widow : string \l 
 			mac_duration : numeric \l 
-			market_maker : string \l 
 			maturity_date : string \l 
 			mod_duration : numeric \l 
-			mortality_shift_years : numeric \l 
-			mortality_shift_years_widow : numeric \l 
-			mortality_table : string \l 
 			name : string \l 
 			notice_period : numeric \l 
 			notice_period_unit : string \l 
 			notional : numeric \l 
 			notional_at_end : numeric \l 
 			notional_at_start : numeric \l 
-			pension_scores : numeric \l 
 			prorated : bool \l 
 			protection_scheme_limit : numeric \l 
 			pv01 : numeric \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
 			redemption_dates : string \l 
 			redemption_values : numeric \l 
 			reference_curve : string \l 
-			region_id : cell \l 
-			region_values : numeric \l 
-			retirement_enddate : string \l 
-			retirement_startdate : string \l 
 			savings_change_dates : string \l 
 			savings_change_values : numeric \l 
 			savings_enddate : string \l 
@@ -1163,10 +943,7 @@ digraph G {
 			soy : numeric \l 
 			spread : numeric \l 
 			spread_duration : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			sub_type : string \l 
-			tax_rate : numeric \l 
 			term : numeric \l 
 			term_unit : string \l 
 			timestep_mc : cell \l 
@@ -1174,12 +951,7 @@ digraph G {
 			type : string \l 
 			value_base : numeric \l 
 			value_mc : numeric \l 
-			value_per_score : numeric \l 
 			value_stress : numeric \l 
-			widow_pension_flag : numeric \l 
-			widow_pension_rate : numeric \l 
-			year_of_birth : string \l 
-			year_of_birth_widow : string \l 
 			ytm : numeric \l 
 			 | 
 			Methods \l 
@@ -1199,34 +971,15 @@ digraph G {
 			asset_class : string \l 
 			cf_dates : numeric \l 
 			cf_values : numeric \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
-			div_month : numeric \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
-			fund_replication : string \l 
 			id : string \l 
 			idio_vola : numeric \l 
-			issuer : string \l 
-			liquidity_class : string \l 
-			market_maker : string \l 
 			model : string \l 
 			name : string \l 
-			payout_yield : numeric \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
-			region_id : cell \l 
-			region_values : numeric \l 
 			riskfactors : cell \l 
 			sensi_cross : numeric \l 
 			sensi_exponent : numeric \l 
@@ -1234,8 +987,6 @@ digraph G {
 			sensitivities : numeric \l 
 			shock_type : cell \l 
 			sii_equity_type : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			sub_type : string \l 
 			timestep_mc : cell \l 
 			type : string \l 
@@ -1260,36 +1011,17 @@ digraph G {
 		label = "{ Stochastic | 
 			Properties \l 
 			asset_class : string \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
-			fund_replication : string \l 
 			id : string \l 
-			issuer : string \l 
-			liquidity_class : string \l 
-			market_maker : string \l 
 			name : string \l 
 			quantile_base : numeric \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
-			region_id : cell \l 
-			region_values : numeric \l 
 			stochastic_curve : string \l 
 			stochastic_rf_type : string \l 
 			stochastic_riskfactor : string \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			sub_type : string \l 
 			t_degree_freedom : numeric \l 
 			timestep_mc : cell \l 
@@ -1316,43 +1048,24 @@ digraph G {
 			cf_values : numeric \l 
 			compounding_freq : numeric \l 
 			compounding_type : string \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			day_count_convention : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
 			discount_curve : string \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
 			effective_date : string \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
-			fund_replication : string \l 
 			id : string \l 
 			implied_volatility : numeric \l 
-			issuer : string \l 
-			liquidity_class : string \l 
-			market_maker : string \l 
 			maturity_date : string \l 
 			model : string \l 
 			multiplier : numeric \l 
 			name : string \l 
 			no_payments : numeric \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
-			region_id : cell \l 
-			region_values : numeric \l 
 			spot : numeric \l 
 			spread : numeric \l 
 			strike : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			sub_type : string \l 
 			tenor : numeric \l 
 			term : numeric \l 
@@ -1397,38 +1110,19 @@ digraph G {
 			compounding_freq : string \l 
 			compounding_type : string \l 
 			correlation_matrix : string \l 
-			counterparty : string \l 
-			country_id : cell \l 
-			country_of_origin : string \l 
-			country_values : numeric \l 
 			currency : string \l 
-			custodian_bank_underlyings : string \l 
 			day_count_convention : string \l 
 			description : string \l 
-			designated_sponsor : string \l 
 			discount_curve : string \l 
-			duration_id : cell \l 
-			duration_values : numeric \l 
-			esg_score : numeric \l 
 			exposure_base : numeric \l 
 			exposure_mc : numeric \l 
 			exposure_stress : numeric \l 
-			fund_replication : string \l 
 			id : string \l 
 			instr_vol_surfaces : cell \l 
 			instruments : cell \l 
 			is_basket : bool \l 
-			issuer : string \l 
-			liquidity_class : string \l 
-			market_maker : string \l 
 			name : string \l 
-			rating_id : cell \l 
-			rating_values : numeric \l 
-			region_id : cell \l 
-			region_values : numeric \l 
 			sii_equity_type : numeric \l 
-			style_id : cell \l 
-			style_values : numeric \l 
 			sub_type : string \l 
 			timestep_mc : cell \l 
 			type : string \l 

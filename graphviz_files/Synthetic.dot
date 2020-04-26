@@ -20,6 +20,5 @@ digraph G {
 		"@Synthetic::Synthetic" -> "@Synthetic::set"
 		label = "@Synthetic";
 	}
-"@Synthetic::calc_value" 	 -> 	 "get_FX_rate"
 "@Synthetic::set" 	 -> 	 "return_checked_input"
 }
